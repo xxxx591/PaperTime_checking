@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Tab标签切换</title>
+</head>
+<style>
+    body {
+        background: #fff;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    .box {
+        margin: 20px;
+    }
+
+    .container {
+        background: #FFF;
+        width: 500px;
+        clear: both;
+        margin-top: 1px;
+        _margin-top: -1px;
+    }
+
+    .sub-con {
+        height: 300px;
+        width: 500px;
+        border: 1px solid #3CF;
+        background: #FFF;
+        display: none;
+    }
+
+    .cur-sub-con {
+        display: block;
+    }
+
+    .sub-con a {
+        line-height: 40px
+    }
+
+    .sub-con p {
+        text-align: center
+    }
+
+    .nav {
+        width: 370px;
+        height: 28px;
+        margin-left: 10px;
+    }
+
+    .nav ul {
+        width: 370px;
+        height: 28px;
+    }
+
+    .nav ul li {
+        list-style: none;
+        display: inline-block;
+        width: 60px;
+        height: 28px;
+        line-height: 28px;
+        text-align: center;
+        margin-left: -9px;
+        *float: left;
+        *margin-left: -1px;
+    }
+
+    .nav ul li a {
+        background: #fff;
+        border: 1px solid #3CF;
+        text-decoration: none;
+        color: #000;
+        height: 28px;
+        display: block;
+    }
+
+    .nav ul li a:hover {
+        background: #CCEDFB
+    }
+
+    .nav ul li a.cur {
+        z-index: 9999;
+        border-bottom: 1px solid #FFF;
+        color: #F00;
+    }
+</style>
+
+<body>
+    <div class="box">
+        <div class="nav">
+            <ul>
+                <li><a href="javascript:void(0)" class="cur">Tab项1</a></li>
+                <li><a href="javascript:void(0)">Tab项2</a></li>
+                <li><a href="javascript:void(0)">Tab项3</a></li>
+                <li><a href="javascript:void(0)">Tab项4</a></li>
+            </ul>
+        </div>
+        <div class="container">
+            <div class="sub-con cur-sub-con"> <a href="#" title="这是容器1">这是容器1</a>
+                <p><img src="http://images.cnblogs.com/cnblogs_com/cos2004/286060/o_img001.jpg" /></p>
+            </div>
+            <div class="sub-con"> <a href="#" title="这是容器2">这是容器2</a>
+                <p><img src="http://images.cnblogs.com/cnblogs_com/cos2004/286060/o_img_g02.jpg" /></p>
+            </div>
+            <div class="sub-con"> <a href="#" title="这是容器3">这是容器3</a>
+                <p><img src="http://images.cnblogs.com/cnblogs_com/cos2004/286060/o_img_g03.jpg" /></p>
+            </div>
+            <div class="sub-con"> <a href="#" title="这是容器4">这是容器4</a>
+                <p><img src="http://images.cnblogs.com/cnblogs_com/cos2004/286060/o_img_g04.jpg" /></p>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./js/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var curLi;
+        $(".nav li a").click(function () { //鼠标点击也可以切换 
+            curLi = $(this);
+            $(".cur-sub-con").removeClass("cur-sub-con");
+            $(".sub-con").eq($(".nav li a").index(curLi)).addClass("cur-sub-con");
+        });
+
+    });
+</script>
+
+</html>

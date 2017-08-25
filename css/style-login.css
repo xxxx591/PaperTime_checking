@@ -1,0 +1,21 @@
+/*------登录界面 */
+.login-d{width: 430px;height: 488px!important;padding: 10px;}
+.login-h3{padding-left: 28px;border: 0;position: relative;}
+.login-h3 span{margin-top: 0;position: absolute;right: 0;top: -5px;}
+.login-h3 a{font-size: 50px;color: #9b9b9b;}
+.login-ipt{width: 330px;height: 25px;padding: 10px;}
+.login-li-ts-p .login-li-ts-i{background: #ff0000;color: #fff;border-radius: 50%;width: 14px;height: 14px;display: inline-block;line-height: 14px;text-align: center;margin-right: 5px;}
+.login-li-ts-p .login-li-s{color: #FF0000;}
+.login-ul li{margin: 25px 28px;}
+.login-li .login-wjmm{float: right;color: #3CC8D6;}
+.login-li .login-wjmm:hover{color: #0D8F9A;}
+.login-li .login-ljzc{float: right;color: #3CC8D6;}
+.login-li .login-ljzc:hover{color: #0D8F9A;}
+.login-bt{background: #0C7FE9;}
+.duox-la{background: #fff url(../xtb.png) no-repeat -247px -1249px;}
+.jzmm-ipt .duox-left{margin-left: 75px;}
+.duox-left input[type=checkbox]:checked + label {background: #fff url(../xtb.png) no-repeat -208px -1249px;}
+.login-link span{height: 40px;line-height: 40px;display: inline-block;}
+.login-link .login-a{
+    height: 36px;width: 36px;border: 1px solid #D3D3D3;border-radius: 50%;display: inline-block;
+}
