@@ -15,9 +15,9 @@
 
 <body style="background:#eee;">
     <!---登录框---->
-    <div class="login-d dl-box" style="display: block">
+    <div class="login-d dl-box" style="display: none">
         <a class="login-qh login-qh-wx" href="javascript:void(0);"></a>
-        <h3 class="login-h3">用户登录 <span class="login-sm"><a href="#">×</a></span></h3>
+        <h3 class="login-h3">用户登录 <span class="login-sm"><a>×</a></span></h3>
         <div class="login-main">
             <ul class="login-ul">
                 <li class="login-li login-li-error">
@@ -31,7 +31,7 @@
                     </div>
                 </li>
                 <li class="login-li" style="height:19px;">
-                        <p class="login-li-ts-p" style="display:none; float:left;"><i class="login-li-ts-i">×</i><span class="login-li-s">请填写正确的手机号</span></p>
+                    <p class="login-li-ts-p" style="display:none; float:left;"><i class="login-li-ts-i">×</i><span class="login-li-s">请填写正确的手机号</span></p>
                     <a class="login-wjmm" href="javascript:void(0);">忘记密码？</a>
 
                 </li>
@@ -60,16 +60,19 @@
                 <li class="login-li">
                     <button type="submit" id="btnMobileLogin" class="bt login-bt">登录</button>
                 </li>
-                <li class="login-li" style="height:19px;">
-                        <a class="login-ljzc" href="javascript:void(0);">立即注册</a>
-                    </li>
-                <li class="login-li">
+                <li class="login-li" style="height:19px;margin:0 28px;">
+                    <a class="login-ljzc" href="javascript:void(0);">立即注册</a>
+                </li>
+                <li class="login-li" style="margin-top:0;">
                     <div class="login-link">
                         <span>快速登录：</span>
                         <a class="login-a login-qq" href="/user/qqLogin.html" target="_blank"></a>
                         <a class="login-a login-wx" href="javascript:void(0);"></a>
                         <a class="login-a login-wb" href="/user/weiBoLogin.html" target="_blank"></a>
                     </div>
+                </li>
+                <li class="login-li" style="height:30px;margin-bottom:0;">
+                    <span class="login-sm">扫码安全登录</span>
                 </li>
 
             </ul>
@@ -95,7 +98,7 @@
         </div>
     </div>
     <!---注册框---->
-    <div class="login-d zc-box" style="display: none">
+    <div class="login-d zc-box" style="display: block">
         <h3 class="login-h3">用户注册<a class="login-h3-a" href="javascript:void(0);">返回登录</a></h3>
         <div class="login-main">
             <ul class="login-ul">
@@ -202,5 +205,7 @@
     </div>
 
 </body>
+<script>
+</script>
 
 </html>
