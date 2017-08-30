@@ -1,13 +1,17 @@
+
+/* bootstrap 样式修改 */
+.modal-content{width: 450px;}
+a:hover{text-decoration: none;}
 /*------登录界面 */
-.dl-box{position: relative;}
+.dl-box{position: absolute;}
 .dl-box .login-qh-wx{position: absolute;height: 64px;width: 64px;bottom: 10px;right: 10px;background: url(../xtb.png) no-repeat -583px -1173px;overflow: hidden;transform: rotate(90deg);}
 .login-h3{font-size: 18px;}
-.login-d{width: 430px;height: 100%;padding: 10px;}
+.login-d{width: 430px;padding: 10px;}
 .login-h3{padding-left: 28px;border: 0;position: relative;}
 .login-h3 span{margin-top: 0;position: absolute;right: 0;top: -5px;}
 .login-h3 a{float: right;color: #0C7FE9;}
 .login-h3 .login-sm a{font-size: 40px;color: #9b9b9b;}
-.login-ipt{width: 330px;height: 25px;padding: 10px;}
+.login-ipt{width: 330px;padding: 10px;}
 .login-li-ts-p .login-li-ts-i{background: #ff0000;color: #fff;border-radius: 50%;width: 14px;height: 14px;display: inline-block;line-height: 14px;text-align: center;margin-right: 5px;}
 .login-li-ts-p .login-li-s{color: #FF0000;}
 .login-ul li{margin: 25px 28px;}
@@ -19,7 +23,6 @@
 .duox-la{background: #fff url(../xtb.png) no-repeat -247px -1249px;}
 .duox-right .fwtk-a{color: #0C7FE9;}
 .duox-left input[type=checkbox]:checked + label {background: #fff url(../xtb.png) no-repeat -208px -1249px;}
-.duox-d .duox-left{margin-left: 30%;}
 .jzmm-ipt .duox-left{margin-left: 75px;}
 .login-link span{height: 40px;line-height: 40px;display: inline-block;}
 .login-link .login-a{height: 36px;width: 36px;border-radius: 50%;display: inline-block;vertical-align: middle;text-align: center}

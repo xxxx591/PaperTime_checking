@@ -5,10 +5,13 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="X-UA-Compatible" content="chrome=1" />
     <title>提交论文</title>
+    <link rel="stylesheet" href="./bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/swiper-3.4.2.min.css">
     <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="./css/style-login.css">
     <script typr="text/javascript" src="./js/swiper-3.4.2.min.js"></script>
     <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="./bootstrap/dist/js/bootstrap.min.js"></script>
 </head>
 
 <body style="background: #f5f5f5;">
@@ -17,7 +20,7 @@
         <div class="header navbar navbar-redesign">
             <div class="head">
                 <a class="logo"><img src="./logo2.png"  title="" alt=""></a>
-                <div class="nav navbar-list-cc">
+                <div class="nav navbar-list-cc ">
                     <ul>
                         <li>
                             <a href="">文献搜索</a>
@@ -64,7 +67,7 @@
                 <!-- 未登录状态 -->
                 <div class="navbar-status">
                     <a href="">注册</a>
-                    <a href="">登录</a>
+                    <a data-toggle="modal" data-target="#myModal">登录</a>
                 </div>
                 <!--已登录时状态 -->
                 <!-- <div class="dlcg dlcg-cc">
@@ -79,14 +82,13 @@
         </div>
 
         <section class="content centent-cc centent-redesign">
-
             <div class="lwcc-main">
                 <!-- 提交论文左 -->
                 <div class="lwcc-left">
                     <!-----提交论文之前 -->
                     <div class="ztwb-d" style="display: block;">
                         <!--左侧tab栏  -->
-                        <div class="tab-box ">
+                        <div class="tab-box">
                             <ul>
                                 <li class="active">粘贴文本提交</li>
                                 <li>上传文本提交</li>
@@ -95,98 +97,132 @@
                                 <li>管理自建库</li>
                             </ul>
                         </div>
-                        <div class="tab-right-content tab-right-content-active">
-                            <div class="anment-left">
-                                <!-- 自建库按钮 -->
-                                <div class="copy-top">
-                                    <label>
+
+                        <div class="tab-right-box">
+                            <!-- 粘贴文本提交页面 -->
+                            <div class="tab-right-content tab-right-active">
+                                <div class="anment-left">
+                                    <!-- 自建库按钮 -->
+                                    <div class="copy-top">
+                                        <label>
                                     <div class="checkboxFour dx-zfx">
                                         <input type="checkbox" value="1" id="checkboxFourInput" name="" />
                                         <label for="checkboxFourInput"></label>
+                                    </div>
+                                    <span class="copy-s">自建库<i style="color:#FF0000">（选中后对比范围包括自建库）</i></span>
+                                    </label>
                                 </div>
-                                <span class="copy-s">自建库<i style="color:#FF0000">（选中后对比范围包括自建库）</i></span>
-                                </label>
-                            </div>
-                            <!--论文标题 -->
-                            <div class="copy-la-d copy-la-ds">
-                                <i class="copy-t">论文标题</i>
-                                <label class="copy-la">
-                                    <input class="copy-ipt" type="text" placeholder="限100字内..." value="">
-                                </label>
-                                <span>论文标题不能为空</span>
-                            </div>
+                                <!--论文标题 -->
+                                <div class="copy-la-d copy-la-ds">
+                                    <i class="copy-t">论文标题</i>
+                                    <label class="copy-la">
+                                        <input class="copy-ipt" type="text" placeholder="限100字内..." value="">
+                                    </label>
+                                    <span>论文标题不能为空</span>
+                                </div>
 
-                            <!--论文作者 -->
-                            <div class="copy-la-d ">
-                                <i class="copy-t">论文作者</i>
-                                <label class="copy-la">
-                                    <input class="copy-ipt" type="text" placeholder="限50字内..." value="">
-                                </label>
-                                <span>论文作者不能为空</span>
-                            </div>
-                            <div class="copy-la-w">
-                                <p>论文长度(内容的长度不超过30万字,系统按照Word字数统计里面的字符数(不计空格)计算)</p>
-                                <i>(输入框内还未添加内容)</i>
+                                <!--论文作者 -->
+                                <div class="copy-la-d ">
+                                    <i class="copy-t">论文作者</i>
+                                    <label class="copy-la">
+                                        <input class="copy-ipt" type="text" placeholder="限50字内..." value="">
+                                    </label>
+                                    <span>论文作者不能为空</span>
+                                </div>
+                                <div class="copy-la-w">
+                                    <p>论文长度(内容的长度不超过30万字,系统按照Word字数统计里面的字符数(不计空格)计算)</p>
+                                    <i style="display:none;">（输入框内还未添加内容）</i>
+                                </div>
+
+                                <div class="anment-left" style="float:left;">
+                                    <textarea class="copy-tex" role="" rows="" placeholder=""></textarea>
+                                    <p class="copy-t"><strong>您当前已经输入 <i>0</i> 字， 需要消耗余额 <i>0</i> 积分， 需要额外支付 <i>0</i> 积分，约 <i>0</i> 元</strong></p>
+                                    <div class="copy-bt">
+                                        <div class="copy-bt-bd">
+                                            <button id="submit_check_task" class="bt ztwb-bt" type="submit">提交检测</button>
+                                            <button class="bt ztwb-bt" type="submit" onclick="javascript:gbtk();">领取免费字数</button>
+                                        </div>
+                                        <div class="loading-xz"><em class="loading"></em><i>正在提交...</i></div>
+                                    </div>
+                                    <div class="lwcc-left-bt" style="display: block;width: 100%;">
+                                        <p class="lwcc-left-bt-t"><span>温馨提示</span></p>
+                                        <p>
+                                            系统支持所有语种的论文检测，如中（简/繁）、英、日、法、德文等！<br/> 系统在检测时会分析论文的前后文关系，所以请您提交论文的全部内容，如果是非全文的检测将不能保证检测的准确性。
+                                            <br/> 被系统自动识别出来的非正文部分（如目录，标题，公式，图表，参考文献等）不参与检测，检测字数一般略小于论文字数。
+                                            <br/>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="clear"></div>
-                        <div class="anment-left" style="float:right;">
-                            <textarea class="copy-tex" role="" rows="" placeholder=""></textarea>
-                            <p class="copy-t"><strong>您当前已经输入 <i>0</i> 字， 需要消耗余额 <i>0</i> 积分， 需要额外支付 <i>0</i> 积分，约 <i>0</i> 元</strong></p>
-                            <div class="copy-bt">
-                                <div class="copy-bt-bd">
-                                    <button class="bt ztwb-bt" type="submit">提交检测</button>
-                                    <button class="bt ztwb-bt" type="submit" onclick="javascript:gbtk();">领取免费字数</button>
+                        <!-- 上传文本提交页面 -->
+                        <div class="tab-right-content">
+                            <div class="scwb-d">
+                                <p class="scwb-d-p"><span>提醒：系统仅支持txt、doc、docx格式文档</span></p>
+                                <div class="scwb-d-wd scwb-d-txt">
+                                    <div class="scwb-d-wd-left">
+                                    </div>
+                                    <div class="scwb-d-wd-right">
+                                        <p class="scwb-p1"><i></i><i class="scwb-sc">删除</i></p>
+                                        <p class="scwb-p2"><i></i><span>上传完成</span></p>
+                                    </div>
                                 </div>
-                                <div class="loading-xz"><em class="loading"></em><i>正在提交...</i></div>
-                            </div>
-                            <div class="lwcc-left-bt" style="display: block;width: 100%;">
-                                <p class="lwcc-left-bt-t"><span>温馨提示</span></p>
-                                <p>
-                                    系统支持所有语种的论文检测，如中（简/繁）、英、日、法、德文等！<br/> 系统在检测时会分析论文的前后文关系，所以请您提交论文的全部内容，如果是非全文的检测将不能保证检测的准确性。
-                                    <br/> 被系统自动识别出来的非正文部分（如目录，标题，公式，图表，参考文献等）不参与检测，检测字数一般略小于论文字数。
-                                    <br/>
+                                <div id="uploadFileQueue"></div>
+                                <p class="scwb-d-ipt">
+                                    <a class="drbt"><input type="file" id="uploadPaper" name="uploadPaper" onchange="uploadPaperFile(this);">选择文件</a>
+                                </p>
+                                <p class="copy-bt">
+                                    <button class="bt scwb-bt" type="submit">确定上传</button>
                                 </p>
                             </div>
+                            <div>
+                                <input type="hidden" id="fileId" name="" value="">
+                                <input type="hidden" id="taskType" name="" value="">
+                                <input type="hidden" id="isChecked" value="0">
+                                <input type="hidden" id="pageName" value="upload_file" />
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        <!-- 查看报告页面 -->
+                        <div class="tab-right-content">
 
-            </div>
-            <div class="right-ab">
-                <!-- 暂时隐藏的右侧广告位 -->
-                <!-- 轮播图部分 -->
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
-
-                        </div>
-                        <div class="swiper-slide last-banner"></div>
-                    </div>
-                    <div class="swiper-pagination"></div>
-                </div>
-                <div class="lwcc-right">
-
-                    <div class="copy-d">
-                        <p class="copy-d-t">数据库范围</p>
-                        <p class="copy-d-bd">学术期刊，学位论文，会议论文，互联网，英文数据库（涵盖期刊，硕博，会议的英文数据）。</p>
-                    </div>
-                    <div class="copy-d">
-                        <p class="copy-d-t">检测范围</p>
-                        <p class="copy-d-bd">涵盖所有中英文类别，包括哲学、经济学、管理学、法学、社会科学、教育学、文学、艺术学、历史学、理学、工学、农学、医学、政治学、军事学等。</p>
-                    </div>
-                    <div class="copy-d">
-                        <p class="copy-d-t">郑重声明</p>
-                        <div class="copy-d-bd">
-                            <p class="copy-d-bd">Papertime论文时间检测系统遵守相关保密规定，绝不收录和泄露您送检文档的任何信息，请放心检测！</p>
                         </div>
                     </div>
                 </div>
             </div>
-
-
     </div>
+    <div class="right-ab">
+        <!-- 暂时隐藏的右侧广告位 -->
+        <!-- 轮播图部分 -->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
+
+                </div>
+                <div class="swiper-slide last-banner"></div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <div class="lwcc-right">
+
+            <div class="copy-d">
+                <p class="copy-d-t">数据库范围</p>
+                <p class="copy-d-bd">学术期刊，学位论文，会议论文，互联网，英文数据库（涵盖期刊，硕博，会议的英文数据）。</p>
+            </div>
+            <div class="copy-d">
+                <p class="copy-d-t">检测范围</p>
+                <p class="copy-d-bd">涵盖所有中英文类别，包括哲学、经济学、管理学、法学、社会科学、教育学、文学、艺术学、历史学、理学、工学、农学、医学、政治学、军事学等。</p>
+            </div>
+            <div class="copy-d">
+                <p class="copy-d-t">郑重声明</p>
+                <div class="copy-d-bd">
+                    <p class="copy-d-bd">Papertime论文时间检测系统遵守相关保密规定，绝不收录和泄露您送检文档的任何信息，请放心检测！</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     </section>
+    </div>
     <div class="footer">
         <p>
             <a href="">关于我们</a><em>|</em>
@@ -196,10 +232,216 @@
         </p>
         <p class="foot-btm foot-btm-cc">Copyright @ 2002-2016 paperfree.cn.</p>
     </div>
+
+
+    <!-- 用户登录界面 -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <!---登录框---->
+                <div class="login-d dl-box" style="display: block">
+                    <a class="login-qh login-qh-wx" href="javascript:void(0);"></a>
+                    <h3 class="login-h3">用户登录 <span class="login-sm"><a>×</a></span></h3>
+                    <div class="login-main">
+                        <ul class="login-ul">
+                            <li class="login-li login-li-error">
+                                <div class="login-ipt-d">
+                                    <input type="text" id="mobile" placeholder="请输入你的手机号" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li">
+                                <div class="login-ipt-d">
+                                    <input type="password" id="password" placeholder="请输入密码" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li" style="height:19px;">
+                                <p class="login-li-ts-p" style="display:none; float:left;"><i class="login-li-ts-i">×</i><span class="login-li-s">请填写正确的手机号</span></p>
+                                <a class="login-wjmm" href="javascript:void(0);">忘记密码？</a>
+
+                            </li>
+                            <li class="login-li login-li-ts">
+                                <!---控制显示隐藏（提示是否输入错误）-->
+                            </li>
+                            <li class="login-li">
+                                <div class="login-bts">
+                                    <div class="duox-d fwtk-ipt">
+                                        <div class="duox-left">
+                                            <input class="duox-ipt" id="duox01" name="duox01" type="checkbox" checked="checked">
+                                            <label class="duox-la" for="duox01"></label>
+                                        </div>
+                                        <div class="duox-right">同意并遵守<a class="fwtk-a" href="javascript:void(0);">《服务条款》</a>
+                                        </div>
+                                    </div>
+                                    <div class="duox-d jzmm-ipt">
+                                        <div class="duox-left">
+                                            <input class="duox-ipt" id="duox02" name="duox02" type="checkbox" checked="checked">
+                                            <label class="duox-la" for="duox02"></label>
+                                        </div>
+                                        <div class="duox-right">记住密码</div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="login-li">
+                                <button type="submit" id="btnMobileLogin" class="bt login-bt">登录</button>
+                            </li>
+                            <li class="login-li" style="height:19px;margin:0 28px;">
+                                <a class="login-ljzc" href="javascript:void(0);">立即注册</a>
+                            </li>
+                            <li class="login-li" style="margin-top:0;">
+                                <div class="login-link">
+                                    <span>快速登录：</span>
+                                    <a class="login-a login-qq" href="/user/qqLogin.html" target="_blank"></a>
+                                    <a class="login-a login-wx" href="javascript:void(0);"></a>
+                                    <a class="login-a login-wb" href="/user/weiBoLogin.html" target="_blank"></a>
+                                </div>
+                            </li>
+                            <li class="login-li" style="height:30px;margin-bottom:0;">
+                                <span class="login-sm">扫码安全登录</span>
+                            </li>
+
+                        </ul>
+                    </div>
+                </div>
+                <!---扫码框---->
+                <div class="login-d sm-box" style="display: none">
+                    <a class="login-qh login-qh-pc" href="javascript:void(0);"></a>
+                    <h3 class="login-h3">用户登录 <span class="login-sm login-cut">密码登录在这里</span></h3>
+                    <div class="login-main">
+                        <div class="login-ewm-d" id="weChatLoginQR">
+                            正在生成二维码...
+                        </div>
+                        <div class="main impowerBox">
+                            <div class="iframebox">
+                                <iframe src="https://open.weixin.qq.com/connect/qrconnect?appid=wx0b8e49e15906a48e&scope=snsapi_login&redirect_uri=http%3A%2F%2Fwww.papertime.cc%2Fuser%2FweChatLogin.html&state=0&login_type=jssdk&self_redirect=default&style=black"
+                                    frameborder="0" scrolling="no" width="400px" height="400px"></iframe>
+                            </div>
+                        </div>
+                        <div class="login-ewm-tk">
+                            <div class="duox-d fwtk-ipt" style="height:20px;">
+                                <div class="duox-left">
+                                    <input class="duox-ipt" id="duox03" name="duox03" type="checkbox" checked="checked">
+                                    <label class="duox-la" for="duox03"></label>
+                                </div>
+                                <div class="duox-right">同意并遵守<a class="fwtk-a" href="javascript:void(0);">《服务条款》</a></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!---注册框---->
+                <div class="login-d zc-box" style="display: none">
+                    <h3 class="login-h3">用户注册<a class="login-h3-a" href="javascript:void(0);">返回登录</a></h3>
+                    <div class="login-main">
+                        <ul class="login-ul">
+                            <li class="login-li">
+                                <div class="login-link">
+                                    <span>快速登录：</span>
+                                    <a class="login-a login-qq" href="/user/qqLogin.html" target="_blank"></a>
+                                    <a class="login-a login-wx" href="javascript:void(0);"></a>
+                                    <a class="login-a login-wb" href="/user/weiBoLogin.html" target="_blank"></a>
+                                </div>
+                            </li>
+                            <li class="login-li">
+                                <div class="login-ipt-d">
+                                    <input type="text" id="regMobile" placeholder="请输入你的手机号" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li">
+                                <div class="login-ipt-d">
+                                    <input type="password" id="regPassword" placeholder="请输入密码" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li">
+                                <div class="login-ipt-d">
+                                    <input type="password" id="regPassword2" placeholder="请确认密码" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li">
+                                <div class="login-ipt-d login-ipt-ds">
+                                    <div class="login-yzm">
+                                        <input type="text" id="smsCode" placeholder="请输入手机验证码" title="" class="login-ipt">
+                                    </div>
+                                    <div class="login-yzbt">
+                                        <input class="inp-yzm" id="sendRegisterSmsCode" value="点击获取验证码" type="button">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="login-li login-li-ts">
+                                <!---控制显示隐藏（提示是否输入错误）-->
+                                <p class="login-li-ts-p"><i class="login-li-ts-i">×</i><span class="login-li-s">请填写正确的手机号</span></p>
+                            </li>
+                            <li class="login-li">
+                                <div class="login-bts">
+                                    <div class="duox-d fwtk-ipt">
+                                        <div class="duox-left">
+                                            <input class="duox-ipt" id="duox04" name="duox04" type="checkbox" checked="checked">
+                                            <label class="duox-la" for="duox04"></label>
+                                        </div>
+                                        <div class="duox-right">同意并遵守<a class="fwtk-a" href="javascript:void(0);">《服务条款》</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="login-li">
+                                <button type="submit" id="btnMobileRegister" class="bt login-bt">注册</button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!---找回密码---->
+                <div class="login-d zhmm-box" style="display: none">
+                    <h3 class="login-h3">找回密码<a class="login-h3-a" href="javascript:void(0);">返回登录</a></h3>
+                    <div class="login-main">
+                        <ul class="login-ul">
+                            <li class="login-li zhmm-box-zh login-li-error">
+                                <div class="login-ipt-d">
+                                    <input type="text" id="userName" placeholder="请输入你的手机号" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li zhmm-box-li">
+                                <div class="login-ipt-d login-ipt-ds">
+                                    <div class="login-yzm">
+                                        <input type="text" id="forgetPwdSmsCode" placeholder="请输入手机验证码" title="" class="login-ipt">
+                                    </div>
+                                    <div class="login-yzbt">
+                                        <input class="inp-yzm" id="sendForgetPwdSmsCode" value="点击获取验证码" type="button">
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="login-li zhmm-box-mm">
+                                <div class="login-ipt-d">
+                                    <input type="password" id="newPassword" placeholder="请输入密码" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li zhmm-box-mm">
+                                <div class="login-ipt-d">
+                                    <input type="password" id="newPassword2" placeholder="请确认密码" title="" class="login-ipt">
+                                </div>
+                            </li>
+                            <li class="login-li login-li-ts">
+                                <!---控制显示隐藏（提示是否输入错误）-->
+                                <p class="login-li-ts-p" style="display: none"><i class="login-li-ts-i">×</i><span class="login-li-s">请填写正确的手机号</span></p>
+                            </li>
+                            <li class="login-li">
+                                <button type="submit" class="bt login-bt zhmm-box-bt01">验证</button>
+                            </li>
+                        </ul>
+                        <!--修改密码成功-->
+                        <div class="cg-d">
+                            <span></span>
+                            <p>您已成功重置密码</p>
+                            <p>页面将在<i class="cg-d-i">3</i>秒后跳转</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
+
     <script>
         // -----------轮播图JS开始------------------
-        $(function () {
+        (function () {
             var mySwiper = new Swiper('.swiper-container', {
                 direction: 'horizontal',
                 loop: true, //是否开启自动轮播
@@ -210,6 +452,24 @@
             })
         });
         // -------------轮播图JS结束
+
+        // --------- tab 页面切换 --------
+        $(function () {
+            var self;
+            $('.tab-box ul li').on('click', function () {
+                self = $(this);
+                self.addClass('active').siblings('li').removeClass('active')
+                $('.tab-right-active').removeClass('tab-right-active');
+                $('.tab-right-content').eq($('.tab-box ul li').index(self)).addClass('tab-right-active')
+                if ($('.tab-box ul li').index(self) == 2) {
+                    $('.right-ab').css('display','none');
+                    $('.lwcc-left').css('width','1366px');
+                }else{
+                    $('.right-ab').css('display','block');
+                    $('.lwcc-left').css('width','926px');
+                }
+            })
+        })
 
         $(function () {
             //当多行输入框'copy-ts'中为空的时候提示

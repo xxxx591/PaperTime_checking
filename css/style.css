@@ -95,7 +95,7 @@ section{ padding:0; margin: 0; position: relative; z-index: 1; background: #FFF;
 .lwcc-left{ box-sizing: border-box; padding:30px 20px;background: #FFF;min-height:740px; margin-right:440px;border: none; overflow: inherit;position: relative;}
 .lwcc-right{ box-sizing: border-box; padding:20px; background:#fff; width: 370px;;}
 .lwcc-main{  margin: 0 auto; position: relative;max-width: 1366px;margin-top: 30px;}
-.right-ab{position: absolute; right: 0; top: 0px; width: 370px; padding: 0 20px;}
+.right-ab{position: absolute; right: 128px; top: 30px; width: 370px; padding: 0 20px;}
 .right-ab .lwcc-right-redesign{margin-left: 0;}
 .copy-t{  font-size: 14px; color: #333; margin-bottom: 10px;}
 .copy-t i{ color: #cc3434; margin: 0 5px; }
@@ -186,7 +186,7 @@ section{ padding:0; margin: 0; position: relative; z-index: 1; background: #FFF;
 
 /**********new工具页面**************/
 .navbar-redesign{ background: #36485E; height:60px;position: fixed;top: 0;z-index: 9999;}
-.navbar-redesign .navbar-list-cc ul{min-height: 42px;margin-top:18px; display: inline-block;float: left;}
+.navbar-redesign .navbar-list-cc ul{min-height: 42px;margin-top:17px; display: inline-block;float: left;}
 .navbar-redesign .navbar-list-cc li{ background: #213B5B; height: 42px; margin-left:10px; margin-right: 0; position: relative; max-width: 100px;}
 .navbar-redesign .navbar-list-cc .navbar-list-cc-li{background: #f5f5f5;}
 .navbar-redesign .navbar-list-cc .navbar-list-cc-li a{color: #333;}
@@ -864,11 +864,11 @@ body .layui-layer-title{background:#2491d3; color:#fff; border: none;}
 .anment-btn:hover{filter:alpha(opacity=80); -moz-opacity:0.8;-khtml-opacity:0.8;opacity:0.8;}
 .anment-left{width: 60%;float: right;}
 .anment-right{margin-left: 40%; overflow: hidden;}
-.anment-left .copy-la{width: 45%;}
+.anment-left .copy-la{width: 45%;font-weight: 500;}
 .anment-left .copy-ipt{width: 100%; box-sizing: border-box;}
 @media (max-width:1630px) {
     .anment{position: inherit;width: 100%;}
-    .anment-left{width: 80%;}
+    .anment-left{width: 100%;}
 }
 
 .nav-img{margin: 20px 50px -20px;}
@@ -939,10 +939,15 @@ table.dgzj-table thead td{background: #6699cc; color: #fff;}
 .tab-box{float: left;width: 20%;position: absolute;left: -20px;}
 .tab-box li{width: 104px;height: 46px;border: 1px solid #F1F1F1;line-height: 48px;background: #FAFAFA;color: #999;margin-bottom: 40px;text-indent: 10px;cursor: pointer;}
 .tab-box .active{background: #213B5B;color: #fff;}
-.tab-right-content{display: none;}
-.tab-right-content-active{display: block;}
-
-
+.tab-right-content{display: none;min-height: 740px;width: 783px;float: right;padding-left: 50px;}
+.tab-right-active{display: block;}
+/* ----------上传文本提交页面样式----------- */
+.tab-right-content .scwb-d-wd-left{float: left;width: 42px;height: 46px;background: url(../xtb.png) no-repeat -38px -535px;}
+.scwb-d-wd-right p{margin: 0;}
+.scwb-d-ipt .drbt{position: relative;height: 37px;display: inline-block;padding: 0 10px;border: 1px solid #CCCCCC;border-radius: 35px;width: 78px;line-height: 35px;color: #666666;background: #FAFAFA;}
+.scwb-d-ipt #uploadPaper{position: absolute;border: 0;outline: none;display: block;top: 0;left: 0;width: 100%;height: 100%;border-radius: 35%;opacity: 0;}
+.scwb-bt{background: #00C7FE;}
+.scwb-bt:hover{background: #2959C0;}
 
 
 
