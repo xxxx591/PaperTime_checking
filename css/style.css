@@ -362,7 +362,7 @@ table.table thead td{ background: #6699cc;padding:10px 10px; color: #fff;}
 table.none{border-collapse: collapse;border: none;width:100%;}
 table.none td{border: none;padding:3px;}
 table.none thead{background:#F5F5F5;}
-.td-cz{ display: inline-block; vertical-align: middle; width: 24px; height: 24px; background: url("../images/xtb.png") no-repeat; margin: 0 20px;}
+.td-cz{ display: inline-block; vertical-align: middle; height: 24px; }
 .td-s5{ background-position: -175px -122px;}
 .td-s6{background-position: -213px -122px;}
 .td-s7{background-position: -256px -122px;}
@@ -387,7 +387,7 @@ table.none thead{background:#F5F5F5;}
 .ckbg-table tr td span{ line-height: 24px;}
 .ckbg-table tr td{border: none;}
 .content .ckbg-table tbody tr td{background: none;}
-.content .ckbg-table tbody tr:nth-of-type(2n+2){background: #fafafa;}
+.content .ckbg-table tbody tr:nth-of-type(2n+2){background: #f5f5f5;}
 .content .ckbg-table tbody tr:nth-of-type(2n+2) td{background:none;}
 .content .ckbg-table tbody tr:hover{background: #edf4fb;}
 .content .ckbg-table .td-s2{ color: #6699cc;}
@@ -948,12 +948,22 @@ table.dgzj-table thead td{background: #6699cc; color: #fff;}
 .scwb-d-ipt #uploadPaper{position: absolute;border: 0;outline: none;display: block;top: 0;left: 0;width: 100%;height: 100%;border-radius: 35%;opacity: 0;}
 .scwb-bt{background: #00C7FE;}
 .scwb-bt:hover{background: #2959C0;}
-
-
-
-
-
-
+/* ---------查看报告页面样式---------- */
+.tab-right-active .ckbg-main{margin: 0;padding: 0;}
+.tab-right-active .page-d a{height: 36px;}
+.tab-right-active .wk-d span{color: #0c7fe9;}
+.content .ckbg-table .td-s2{color: #333;}
+.ckbg-table thead td a{color: #666;}
+table.table thead td{background: #e6e6e6;color: #666;}
+.paragraph td .td-cz{color: #333;}
+.paragraph tr:hover{background: #f5f5f5;}
+/* ------新建自建库页面样式 */
+.lwcc-tjh-p i{background: url(../xtb.png) no-repeat -185px -1337px;}
+.lwcc-tjh-a{width: 140px;height: 36px;border-radius: 0;background: #6699CC;}
+.lwcc-tjh-as{background: #0C7FE9;}
+.lwcc-tjh-a:hover{background: #0C7FE9;color: #fff;}
+.lwcc-tjh-bt{display: inline-block;margin: 0 10px;}
+.qh-nr .lwcc-tjh{text-align: center;}
 
 
 
