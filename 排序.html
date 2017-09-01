@@ -1,32 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
- <meta charset="UTF-8">
- <title>快速排序</title>
+    <meta charset="UTF-8">
+    <title>快速排序</title>
 </head>
+
 <body>
-<script>
- var ary=[21,8,4,32,5];
- function insertSort(ary){
- var left=ary.splice(0,1);
- for(var i=0; i<ary.length; i++){
-  var cur=ary[i];
-  for(var j=left.length-1; j>=0;){
-  var nex=left[j];
-  if(cur<nex){
-   j--;
-   if(j===-1){
-   left.unshift(cur);
-   }
-  }else{
-   left.splice(j+1,0,cur);
-   break;
-  }
-  }
- }
- return left;
- }
- document.write(insertSort(ary));
-</script>
+    <script>
+        var date = new Date();
+        console.log(date.getFullYear())
+    </script>
 </body>
+
 </html>
