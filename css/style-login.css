@@ -35,8 +35,8 @@ a:hover{text-decoration: none;}
 .login-li .login-sm{    float: right;color: #333;font-size: 14px;width: 140px;text-align: center;background: url(../xtb.png) no-repeat -36px -1249px;margin-right: 28px;line-height: 30px;height: 30px;}
 /* ----注册界面 */
 .sm-box{position: relative;}
-.sm-box .login-qh-pc{display: block;width: 64px;height: 64px;overflow: hidden;position: absolute;right: 10px;top: 10px;background: url(../xtb.png) no-repeat -583px -1265px;}
-.login-h3 .login-cut{background: url(../xtb.png) no-repeat -36px -1246px;width: 120px;padding: 0 10px;text-align: center;margin: 15px 50px 0px 0;}
-.login-ipt-ds{height: 36px;}
+.sm-box .login-qh-pc{display: block;width: 64px;height: 64px;overflow: hidden;position: absolute;right: 10px;top: 10px;background: url(../xtb.png) no-repeat -583px -1265px;z-index: 999;}
+.login-h3 .login-cut{background: url(../xtb.png) no-repeat -36px -1246px;width: 140px;padding: 0 10px;text-align: center;margin: 15px 50px 0px 0;}
+.login-ipt-ds{height: 41px;}
 .login-ipt-ds .login-yzbt{float: right;height: 47px;padding: 1px;}
-.login-ipt-ds .login-yzbt .inp-yzm{border: 0; height: 46px;padding: 0 10px;color: #fff;background: #0C7FE9;cursor: pointer;}
+.login-ipt-ds .login-yzbt .inp-yzm{border: 0; height: 40px;padding: 0 10px;color: #fff;background: #0C7FE9;cursor: pointer;margin-right: 22px;}
