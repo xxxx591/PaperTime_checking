@@ -355,7 +355,7 @@ section{ padding:0; margin: 0; position: relative; z-index: 1; background: #FFF;
 .permissions-x:hover{ color: #333;}
 
 /*****************查看报告**********************/
-table.table{border-collapse: collapse;border: none;width:100%; margin-bottom: 10px; position: relative;z-index: 1;}
+table.table{border-collapse: collapse;border: none;width:100%; margin-bottom: 10px; position: relative;z-index: 1;height: calc(100% - 56px);}
 table.table td{padding:11px 10px; background: #FFF;}
 table.table thead{background:#F5F5F5; position: relative; z-index: 99;}
 table.table thead td{ background: #6699cc;padding:10px 10px; color: #fff;}
@@ -584,7 +584,7 @@ table.zhgl-table thead tr td{background: #6699cc;color: #fff; text-align: left;}
 .jbxx-ul li{margin-bottom: 10px; line-height: 25px;}
 .jbxx-left{ float: left; text-align: right; width: 225px;}
 .jbxx-right{ margin-left: 225px;}
-.jbxx-em{ display: inline-block;  vertical-align: middle; margin-right:15px; }
+.jbxx-em{ display: inline-block; margin-right:15px; }
 .members{ display: inline-block; vertical-align: middle; margin-right:5px; width: 25px; height: 25px; background: url("../images/xtb.png") no-repeat -292px -542px;}
 .members.v1{background-position:-553px -20px;}
 .members.v2{background-position:-595px -24px;}
@@ -592,7 +592,7 @@ table.zhgl-table thead tr td{background: #6699cc;color: #fff; text-align: left;}
 .jbxx-cz{ text-align: center; margin:20px 0 15px 285px; display: block; width: 62px; color: #ff3434; font-size: 16px;}
 .jbxx-bt{ width: 120px; margin-left: 225px; height: 40px;}
 .jbxx-bt{ line-height: 40px;}
-.jbxx-bt:hover{ background:#2959c0;}
+.jbxx-bt:hover{ background:#2959c0;color: #fff;}
 .jbxx-bts{ background: #999;pointer-events: none;}
 .jbxx-bts:hover{ background: #999;}
 button.jbxx-bt{line-height: normal;}
@@ -967,6 +967,27 @@ table.table thead td{background: #e6e6e6;color: #666;}
 .zjk-left-bt-t{float: left;margin: 18px 0;}
 .zjk-page{width: 40%;float: right;margin: 0;}
 
+
+/* -----个人中心页面---------- */
+.grzx-jbxx-d .refresh{color: #0C7FE9;}
+.grzx-jbxx-d .jbxx-bt{background: #0C7FE9;}
+.grzx-jbxx-d .jbxx-bt:hover{background: #2959c0;}
+.grzx-jbxx-d .jbxx-logo{text-align: center;margin: 20px 0 15px 285px;display: block;width: 50px;height: 50px;background: url(../xtb.png)-396px -1009px;}
+.grzx-jbxx-d .jbxx-cz{color:#363636;}
+.grzx-jbxx-d .jbxx-bt{margin-left: 255px;}
+/* -----修改密码页面----- */
+.xgmm-d .xgmm-d-p{float: left;}
+.xgmm-d .xgmm-d-ipt{width: 60%;}
+.xgmm-d .xgmm-d-ul li{clear: both;}
+.sc-ts-p1 i{background: url(../xtb.png)no-repeat -183px -1333px;}
+.sc-ts-p1 .sc-ts-is{background-position:-185px -1336px; }
+.xgmm-d-ul li{margin-bottom: 25px;}
+/* ----充值卡页面 */
+.recharge-card thead{background: #D4E2EF!important;}
+.recharge-card thead tr th{font-weight: 500;border-bottom: 0;text-align: center;}
+.recharge-card tr td{border: 0;}
+.recharge-card tbody tr:nth-of-type(odd){background: #F5F5F5;}
+.recharge-card tbody tr:hover{background: #F5F5F5;}
 
 
 

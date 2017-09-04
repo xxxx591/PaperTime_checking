@@ -17,14 +17,10 @@ $(function () {
         self.addClass('active').siblings('li').removeClass('active')
         $('.tab-right-active').removeClass('tab-right-active');
         $('.tab-right-content').eq($('.tab-box ul li').index(self)).addClass('tab-right-active')
-        if ($('.tab-box ul li').index(self) == 2||$('.tab-box ul li').index(self) == 4) {
+        if ($('.tab-box ul li').index(self) == 4) {
             $('.right-ab').css('display','none');
-            $('.lwcc-left').css('width','1366px');
-            $('.tab-right-content').css('width','1226px');
         }else{
             $('.right-ab').css('display','block');
-            $('.lwcc-left').css('width','926px');
-            $('.tab-right-content').css('width','783px');
         }
     })
 })

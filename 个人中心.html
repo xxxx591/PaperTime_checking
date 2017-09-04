@@ -1,0 +1,395 @@
+﻿<!doctype html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <title>提交论文</title>
+    <link rel="stylesheet" href="./bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/swiper-3.4.2.min.css">
+    <link rel="stylesheet" type="text/css" href="css/new-style.css" />
+    <link rel="stylesheet" href="./css/style-login.css">
+    <script typr="text/javascript" src="./js/swiper-3.4.2.min.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script src="./bootstrap/dist/js/bootstrap.min.js"></script>
+
+</head>
+
+<body style="background: #f5f5f5;">
+    <div class="wrapper">
+        <!-- header 头部 -->
+        <div class="header navbar navbar-redesign">
+            <div class="head">
+                <a class="logo"><img src="./logo2.png"  title="" alt=""></a>
+                <div class="nav navbar-list-cc ">
+                    <ul>
+                        <li>
+                            <a href="">文献搜索</a>
+                        </li>
+                        <li>
+                            <a href="提交论文.html">论文查重</a>
+                        </li>
+                        <li>
+                            <a href="">查看报告</a>
+                        </li>
+                        <li class="new-log-box">
+                            <a href="">在线改重</a>
+                            <div class="new-log">
+                                <p>new</p>
+                            </div>
+                        </li>
+                        <li class="navbar-list-cc-li">
+                            <a href="">个人中心 </a>
+                        </li>
+                        <li>
+                            <a href="">充值中心</a>
+                        </li>
+                        <li>
+                            <a href="">免费检测</a>
+                        </li>
+                        <li>
+                            <a href="">推广活动</a>
+                        </li>
+                        <li>
+                            <a href="">免费使用</a>
+                        </li>
+                        <li>
+                            <a href="">关于我们</a>
+                            <ol class="navbar-list-ol">
+                                <li><a href="">首页</a></li>
+                                <li><a href="">真伪查询</a></li>
+                                <li><a href="">新闻资讯</a></li>
+                                <li><a href="">使用帮助</a></li>
+                                <li><a href="">诚招代理</a></li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 未登录状态 -->
+                <div class="navbar-status">
+                    <a href="">注册</a>
+                    <a data-toggle="modal" data-target="#myModal">登录</a>
+                </div>
+                <!--已登录时状态 -->
+                <!-- <div class="dlcg dlcg-cc">
+                    <span class="dlcg-tx"><img src="./images/tx.png" alt="" title=""></span>
+                    <div class="dlcg-tx-d yh-d" style="display: block">
+                        <a href="" class="dlcg-yhm"><i></i><span>莫小贝</span></a>
+                        <a href="" class="dlcg-zhsz"><i></i><span>余额10000000字</span><em class="sx-em"></em></a>
+                        <a href="" class="dlcg-zxdl"><i></i><span>退出登录</span></a>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+        <section class="content centent-cc centent-redesign">
+            <div class="lwcc-main">
+                <!-- 提交论文左 -->
+                <div class="lwcc-left">
+                    <!-----提交论文之前 -->
+                    <div class="ztwb-d" style="display: block;">
+                        <!--左侧tab栏  -->
+                        <div class="tab-box">
+                            <ul>
+                                <li class="active">基本信息</li>
+                                <li>充值记录</li>
+                                <li>修改密码</li>
+                                <li>我的充值卡</li>
+                                <li>我要留言</li>
+                            </ul>
+                        </div>
+
+                        <div class="tab-right-box">
+                            <!-- 基本信息页面 -->
+                            <div class="tab-right-content tab-right-active">
+                                <div class="grzx-jbxx-d">
+                                    <ul class="jbxx-ul">
+                                        <li>
+                                            <span class="jbxx-left">用户名：</span>
+                                            <div class="jbxx-right">谢沅航</div>
+                                        </li>
+                                        <li>
+                                            <span class="jbxx-left">注册时间：</span>
+                                            <div class="jbxx-right">2016/8/15 16：00</div>
+                                        </li>
+                                        <li>
+                                            <span class="jbxx-left">用户类型：</span>
+                                            <div class="jbxx-right">QQ登录(微信登录、微博登录、注册用户)</div>
+                                        </li>
+                                        <!-- <li>
+                                            <span class="jbxx-left">会员等级：</span>
+                                            <div class="jbxx-right"><i class="members v1"></i><em class="jbxx-em">普通会员</em></div>
+                                        </li>
+                                        <li>
+                                            <span class="jbxx-left">会员等级：</span>
+                                            <div class="jbxx-right"><i class="members v2"></i><em class="jbxx-em">中级会员</em></div>
+                                        </li>
+                                        <li>
+                                            <span class="jbxx-left">会员等级：</span>
+                                            <div class="jbxx-right"><i class="members v3"></i><em class="jbxx-em">高级会员</em></div>
+                                        </li> -->
+                                        <li>
+                                            <span class="jbxx-left">账户余额：</span>
+                                            <div class="jbxx-right"><em class="jbxx-em">免费积分10分</em><a href="#"><span class="glyphicon glyphicon-refresh refresh"></span></a></div>
+                                        </li>
+                                    </ul>
+                                    <a class="jbxx-logo" href=""></a>
+                                    <a class="jbxx-cz" href="">去充值</a>
+                                    <a class="bt jbxx-bt">退出登录</a>
+                                </div>
+                            </div>
+                            <!-- 充值记录页面 -->
+                            <div class="tab-right-content">
+                                <table class="table ckbg-table zhgl-table" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <td width="35%">订单号</td>
+                                            <td width="" align="center">充值金额</td>
+                                            <td width="" align="center">充值时间</td>
+                                            <td width="" align="center">充值状态</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="paragraph ">
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <span class="td-s1">D12345678900120</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3"><em>￥</em>5</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s5">充值成功</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <span class="td-s1">D12345678900120</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">￥5</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s5">充值成功</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <span class="td-s1">D12345678900120</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">￥5</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s5">充值成功</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <span class="td-s1">D12345678900120</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">￥5</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s5">充值成功</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!---报告为空的时候---->
+                                <div class="wk-d">
+                                    <img src="images/ckbg.png">
+                                    <span style="color: #333">还没有任何内容哦~</span>
+                                </div>
+                                <!----翻页 -->
+                                <div class="page">
+                                    <div class="page-d">
+                                        <span>当前第2页，共8页</span>
+                                        <a class="page-a" href="">首页</a>
+                                        <a class="page-a" href="">上一页</a>
+                                        <a href="">1</a>
+                                        <a href="">2</a>
+                                        <a href="">...</a>
+                                        <a href="">8</a>
+                                        <a class="page-a page-action" href="">下一页</a>
+                                        <a class="page-a" href="">尾页</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 修改密码页面 -->
+                            <div class="tab-right-content">
+                                <!-----修改密码---->
+                                <div class="xgmm-d">
+                                    <ul class="xgmm-d-ul">
+                                        <li>
+                                            <p class="xgmm-d-p">输入旧密码：</p>
+                                            <input type="password" class="xgmm-d-ipt">
+                                        </li>
+                                        <li>
+                                            <p class="xgmm-d-p">输入新密码：</p>
+                                            <input type="password" class="xgmm-d-ipt">
+                                        </li>
+                                        <li>
+                                            <p class="xgmm-d-p">确认新密码：</p>
+                                            <input type="password" class="xgmm-d-ipt">
+                                        </li>
+                                    </ul>
+                                    <p class="xgmm-d-ts">旧密码输入错误！</p>
+                                    <a class="bt jbxx-bt">确认</a>
+                                </div>
+                            </div>
+                            <!-- 我的充值卡页面 -->
+                            <div class="tab-right-content">
+                                <table class="table ckbg-table zhgl-table" width="100%">
+                                    <thead>
+                                        <tr>
+                                            <td width="">充值兑换码</td>
+                                            <td width="" align="center">充值面额</td>
+                                            <td width="" align="center">创建时间</td>
+                                            <td width="" align="center">过期时间</td>
+                                            <td width="" align="center">使用时间</td>
+                                            <td width="" align="center">状态</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="paragraph ">
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <span class="td-s1">D12345678900120</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3"><em>￥</em>5</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 17:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 18:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s5">充值成功</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <span class="td-s1">D12345678900120</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3"><em>￥</em>5</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 17:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 18:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s5">充值成功</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <span class="td-s1">D12345678900120</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3"><em>￥</em>5</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 17:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 18:00</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s5">充值成功</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!---报告为空的时候---->
+                                <div class="wk-d">
+                                    <img src="images/ckbg.png">
+                                    <span style="color: #333">还没有任何内容哦~</span>
+                                </div>
+                            </div>
+                            <!-- 管理自建库页面 -->
+                            <div class="tab-right-content">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="right-ab">
+                <!-- 暂时隐藏的右侧广告位 -->
+                <!-- 轮播图部分 -->
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide">
+
+                        </div>
+                        <div class="swiper-slide last-banner"></div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
+                <div class="lwcc-right">
+
+                    <div class="copy-d">
+                        <p class="copy-d-t">数据库范围</p>
+                        <p class="copy-d-bd">学术期刊，学位论文，会议论文，互联网，英文数据库（涵盖期刊，硕博，会议的英文数据）。</p>
+                    </div>
+                    <div class="copy-d">
+                        <p class="copy-d-t">检测范围</p>
+                        <p class="copy-d-bd">涵盖所有中英文类别，包括哲学、经济学、管理学、法学、社会科学、教育学、文学、艺术学、历史学、理学、工学、农学、医学、政治学、军事学等。</p>
+                    </div>
+                    <div class="copy-d">
+                        <p class="copy-d-t">郑重声明</p>
+                        <div class="copy-d-bd">
+                            <p class="copy-d-bd">Papertime论文时间检测系统遵守相关保密规定，绝不收录和泄露您送检文档的任何信息，请放心检测！</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <div class="footer">
+        <p>
+            <a href="">关于我们</a><em>|</em>
+            <a href="">使用帮助</a><em>|</em>
+            <a href="">常见问题</a><em>|</em>
+            <a href="">相关文档</a>
+        </p>
+        <p class="foot-btm foot-btm-cc">Copyright @ 2002-2016 paperfree.cn.</p>
+    </div>
+    <!----修改密码提示---->
+    <!-- <div class="sc-ts">
+        <p class="sc-ts-p1"><i class="sc-ts-is"></i><span>修改密码成功</span></p>
+        <p class="sc-ts-p2">
+            <a href="javascript:unscts();" class="sc-ts-a2">我知道了</a>
+        </p>
+    </div> -->
+    <script src="./js/personal.js"></script>
+
+</body>
+
+</html>
