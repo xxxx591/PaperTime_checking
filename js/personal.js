@@ -18,9 +18,11 @@ $(function () {
         $('.tab-right-active').removeClass('tab-right-active');
         $('.tab-right-content').eq($('.tab-box ul li').index(self)).addClass('tab-right-active')
         if ($('.tab-box ul li').index(self) == 4) {
-            $('.right-ab').css('display','none');
+            $('.swiper-container,.lwcc-right ').css('display','none');
+            $('.ly-right').css('display','block');
         }else{
-            $('.right-ab').css('display','block');
+            $('.swiper-container,.lwcc-right ').css('display','block');
+            $('.ly-right').css('display','none');
         }
     })
 })

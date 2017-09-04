@@ -38,8 +38,8 @@ section{ padding:0; margin: 0; position: relative; z-index: 1; background: #FFF;
 .link-d h3{ color: #333333; font-size: 16px; font-weight: bold; margin: 5px auto 10px;}
 .link-a{ font-size: 14px; color: #333; text-align: left;  display: inline-block; margin: 0 10px 10px 0; }
 .link-a:hover{ color: #3761cd;}
-.footer{ width: 100%; background:none;padding: 5px 0;}
-.footer p{ text-align: center; line-height: 20px; color: #333; margin: 10px 0;}
+.footer{ width: 100%; background:none;padding: 5px 0;background: #36485E;}
+.footer p{ text-align: center; line-height: 20px; color: #fefefe; margin: 10px 0;}
 .footer p a{ color: #333;}
 .footer p em{ color: #333; margin: 0 5px;}
 
@@ -93,9 +93,9 @@ section{ padding:0; margin: 0; position: relative; z-index: 1; background: #FFF;
 .new-log-box{position: relative;}
 .new-log-box .new-log{position: absolute;width: 50px;height: 22px;border-radius: 10px 10px /10px 10px 10px 0px;background: #FF6800;top: -15px;right: 0;color: #fff; }
 .lwcc-left{ box-sizing: border-box; padding:30px 20px;background: #FFF;min-height:740px; margin-right:440px;border: none; overflow: inherit;position: relative;}
-.lwcc-right{ box-sizing: border-box; padding:20px; background:#fff; width: 370px;;}
+.lwcc-right{ box-sizing: border-box; padding:20px; background:#fff; width: 370px;}
 .lwcc-main{  margin: 0 auto; position: relative;max-width: 1366px;margin-top: 30px;}
-.right-ab{position: absolute; right: 128px; top: 30px; width: 370px; padding: 0 20px;}
+.right-ab{position: absolute; right: 128px; top: 30px; width: 370px;}
 .right-ab .lwcc-right-redesign{margin-left: 0;}
 .copy-t{  font-size: 14px; color: #333; margin-bottom: 10px;}
 .copy-t i{ color: #cc3434; margin: 0 5px; }
@@ -494,7 +494,7 @@ table.none thead{background:#F5F5F5;}
 .mfjf{ width: 1200px; margin: 50px auto; min-height: 700px;}
 .navbar-mfjf{ background: rgba(0,0,0,0.4);}
 .foot-mfjf{ background:none; position: fixed; left: 0; width: 100%; bottom: -55px;}
-.foot-mfjf .foot-btm-cc{ background:none;}
+.foot-mfjf .foot-btm-cc{ background:none;color: #fff;}
 .mfjf-ul{ width: 1245px;}
 .mfjf-ul li{ float: left; width: 380px; height: 200px; margin: 0 30px 35px 0; background: none;}
 .mfjf-d{ padding: 20px; text-align: center; color: #FFF; height: 100%; box-sizing: border-box; border-radius: 20px;
@@ -624,10 +624,10 @@ button.jbxx-bt{line-height: normal;}
 .yezz-d  .xgmm-d-ipts{width: 180px;}
 .yezz-d  .jbxx-bt{width: 100px; box-sizing: border-box; border-radius: 3px;}
 
-.ly-left{width: 50%;margin-right:15px;float: left; padding: 20px;}
+.ly-left{width: 100%;margin-right:15px;float: left; padding: 20px;}
 .ly-left .xgmm-d-ts{text-align: left; margin: 0 0 10px 0;}
 .ly-tex{border: 1px solid #ddd; width: 100%; min-height: 300px; border-radius: 5px; padding: 10px; box-sizing: border-box; margin: 5px 0 20px;}
-.ly-right{margin-left: 50%; padding-left: 30px;}
+.ly-right{width: 370px;}
 .ly-bt{ width: 120px; height: 40px; line-height: 40px; text-align: center; font-size: 14px; color: #FFF; border-radius: 5px; box-sizing: border-box; padding: 0; margin: 20px auto;display: block;}
 
 .ly-d{background: #FFF;}
@@ -636,7 +636,7 @@ button.jbxx-bt{line-height: normal;}
 .ly-d-p{color: #333; font-size: 14px; line-height: 28px;}
 .ly-d-s{color: #666; margin-right: 20px;}
 .ly-d-em{color: #666;}
-.ly-ul{overflow: hidden;}
+.ly-ul{max-height: 600px;overflow-y: scroll;}
 .ly-kf{border-top: 1px solid #eee; padding-top: 10px; margin-top: 10px;}
 .ly-kf p{color: #6699cc;}
 .ly-d .page{padding-right: 20px; padding-bottom: 20px; box-sizing: border-box;}
@@ -951,7 +951,7 @@ table.dgzj-table thead td{background: #6699cc; color: #fff;}
 /* ---------查看报告页面样式---------- */
 .tab-right-active .ckbg-main{margin: 0;padding: 0;}
 .tab-right-active .page-d a{height: 36px;}
-.tab-right-active .wk-d span{color: #0c7fe9;}
+.tab-right-active .wk-d span{color: #444;}
 .content .ckbg-table .td-s2{color: #333;}
 .ckbg-table thead td a{color: #666;}
 table.table thead td{background: #e6e6e6;color: #666;}
@@ -979,6 +979,8 @@ table.table thead td{background: #e6e6e6;color: #666;}
 .xgmm-d .xgmm-d-p{float: left;}
 .xgmm-d .xgmm-d-ipt{width: 60%;}
 .xgmm-d .xgmm-d-ul li{clear: both;}
+.xgmm-d .jbxx-bt{background: #0C7FE9;}
+.xgmm-d .jbxx-bt:hover{background: #2959C0;}
 .sc-ts-p1 i{background: url(../xtb.png)no-repeat -183px -1333px;}
 .sc-ts-p1 .sc-ts-is{background-position:-185px -1336px; }
 .xgmm-d-ul li{margin-bottom: 25px;}
@@ -988,9 +990,11 @@ table.table thead td{background: #e6e6e6;color: #666;}
 .recharge-card tr td{border: 0;}
 .recharge-card tbody tr:nth-of-type(odd){background: #F5F5F5;}
 .recharge-card tbody tr:hover{background: #F5F5F5;}
-
-
-
+/* ------我要留言页面 */
+.ly-h3{background: #0C7FE9;margin-top: 0;}
+.ly-d .page-a{padding: 8px 10px;height: 30px;line-height: 15px;}
+.lwcc-left .ly-bt{color: #FFF;background: #0C7FE9;}
+.lwcc-left .ly-bt:hover{color: #FFF;background: #2959C0;}
 
 
 

@@ -100,6 +100,9 @@ $(function(){
         $('.zc-box').css('display','none').siblings('.dl-box').css('display','block').siblings('.login-d').css('display','none')
     })
 })
+function ljzc(){
+        $('.zc-box').css('display','block').siblings('.login-d').css('display','none')
+}
 //删除提示
 function scts() {
     unscts();
