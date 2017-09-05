@@ -1,14 +1,14 @@
 // -----------轮播图JS开始------------------
-(function () {
-    var mySwiper = new Swiper('.swiper-container', {
-        direction: 'horizontal',
-        loop: true, //是否开启自动轮播
-        autoplay: 4000, //轮播时间
-        speed: 1500, //轮播速度
-        pagination: '.swiper-pagination', // 如果需要分页器
-        paginationClickable: true, // 点击分页器
-    })
-});
+// (function () {
+//     var mySwiper = new Swiper('.swiper-container', {
+//         direction: 'horizontal',
+//         loop: true, //是否开启自动轮播
+//         autoplay: 4000, //轮播时间
+//         speed: 1500, //轮播速度
+//         pagination: '.swiper-pagination', // 如果需要分页器
+//         paginationClickable: true, // 点击分页器
+//     })
+// });
 // --------- tab 页面切换 --------
 $(function () {
     var self;

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.min.js"></script>
+</head>
+<style>
+    .classA {
+        color:#ff4400;
+    }
+    .classB{
+        font-size: 20px;
+    }
+</style>
+
+<body>
+    <div id="app">
+        {{msg}}
+        <hr>
+        <img :src="imgSrc" width="200px">
+        <hr>
+        <div :class="className">
+            1、绑定class
+        </div>
+        <div :class="{classA:isOk}">
+            2、绑定class中的判断
+        </div>
+        <div :class="[classA,classB]">
+            3、绑定class中的数组
+        </div>
+        <div :class="isOk?classA:classB">
+            4、绑定class三元运算符
+        </div>
+        <hr>
+        <input type="checkbox" name="" id="isOk" v-model="isOk">
+        <label for="isOk">isOk={{isOk}}</label>
+        <hr>
+        <div :style="{color:red,fontSize:font}">5、绑定style值</div>
+        <div :style="styleObject">6、绑定style值object</div>
+    </div>
+
+</body>
+<script>
+    new Vue({
+        el: "#app",
+        data: {
+            msg: 'hello world',
+            imgSrc: './bgs.jpg',
+            className: 'classA',
+            isOk:false,
+            classA:'classA',
+            classB:'classB',
+            red:'red',
+            font:'20px',
+            styleObject:{
+                color:'blue',
+                fontSize:'22px'
+            }
+        },
+    });
+</script>
+
+</html>

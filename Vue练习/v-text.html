@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">  
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <span>{{msg}}</span>=<span v-text='msg'></span>
+        <span v-html='data'></span>尽量少用 会引起XSS黑客攻击
+
+    </div>
+</body>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            msg:'hello world',
+            data:'<h2>我爱乐乐</h2>'
+        },
+        computed:{
+           
+        }
+    });
+</script>
+
+</html>

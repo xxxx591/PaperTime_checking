@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="content-type" content="text/html;charset=utf-8">  
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <ul>
+            <li v-for="item in sortItems">
+                {{item}}
+            </li>
+        </ul>
+        <hr>
+        <ul>
+            <li v-for="(item,index) in sortStudent">
+                {{index + 1}}-{{item.name}}-{{item.age}}
+            </li>
+        </ul>
+    </div>
+</body>
+<script>
+    new Vue({
+        el:"#app",
+        data:{
+            items:[53,55,12,13,44,85,77,95,411,455],
+            student:[
+                {name:'文乐乐',age:18},
+                {name:'谢沅航',age:12},
+                {name:'周雨龙',age:33},
+                {name:'邹鸿斌',age:14},
+            ]
+        },
+        computed:{
+            sortItems:function(){
+                return this.items.sort(sortNumber);
+            },
+            sortStudent:function(){
+                return sortByKey(this.student,'age')
+            }
+        }
+    });
+    function sortNumber(a,b){
+        return a-b
+    }
+    function sortByKey(array,key){
+        return array.sort(function(a,b){
+            var x=a[key];
+            var y=b[key];
+            return ((x<y)?-1:((x>y)?1:0))
+        });
+    }
+</script>
+
+</html>
