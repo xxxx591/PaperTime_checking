@@ -1,8 +1,0 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div class="header-sub">
-    <a class="logo-sub" href="/"><img src="/resources/images/logo.png" alt="" title=""></a>
-    <div class="head-nav">
-        <a href="javascript:void(0)" class="head-a head-as">提交论文</a>
-        <a href="/viewReport/index.html" class="head-a">查看报告</a>
-    </div>
-</div>

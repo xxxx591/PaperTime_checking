@@ -1,9 +1,0 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<div class="header-sub">
-    <a class="logo-sub" href="/"><img src="/resources/images/logo.png" alt="" title=""></a>
-    <div class="head-nav">
-        <a href="${pageContext.request.contextPath}/submitTask/1.html" class="head-a head-as">提交论文</a>
-        <a href="${pageContext.request.contextPath}/viewReport/index.html" class="head-a ">查看报告</a>
-        <a href="${pageContext.request.contextPath}/coupon/get.html" class="head-a">获取优惠券</a>
-    </div>
-</div>

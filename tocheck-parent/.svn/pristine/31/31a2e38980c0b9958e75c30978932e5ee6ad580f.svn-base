@@ -1,9 +1,0 @@
-package com.tocheck.parent.core.service;
-
-/**
- * @author pangliang
- * @create 2017-06-14 10:01
- **/
-public interface WebUserService {
-
-}
