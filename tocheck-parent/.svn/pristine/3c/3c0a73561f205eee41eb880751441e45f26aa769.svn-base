@@ -1,0 +1,103 @@
+package com.tocheck.parent.web.ctrl;
+
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.core.entity.FriendLink;
+import com.tocheck.parent.core.entity.SystemTopic;
+import com.tocheck.parent.core.entity.ToCheckSystem;
+import com.tocheck.parent.core.entity.WebUser;
+import com.tocheck.parent.core.service.FriendLinkService;
+import com.tocheck.parent.core.service.SystemTopicService;
+import com.tocheck.parent.core.service.ToCheckSystemService;
+import com.tocheck.parent.core.service.WebUserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-05-15 17:40
+ **/
+@Controller
+public class IndexCtrl extends BaseCtrl {
+
+    @Autowired
+    private ToCheckSystemService checkSystemService;
+    @Autowired
+    private FriendLinkService friendLinkService;
+    @Autowired
+    private WebUserService webUserService;
+    @Autowired
+    private SystemTopicService systemTopicService;
+
+    private Logger logger = LoggerFactory.getLogger(IndexCtrl.class);
+
+    @RequestMapping(value = "/index", method = RequestMethod.GET)
+    public String index(Model model) {
+        try {
+            WebUser user = webUserService.getById(2);
+            saveSessionUserInfo(user);
+            List<ToCheckSystem> systemList = this.checkSystemService.getAll();
+            model.addAttribute("systemList", systemList);
+
+            List<FriendLink> friendLinkList = friendLinkService.getAll();
+            model.addAttribute("friendLinkList", friendLinkList);
+
+            PageInfo<SystemTopic> page = systemTopicService.listPage(1);
+            model.addAttribute("list",page.getList());
+            return "index";
+        }catch (Exception e){
+            logger.error("进入首页失败",e);
+        }
+       return "redirect:/500.html";
+    }
+
+    /**
+     * 通过代理商推广链接访问网站，记录代理商信息
+     * @param prefix
+     * @return
+     */
+    @RequestMapping(value = "/agentRecommend/{prefix}", method = RequestMethod.GET)
+    public String fromAgentRecommend(@PathVariable(name = "prefix") String prefix) {
+        try {
+            this.saveSessionRecommend(prefix, Constants.AGENT_RECOMMEND);
+        } catch (Exception e) {
+            logger.warn("从代理商推荐链接跳转到首页失败", e);
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
+    public String error404() {
+        return "error/404";
+    }
+
+    @RequestMapping(value = "/500", method = RequestMethod.GET)
+    public String error500() {
+        return "error/500";
+    }
+
+    @RequestMapping(value = "/check", method = RequestMethod.GET)
+    public String check() {
+        return "check";
+    }
+
+    @RequestMapping(value = "/faq", method = RequestMethod.GET)
+    public String faq(Model model) {
+        PageInfo<SystemTopic> page = systemTopicService.listPage(1);
+        model.addAttribute("list",page.getList());
+        return "faq";
+    }
+
+    @RequestMapping(value = "/aboutUs", method = RequestMethod.GET)
+    public String aboutUs() {
+        return "aboutUs";
+    }
+}

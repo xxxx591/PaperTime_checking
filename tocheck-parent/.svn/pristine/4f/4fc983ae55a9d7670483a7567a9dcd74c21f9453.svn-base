@@ -1,0 +1,128 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>查看报告</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css">
+    <link rel="stylesheet" href="/resources/css/style.css">
+</head>
+<body>
+<!----header----->
+<div class="header-sub">
+    <a class="logo-sub" href="/"><img src="/resources/images/logo.png" alt="" title=""></a>
+    <div class="head-nav">
+        <a href="/submitTask/1.html" class="head-a ">提交论文</a>
+        <a href="/viewReport/index.html" class="head-a head-as">查看报告</a>
+    </div>
+</div>
+<!-----主体内容----->
+<div class="content content-cgkb">
+    <!--查看报告-->
+    <div class="ckbg-bd ">
+        <p class="ckbg-p"><i></i>淘宝支付，请输入“淘宝订单编号”，点击“查询订单”，下载检测报告。</p>
+        <p class="ckbg-p"><i></i>支付宝/微信支付，请输入支付时”手机号“，点击”查询订单“，下载检测报告。</p>
+        <div class="ckgb-tb">
+            <h3>查询检测报告</h3>
+            <div class="layui-form-item">
+                <form>
+                    <div class="layui-form-label">
+                        <input  type="text" placeholder="请输入手机号或者淘宝订单号查询" class="layui-input" name="searchKey">
+                    </div>
+                    <div class="layui-input-inline">
+                        <button class="layui-btn layui-btn-normal">开始查询</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="ckgb-tb">
+            <table class="layui-table" lay-skin="nob" lay-odd>
+                <colgroup>
+                    <col width="">
+                    <col width="">
+                    <col width="">
+                    <col width="">
+                    <col width="">
+                    <col width="160">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>订单编号/手机号</th>
+                    <th>论文标题</th>
+                    <th>检测时间</th>
+                    <th>检测系统</th>
+                    <th>检测状态</th>
+                    <th>
+                        <span>立即下载</span>
+                        <em>|</em>
+                        <span>删除报告</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <%--<tr>--%>
+                    <%--<td>2838479315517763</td>--%>
+                    <%--<td>论如何使用好论文查重</td>--%>
+                    <%--<td>2016/9/28 16:00</td>--%>
+                    <%--<td>cnki</td>--%>
+                    <%--<td><span>检测完成</span></td>--%>
+                    <%--<td>--%>
+                        <%--<div class="ckbg-bts">--%>
+                            <%--<a href="" class="ckgb-a ckgb-xz ckgb-xzs"></a>--%>
+                            <%--<a href="" class="ckgb-a ckgb-sc ckgb-scs"></a>--%>
+                        <%--</div>--%>
+                    <%--</td>--%>
+                <%--</tr>--%>
+                <%--<tr>--%>
+                    <%--<td>2838479315517763</td>--%>
+                    <%--<td>论如何使用好论文查重</td>--%>
+                    <%--<td>2016/9/28 16:00</td>--%>
+                    <%--<td>cnki</td>--%>
+                    <%--<td><span>检测完成</span></td>--%>
+                    <%--<td>--%>
+                        <%--<div class="ckbg-bts">--%>
+                            <%--<a href="" class="ckgb-a ckgb-xz ckgb-xzs"></a>--%>
+                            <%--<a href="" class="ckgb-a ckgb-sc ckgb-scs"></a>--%>
+                        <%--</div>--%>
+                    <%--</td>--%>
+                <%--</tr>--%>
+                </tbody>
+            </table>
+        </div>
+        <div class="ckgb-tx">
+            <span>重要提醒</span>
+            <p>1.检测报告只保留7天，请及时下载！</p>
+            <p>2.请保存订单号，并收藏本页面。方便回来下载检测报告。</p>
+            <p>3.各工具检测时间不同，到时间之后刷新本页面即看到检测报告。</p>
+            <p>3.各工具检测时间不同，到时间之后刷新本页面即看到检测报告。</p>
+            <p>（1）PaperTime、PaperFree、维普、PaperPass、万方检测系统支持24小时提交论文，万方检测系统2分钟左右就能出报告，其他检测系统10分钟左右出检测报告！</p>
+            <p>（2）知网论文查重系统支持上午9点至晚上10点提交论文检测，知网查重系统20-120分钟出检测报告，其中知网本科论文查重系统20-180分钟出报告，如遇检测高峰期可能延长;其他时间检测需要第二天上午9点出报告。如遇紧急情况，请与客服联系。</p>
+        </div>
+
+    </div>
+</div>
+<!-----footer---->
+<jsp:include page="../submitTask/footer.jsp"/>
+
+<script src="layui/lay/dest/layui.all.js"></script>
+<script>
+    ;!function(){
+        //加载所有的layer.use()
+        var form = layui.form()
+            ,layer = layui.layer
+            , $ =layui.jquery;
+        //…
+        layui.upload({
+            url: ''
+            ,title: '上传文档'
+            ,ext: 'zip|rar|doc|docx'
+            ,type: 'file'
+            ,success: function(res, input){}
+        });
+
+    }();
+</script>
+</body>
+</html>

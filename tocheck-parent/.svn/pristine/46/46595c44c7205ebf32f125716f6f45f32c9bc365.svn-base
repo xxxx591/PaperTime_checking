@@ -1,0 +1,12 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.UserActivity;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 17:48
+ **/
+@Repository
+public interface IUserActivityDao extends IBaseDao<UserActivity> {
+}

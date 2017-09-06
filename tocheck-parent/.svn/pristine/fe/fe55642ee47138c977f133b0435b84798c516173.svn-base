@@ -1,0 +1,18 @@
+package com.tocheck.parent.core.service;
+
+import com.tocheck.parent.core.entity.UserCoupon;
+
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 17:57
+ **/
+public interface UserCouponService {
+
+    List<UserCoupon> getCoupon(long systemId, long userId);
+
+    void updateStatus(long id,int status);
+
+    List<UserCoupon> getUserCoupon(long userId);
+}

@@ -1,0 +1,10 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.WebUser;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 9:58
+ **/
+public interface IWebUserDao extends IBaseDao<WebUser> {
+}

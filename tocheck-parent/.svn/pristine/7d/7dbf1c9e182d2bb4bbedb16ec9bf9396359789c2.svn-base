@@ -1,0 +1,58 @@
+package com.tocheck.parent.core.entity;
+
+import com.tocheck.parent.common.entity.BaseEntity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 16:47
+ **/
+public class FreeActivity extends BaseEntity {
+    private Long systemId;
+    private BigDecimal cash;
+    private String title;
+    private String content;
+    private String note;
+    private Date createTime;
+
+    public Long getSystemId() {
+        return systemId;
+    }
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
+    }
+    public BigDecimal getCash() {
+        return cash;
+    }
+    public void setCash(BigDecimal cash) {
+        this.cash = cash;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getContent() {
+        return content;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+    public String getNote() {
+        return note;
+    }
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+}

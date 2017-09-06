@@ -1,0 +1,547 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.dto.ChargeForm;
+import com.tocheck.parent.common.enums.PayType;
+import com.tocheck.parent.common.util.*;
+import com.tocheck.parent.core.dao.*;
+import com.tocheck.parent.core.entity.*;
+import com.tocheck.parent.core.properties.CommonsProperties;
+import com.tocheck.parent.core.service.ToCheckTaskService;
+import com.tocheck.parent.core.utils.AliPayUtil;
+import com.tocheck.parent.core.utils.WxPayUtil;
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.*;
+
+/**
+ * @author pangliang
+ * @create 2017-05-23 16:19
+ **/
+@Service
+public class ToCheckTaskServiceImpl implements ToCheckTaskService {
+
+    private Logger logger = LoggerFactory.getLogger(ToCheckTaskServiceImpl.class);
+
+    @Autowired
+    private IToCheckTaskDao toCheckTaskDao;
+    @Autowired
+    private SSDBUtils ssdbUtils;
+    @Autowired
+    private IToCheckTaoBaoOrderDao toCheckTaoBaoOrderDao;
+    @Autowired
+    private IToCheckSystemDao toCheckSystemDao;
+    @Autowired
+    private ITaoBaoSettingDao taoBaoSettingDao;
+    @Autowired
+    private WxPayUtil wxPayUtil;
+    @Autowired
+    private AliPayUtil aliPayUtil;
+    @Autowired
+    private IUserActivityDao userActivityDao;
+    @Autowired
+    private IAgentUserDao agentUserDao;
+    @Autowired
+    private IDynamicConfigDao dynamicConfigDao;
+
+    @Override
+    public ToCheckTaskVo getById(long id) {
+        return toCheckTaskDao.getById(id);
+    }
+
+    @Override
+    public void insert(ToCheckTaskVo toCheckTaskVo) {
+        toCheckTaskVo.setTitle(StringUtils.isBlank(toCheckTaskVo.getTitle()) ? "我的论文" : toCheckTaskVo.getTitle());
+        toCheckTaskVo.setAuthor(StringUtils.isBlank(toCheckTaskVo.getAuthor()) ? "tochek" : toCheckTaskVo.getAuthor());
+        toCheckTaskVo.setCheckId(0L);
+        toCheckTaskVo.setStatus(Constants.CHECK_STATUS_WAIT);
+        toCheckTaskDao.insert(toCheckTaskVo);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Map<String, Object> insertCnki(ToCheckTaskVo toCheckTaskVo, MultipartHttpServletRequest request) throws IOException {
+        Map<String, Object> result = new HashMap<>();
+        result.put(Constants.RESP_STATE, Constants.RESP_FAIL);
+        if (toCheckTaskVo.getSystemId() == null) {
+            result.put(Constants.RESP_MESSAGE, "参数错误,请刷新后重试!");
+            return result;
+        }
+        if (StringUtils.isBlank(toCheckTaskVo.getTitle())) {
+            result.put(Constants.RESP_MESSAGE, "请输入论文标题!");
+            return result;
+        }
+        if (toCheckTaskVo.getTitle().length() > 100) {
+            result.put(Constants.RESP_MESSAGE, "标题请小于100字符!");
+            return result;
+        }
+        if (StringUtils.isBlank(toCheckTaskVo.getAuthor())) {
+            result.put(Constants.RESP_MESSAGE, "请输入论文作者!");
+            return result;
+        }
+        if (toCheckTaskVo.getAuthor().length() > 20) {
+            result.put(Constants.RESP_MESSAGE, "作者请小于20字符!");
+            return result;
+        }
+        Map<String, MultipartFile> fileMap = request.getFileMap();
+        if (fileMap == null || fileMap.isEmpty()) {
+            result.put(Constants.RESP_MESSAGE, "请上传您的论文!");
+            return result;
+        }
+        MultipartFile uploadFile = null;
+        for (Map.Entry<String, MultipartFile> fileEntry : fileMap.entrySet()) {
+            uploadFile = fileEntry.getValue();
+            break;
+        }
+        if (uploadFile == null || !ToCheckFileUtils.isProperPaper(uploadFile.getOriginalFilename())) {
+            result.put(Constants.RESP_MESSAGE, "系统仅支持txt、doc、docx格式文档!");
+            return result;
+        }
+
+        toCheckTaskVo.setTitle(StringUtils.isBlank(toCheckTaskVo.getTitle()) ? "我的论文" : toCheckTaskVo.getTitle());
+        toCheckTaskVo.setAuthor(StringUtils.isBlank(toCheckTaskVo.getAuthor()) ? "tochek" : toCheckTaskVo.getAuthor());
+        toCheckTaskVo.setCheckId(0L);
+        toCheckTaskVo.setWordNum(0);
+        toCheckTaskVo.setStatus(Constants.CHECK_STATUS_CHECKING);
+        toCheckTaskDao.insert(toCheckTaskVo);
+        ToCheckFileUtils.saveMaterialFile(uploadFile, CommonsProperties.instance.paper_path, toCheckTaskVo.getId(), toCheckTaskVo.getTitle() + "_" + toCheckTaskVo.getAuthor());
+        result.put(Constants.RESP_STATE, Constants.RESP_SUCCESS);
+        return result;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ResponseJson saveCnkiTask(ToCheckTaskVo toCheckTaskVo, HttpServletRequest request) throws Exception {
+        if (toCheckTaskVo.getSystemId() == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "参数错误,请刷新后重试!");
+        }
+        ToCheckSystem system = toCheckSystemDao.getById(toCheckTaskVo.getSystemId());
+        if (system == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "当前检测系统已经实效,请刷新后重试!");
+        }
+        if (StringUtils.isBlank(toCheckTaskVo.getTitle())) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请输入论文标题!");
+        }
+        if (toCheckTaskVo.getTitle().length() > 100) {
+            return ResponseJson.body(Constants.RESP_FAIL, "标题请小于100字符!");
+        }
+        if (StringUtils.isBlank(toCheckTaskVo.getAuthor())) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请输入论文作者!");
+        }
+        if (toCheckTaskVo.getAuthor().length() > 20) {
+            return ResponseJson.body(Constants.RESP_FAIL, "作者请小于20字符!");
+        }
+        if (toCheckTaskVo.getMajorId() == 0) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请选择专业!");
+        }
+        if (StringUtils.isBlank(toCheckTaskVo.getReadUrl())) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请上传论文!");
+        }
+        BigDecimal needCost = system.getSystemPrice();
+        if (toCheckTaskVo.getCoupon() != 0) {  //如果使用了优惠券
+            UserActivity activity = userActivityDao.getById(toCheckTaskVo.getCoupon());
+            needCost = needCost.subtract(activity.getCash());
+        }
+        toCheckTaskVo.setMoney(needCost);
+        if (toCheckTaskVo.getAgentId() == 0) { //如果来源是官网,则直接匹配上
+            toCheckTaskVo.setIsMatch(Constants.Match);
+        } else {
+            AgentUser user = agentUserDao.getById(toCheckTaskVo.getAgentId());
+            if (user == null) {   //如果代理商不存在了，直接转为官网
+                toCheckTaskVo.setAgentId(0L);
+                toCheckTaskVo.setIsMatch(Constants.Match);
+            } else {
+                boolean isSystemMacth = ArrayUtils.contains(user.getSystemIds().split(","), String.valueOf(toCheckTaskVo.getSystemId()));
+                boolean isMajorMacth = ArrayUtils.contains(user.getMajorIds().split(","), String.valueOf(toCheckTaskVo.getMajorId()));
+                if (isSystemMacth && isMajorMacth) { //如果检测系统跟专业都匹配上
+                    toCheckTaskVo.setIsMatch(Constants.Match);
+                } else {
+                    toCheckTaskVo.setIsMatch(Constants.NO_Match);
+                }
+            }
+        }
+        ResponseJson json;
+        String orderNum = "";
+        ChargeForm chargeForm = new ChargeForm();
+        chargeForm.setUserId(toCheckTaskVo.getUserId());
+        chargeForm.setSubject(system.getSystemName() + "论文检测费用");
+        chargeForm.setAmount(needCost);
+        if (PayType.aliPay.equals(toCheckTaskVo.getPayType())) {
+            orderNum = "ZFB" + CommonUtil.createToCheckOrderNum(toCheckTaskVo.getUserId());
+            chargeForm.setOrderNum(orderNum);
+            json = aliPayUtil.createAliPayOrder(chargeForm);
+        } else {
+            orderNum = "WX" + CommonUtil.createToCheckOrderNum(toCheckTaskVo.getUserId());
+            chargeForm.setOrderNum(orderNum);
+            chargeForm.setUserIp(Ipv4Utils.getFirstIP(Ipv4Utils.getIpAddr(request)));
+            json = wxPayUtil.createWxOrder(chargeForm);
+        }
+        if (json.isState()) {
+            ssdbUtils.save("tocheck-task-" + chargeForm.getOrderNum(), JSON.toJSONString(toCheckTaskVo));
+        }
+        return json;
+    }
+
+    @Override
+    public PageInfo<ToCheckTaskVo> canCheckTask(long systemId, int status) {
+        Map<String, Object> paramMap = new HashMap<>();
+        paramMap.put("systemId", systemId);
+        paramMap.put(Constants.STATUS, status);
+        PageHelper.startPage(1, Constants.PAGE_LIMIT);
+        List<ToCheckTaskVo> list = toCheckTaskDao.getByMap(paramMap);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public void updateTaskStatus(long id, int status) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", id);
+        param.put(Constants.STATUS, status);
+        toCheckTaskDao.updateByMap(param);
+    }
+
+    @Override
+    public void updateTaskStatus(long id, int status, long checkId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", id);
+        param.put(Constants.STATUS, status);
+        param.put("checkId", checkId);
+        toCheckTaskDao.updateByMap(param);
+    }
+
+    @Override
+    public void finishCheck(long id, int status, String downUrl) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", id);
+        param.put("status", status);
+        param.put("downUrl", downUrl);
+        toCheckTaskDao.updateByMap(param);
+    }
+
+    @Override
+    public void updateErrorMsg(long id, String msg) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", id);
+        param.put("status", -1);
+        param.put("errorMsg", msg);
+        toCheckTaskDao.updateByMap(param);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public ResponseJson sameTbPay(ToCheckTaskVo checkTaskVo, Long tid, Long bTid, HttpServletRequest request) {
+        ResponseJson json = sameValidateParam(checkTaskVo);
+        if (!json.isState()) {
+            return json;
+        }
+        json = validateTid(tid, bTid);
+        if (!json.isState()) {
+            return json;
+        }
+        ToCheckSystem system = toCheckSystemDao.getById(checkTaskVo.getSystemId());
+        if (system == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "检测系统已停用,请联系客服!");
+        }
+        ToCheckTaoBaoOrder order = this.toCheckTaoBaoOrderDao.getByTid(tid);
+        if (order == null) return ResponseJson.body(false, "订单信息查询失败，请确认您的订单号！", 1);
+        ResponseJson responseJson = validateOrder(order, system.getNumIids(), tid, true);
+        if (!responseJson.isState()) {
+            responseJson.setParam(1);
+            return responseJson;
+        }
+        ToCheckTaoBaoOrder border = null;
+        if (bTid != null) {
+            border = this.toCheckTaoBaoOrderDao.getByTid(bTid);
+            if (border == null) return ResponseJson.body(false, "订单信息查询失败，请确认您的订单号！", 2);
+            responseJson = validateOrder(border, system.getNumIids(), tid, true);
+            if (!responseJson.isState()) {
+                responseJson.setParam(2);
+                return responseJson;
+            }
+        }
+        Integer wordCount = CommonUtil.contentLength(checkTaskVo.getContent(), checkTaskVo.getSystemId());  //论文字数
+        Integer goodsNum = wordCount / system.getSystemUnit();  //需购买的商品件数
+        if (wordCount % system.getSystemUnit() > 0) goodsNum++;
+        int num = order.getNum();  //订单件数
+        if (border != null) num = num + border.getNum();  //已购买件数
+        if (num < goodsNum) {
+            return ResponseJson.body(false, "订单件数不足!");
+        }
+        Long checkId = saveCheckTask(checkTaskVo, wordCount);         //保存检测记录
+        updateOrderStatus(order, checkId);                            //修改订单使用状态
+        sendGoods(order.getSellerNick(), order.getTid());       //发货
+        if (border != null) {
+            sendGoods(order.getSellerNick(), border.getTid());
+            updateOrderStatus(border, checkId);                        //修改订单使用状态
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("title", checkTaskVo.getTitle());
+        result.put("tid", bTid == null ? tid : tid + "/" + bTid);
+        result.put("submitTime", DateUtil.getDate(new Date(), DateUtil.simple));
+
+        return ResponseJson.body(true);
+    }
+
+    @Override
+    public ResponseJson orderDetail(Long tid, Long bTid, Long systemId) {
+        ToCheckSystem system = toCheckSystemDao.getById(systemId);
+        if (system == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "检测系统已停用,请联系客服!");
+        }
+        ResponseJson json = validateTid(tid, bTid);
+        if (!json.isState()) {
+            return json;
+        }
+        ToCheckTaoBaoOrder order = this.toCheckTaoBaoOrderDao.getByTid(tid);
+        ResponseJson responseJson = validateOrder(order, system.getNumIids(), tid, true);
+        if (!responseJson.isState()) {
+            responseJson.setParam(1);
+            return responseJson;
+        }
+        ToCheckTaoBaoOrder border;
+        if (bTid != null) {
+            border = this.toCheckTaoBaoOrderDao.getByTid(bTid);
+            responseJson = validateOrder(border, system.getNumIids(), bTid, true);
+            if (!responseJson.isState()) {
+                responseJson.setParam(2);
+                return responseJson;
+            }
+        }
+        return ResponseJson.body(Constants.RESP_SUCCESS);
+    }
+
+    private Long saveCheckTask(ToCheckTaskVo checkTaskVo, int wordCount) {
+        checkTaskVo.setTitle(StringUtils.isBlank(checkTaskVo.getTitle()) ? "我的论文" : checkTaskVo.getTitle());
+        checkTaskVo.setAuthor(StringUtils.isBlank(checkTaskVo.getAuthor()) ? "tochek" : checkTaskVo.getAuthor());
+        checkTaskVo.setWordNum(wordCount);
+        checkTaskVo.setStatus(Constants.CHECK_STATUS_WAIT);
+        checkTaskVo.setCheckId(0L);
+        toCheckTaskDao.insert(checkTaskVo);
+        ssdbUtils.save("tocheck-content-" + checkTaskVo.getId(), checkTaskVo.getContent());
+        return checkTaskVo.getId();
+    }
+
+    @Override
+    public ResponseJson sameWxPay(ToCheckTaskVo checkTaskVo, String mobile, HttpServletRequest request) throws Exception {
+        if (!mobile.matches("^[1]{1}\\d{10}$")) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请输入正确的手机号!");
+        }
+        if (StringUtils.isBlank(checkTaskVo.getContent())) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请输入或者上传论文内容!");
+        }
+        ToCheckSystem system = toCheckSystemDao.getById(checkTaskVo.getSystemId());
+        if (system == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "检测系统已停用,请联系客服!");
+        }
+        Integer wordCount = CommonUtil.contentLength(checkTaskVo.getContent(), checkTaskVo.getSystemId());  //论文字数
+        Integer goodsNum = wordCount / system.getSystemUnit();  //需购买的商品件数
+        if (wordCount % system.getSystemUnit() > 0) goodsNum++;
+        BigDecimal needCost = system.getSystemPrice().multiply(BigDecimal.valueOf(goodsNum));
+        ChargeForm chargeForm = new ChargeForm();
+        chargeForm.setOrderNum(CommonUtil.createToCheckOrderNum(checkTaskVo.getUserId()));
+        chargeForm.setMobile(mobile);
+        chargeForm.setAmount(needCost);
+        chargeForm.setSubject(system.getSystemName() + "论文检测费用");
+        chargeForm.setUserIp(Ipv4Utils.getFirstIP(Ipv4Utils.getIpAddr(request)));
+
+        //创建微信订单
+        ResponseJson json = wxPayUtil.createWxOrder(chargeForm);
+        checkTaskVo.setWordNum(wordCount);
+//        ssdbUtils.save("tocheck-task-" + map.get("orderNum"), JSON.toJSONString(checkTaskVo));
+        return ResponseJson.body(true, "生成成功!", json);
+    }
+
+    @Override
+    public PageInfo<ToCheckTaskVo> viewReport(Integer p, long userId) {
+        PageHelper.startPage(p, Constants.PAGE_LIMIT);
+        Map<String, Object> param = new HashMap<>();
+        param.put("userId", userId);
+        List<ToCheckTaskVo> list = toCheckTaskDao.getByMap(param);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public PageInfo<ToCheckTaskVo> agentCheckTask(Integer p, long agentId) {
+        PageHelper.startPage(p, Constants.PAGE_LIMIT);
+        Map<String, Object> param = new HashMap<>();
+        param.put("agentId", agentId);
+        List<ToCheckTaskVo> list = toCheckTaskDao.getByMap(param);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public void uploadCnkiReport(ToCheckTaskVo vo) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", vo.getId());
+        param.put("target", vo.getTarget());
+        param.put("status", 3);
+        BigDecimal flowFee = BigDecimal.ZERO;  //流量费
+        BigDecimal targetFee = vo.getMoney(); //检测费
+        if (vo.getTarget() != vo.getAgentId()) {
+            String flowRatio = dynamicConfigDao.getByKey("flowRatio");
+            flowFee = vo.getMoney().multiply(new BigDecimal(flowRatio));
+            targetFee = targetFee.subtract(flowFee);
+        }
+        param.put("flowFee", flowFee);
+        param.put("targetFee", targetFee);
+        toCheckTaskDao.updateByMap(param);
+    }
+
+    private void updateOrderStatus(ToCheckTaoBaoOrder order, Long checkId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", order.getId());
+        param.put("isUse", Constants.STATE_ENABLE);
+        param.put("checkId", checkId);
+        toCheckTaoBaoOrderDao.updateByMap(param);
+    }
+
+
+    private ResponseJson sameValidateParam(ToCheckTaskVo vo) {
+        if (StringUtils.isNoneBlank(vo.getTitle()) && vo.getTitle().length() > 100) {
+            return ResponseJson.body(Constants.RESP_FAIL, "标题请控制在100字符以内!");
+        }
+        if (StringUtils.isNoneBlank(vo.getAuthor()) && vo.getAuthor().length() > 20) {
+            return ResponseJson.body(Constants.RESP_FAIL, "作者请控制在20字符以内!");
+        }
+        if (StringUtils.isBlank(vo.getContent())) {
+            return ResponseJson.body(Constants.RESP_FAIL, "论文内容不能为空!");
+        }
+        if (vo.getSystemId() == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请选择检测系统!");
+        }
+        return ResponseJson.body(Constants.RESP_SUCCESS);
+    }
+
+    private ResponseJson validateTid(Long tid, Long bTid) {
+        if (tid == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "主订单号不能为空!", 1);
+        }
+        if (!isTaoBaoOrder(tid.toString())) {
+            return ResponseJson.body(Constants.RESP_FAIL, "非法订单号,请检查后重试输入!", 1);
+        }
+        if (bTid != null) {
+            if (!isTaoBaoOrder(bTid.toString())) {
+                return ResponseJson.body(Constants.RESP_FAIL, "备用订单号非法,请检查后重试输入!", 2);
+            }
+            if (StringUtils.equals(String.valueOf(tid), String.valueOf(bTid))) {
+                return ResponseJson.body(Constants.RESP_FAIL, "请不要输入两个相同订单号!", 2);
+            }
+        }
+        return ResponseJson.body(Constants.RESP_SUCCESS);
+    }
+
+    private ResponseJson validateOrder(ToCheckTaoBaoOrder order, String numIids, Long orderNum, boolean isCommit) {
+        if (order != null) {
+            if (!StringUtils.contains(numIids, String.valueOf(order.getNumIid()))) {
+                return ResponseJson.body(Constants.RESP_FAIL, "此订单不能用于当前检测系统,请按客服指导下拍指定检测宝贝!");
+            }
+            if (Constants.STATE_ENABLE == order.getIsUse()) {
+                return ResponseJson.body(Constants.RESP_FAIL, "您的订单已在" + DateUtil.getDate(order.getCreateTime(), DateUtil.simple) + "使用!");
+            }
+            if (isCommit) {  //是否提交,是的话需要重新更新订单状态
+                String tradeInfo = getTaoBaoOrderInfo(order.getSellerNick(), orderNum);
+                logger.debug("订单信息tradeInfo={}", tradeInfo);
+                if (tradeInfo == null) {
+                    logger.warn("获取淘宝订单接口结果tradeInfo={}", tradeInfo);
+                    return ResponseJson.body(Constants.RESP_FAIL, "系统错误,请联系客服!");
+                }
+                JSONObject jsonObject = JSON.parseObject(tradeInfo);
+                if (jsonObject != null && !jsonObject.isEmpty() && jsonObject.get(Constants.ERROR) != null && jsonObject.get(Constants.ERROR).equals(Constants.SUCCESS)) {
+                    List<ToCheckTaoBaoOrder> trades = JSON.parseArray(jsonObject.getString("data"), ToCheckTaoBaoOrder.class);
+                    order = trades.get(0);
+                    if (!isPay(order.getStatus())) { //是否已经发货
+                        return ResponseJson.body(Constants.RESP_FAIL, "订单还未支付!");
+                    }
+                } else {
+                    return ResponseJson.body(Constants.RESP_FAIL, "订单信息查询失败，请确认您的订单号！");
+                }
+            }
+        } else {
+            String tradeInfo = getTaoBaoOrderInfo(Constants.TAOBAO_SEELER_NICK, orderNum);
+            logger.debug("订单详情tradeInfo={}", tradeInfo);
+            if (tradeInfo == null) {
+                logger.warn("获取淘宝订单接口未设置!");
+                return ResponseJson.body(false, "系统错误,请联系客服!");
+            }
+            JSONObject jsonObject = JSON.parseObject(tradeInfo);
+            if (jsonObject != null && !jsonObject.isEmpty() && jsonObject.get(Constants.ERROR) != null && jsonObject.get(Constants.ERROR).equals(Constants.SUCCESS)) {
+                List<ToCheckTaoBaoOrder> trades = JSON.parseArray(jsonObject.getString("data"), ToCheckTaoBaoOrder.class);
+                order = trades.get(0);
+                if (!StringUtils.contains(numIids, String.valueOf(order.getNumIid()))) {
+                    return ResponseJson.body(false, "此订单不能用于当前检测系统,请按客服指导下拍指定检测宝贝!");
+                }
+                // 订单发货时间不能早于卖家授权时间
+//                if (null != order.getConsignTime() && seller.getUpdateTime().after(order.getConsignTime())) {
+//                    return ResponseJson.body(false, "订单已过期，请重新输入！");
+//                }
+                if (isPay(order.getStatus())) { //是否已经支付
+                    toCheckTaoBaoOrderDao.insert(order);  //保存订单
+                } else {
+                    return ResponseJson.body(false, "订单还未支付!");
+                }
+            } else {
+                return ResponseJson.body(false, "订单信息查询失败，请确认您的订单号！");
+            }
+        }
+        return ResponseJson.body(true);
+    }
+
+    /**
+     * 是否卖家已发货
+     *
+     * @param status
+     * @return
+     */
+    private boolean isPay(String status) {
+        return "WAIT_SELLER_SEND_GOODS".equals(status) || "WAIT_BUYER_CONFIRM_GOODS".equals(status) || "TRADE_BUYER_SIGNED".equals(status) || "TRADE_FINISHED".equals(status);
+    }
+
+    private String getTaoBaoOrderInfo(String sellerNick, Long orderNum) {
+        List<TaoBaoSetting> settings = taoBaoSettingDao.getByStatus(Constants.STATE_ENABLE);
+        if (!settings.isEmpty()) {
+            String queryOrderUrl = settings.get(0).getQueryOrderUrl();
+            Map<String, Serializable> queryMap = new LinkedHashMap<>();
+            queryMap.put("sellerNick", sellerNick);
+            queryMap.put("tid", orderNum);
+            queryMap.put("forceRefresh", 1);
+            return HttpClientUtil.doHttpClientPost(queryOrderUrl, JSON.toJSONString(queryMap));
+        }
+        return null;
+    }
+
+    private JSONObject sendGoods(String sellerNick, Long tid) {
+        List<TaoBaoSetting> settings = taoBaoSettingDao.getByStatus(Constants.STATE_ENABLE);
+        if (!settings.isEmpty()) {
+            String sendOrderUrl = settings.get(0).getSendOrderUrl();
+            Map<String, Serializable> param = new LinkedHashMap<>();
+            param.put("sellerNick", sellerNick);
+            param.put("tid", tid);
+            String result = HttpClientUtil.doHttpClientPost(sendOrderUrl, JSON.toJSONString(param));
+            return JSONObject.parseObject(result);
+        }
+        return null;
+    }
+
+
+    private boolean isTaoBaoOrder(String tid) {
+        return StringUtils.isNoneBlank(tid) && StringUtils.isNumeric(tid) && StringUtils.length(tid) >= 16 && StringUtils.length(tid) <= 18;
+    }
+}

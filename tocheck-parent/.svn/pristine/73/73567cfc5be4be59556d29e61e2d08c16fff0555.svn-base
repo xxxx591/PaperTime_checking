@@ -1,0 +1,10 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.FreeActivity;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 17:31
+ **/
+public interface IFreeActivityDao extends IBaseDao<FreeActivity> {
+}

@@ -1,0 +1,74 @@
+package com.tocheck.parent.web.interceptor;
+
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.util.CommonUtil;
+import com.tocheck.parent.core.entity.WebUser;
+import com.tocheck.parent.core.interfaces.Auth;
+import com.tocheck.parent.core.service.AgentUserService;
+import com.tocheck.parent.core.utils.TocheckUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.net.URLEncoder;
+import java.util.Enumeration;
+
+/**
+ * @author pangliang
+ * @create 2017-06-08 16:12
+ **/
+@Component
+public class UserInterceptor extends HandlerInterceptorAdapter {
+
+    @Autowired
+    private TocheckUtil tocheckUtil;
+
+    @Autowired
+    private AgentUserService agentUserService;
+
+    private Logger logger = LoggerFactory.getLogger(UserInterceptor.class);
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        Long agentId = 0L;
+        String serverName = request.getServerName();
+        //如果是顶级域名,则为官网检测
+        if (!"localhost".equals(serverName)&& !Constants.TOP_LEVEL_DOMAIN.equals(serverName) && !Constants.OFFICIAL_WEBSITE.equals(serverName)) {
+            String prefix = serverName.substring(0, serverName.indexOf("."));
+            if (StringUtils.isNoneBlank(prefix)) {
+                agentId = CommonUtil.decodeUserId(prefix);
+                if (agentUserService.getById(agentId) == null) {   //如果代理商不存在了,则转为官网流量
+                    agentId = 0L;
+                }
+            }
+        }
+        String sessionId = tocheckUtil.putPaperFreeSessionId(request, response);
+        HandlerMethod _handler = (HandlerMethod) handler;
+        Auth auth = _handler.getMethodAnnotation(Auth.class);
+        if (StringUtils.isNotEmpty(sessionId) && auth != null) {
+            WebUser user = tocheckUtil.getWebUser(sessionId);
+            if (user == null) {
+                if (request.getHeader("x-requested-with") != null && "XMLHttpRequest".equalsIgnoreCase(request.getHeader("x-requested-with"))) {
+                    response.setHeader("sessionstatus", "timeout");//在响应头设置 session状态
+                    response.setStatus(403);
+                    logger.warn("ajax请求时，用户session过期");
+                } else {
+                    String requestUrl = request.getHeader("Referer");
+                    response.setStatus(200);
+                    response.sendRedirect(requestUrl);
+                }
+                return false;
+            }
+            request.setAttribute("webUser", user);
+        }
+        request.setAttribute("agentId", agentId);
+        return true;
+    }
+
+}

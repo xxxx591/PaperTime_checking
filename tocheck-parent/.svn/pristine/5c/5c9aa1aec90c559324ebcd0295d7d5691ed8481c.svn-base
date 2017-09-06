@@ -1,0 +1,10 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.tocheck.parent.core.service.WebUserService;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 10:02
+ **/
+public class WebUserServiceImpl implements WebUserService {
+}

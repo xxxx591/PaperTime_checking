@@ -1,0 +1,13 @@
+package com.tocheck.parent.core.service;
+
+import com.tocheck.parent.core.entity.ToCheckMajor;
+
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-15 14:37
+ **/
+public interface ToCheckMajorService {
+    List<ToCheckMajor> getAll();
+}

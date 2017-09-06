@@ -1,0 +1,95 @@
+package com.tocheck.parent.core.utils;
+
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.util.DateUtil;
+import com.tocheck.parent.common.util.ResponseJson;
+import com.tocheck.parent.common.util.ToCheckFileUtils;
+import com.tocheck.parent.core.properties.CommonsProperties;
+import com.tocheck.parent.core.service.ToCheckTaskService;
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.util.Map;
+
+/**
+ * @author pangliang
+ * @create 2017-06-22 15:55
+ **/
+@Component
+public class CnkiFileUtil {
+
+    @Autowired
+    private ToCheckTaskService toCheckTaskService;
+
+    @Autowired
+    private CommonsProperties commonsProperties;
+
+    private Logger logger = LoggerFactory.getLogger(CnkiFileUtil.class);
+
+    public void downloadPaper(HttpServletRequest request, HttpServletResponse response,Long id) throws Exception {
+            ToCheckTaskVo vo = toCheckTaskService.getById(id);
+            if (vo == null) {
+                logger.warn("下载论文失败,论文不存在!");
+                return;
+            }
+            File reportFile = new File(vo.getReadUrl());
+            if (reportFile == null || !reportFile.exists()) {
+                logger.warn("下载论文失败,论文不存在!id={}", id);
+                return;
+            }
+            BufferedInputStream bis;
+            BufferedOutputStream bos;
+            OutputStream fos;
+            InputStream fis = new FileInputStream(reportFile);
+            bis = new BufferedInputStream(fis);
+            fos = response.getOutputStream();
+            bos = new BufferedOutputStream(fos);
+            String zipFilename = vo.getTitle() + "_" + vo.getAuthor() + ToCheckFileUtils.getWordSuffix(vo.getReadUrl());
+            ToCheckFileUtils.setFileDownloadHeader(request, response, zipFilename);
+            int len;
+            while ((len = fis.read()) != -1) {
+                bos.write(len);
+            }
+            bos.flush();
+            fis.close();
+            bis.close();
+            fos.close();
+            bos.close();
+            toCheckTaskService.updateTaskStatus(id, 2);
+    }
+
+    public ResponseJson  uploadReport(MultipartHttpServletRequest request, Long id,Long userId) throws IOException {
+        if (id == null) return ResponseJson.body(Constants.RESP_FAIL, "参数错误,请刷新后重试!");
+        ToCheckTaskVo task = this.toCheckTaskService.getById(id);
+        if (task == null) return ResponseJson.body(Constants.RESP_FAIL, "检测记录不存在,请刷新后再试!");
+        Map<String, MultipartFile> fileMap = request.getFileMap();
+        if (fileMap == null || fileMap.isEmpty()) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请选择上传文件!");
+        }
+        MultipartFile uploadFile = null;
+        for (Map.Entry<String, MultipartFile> fileEntry : fileMap.entrySet()) {
+            uploadFile = fileEntry.getValue();
+            break;
+        }
+        if (uploadFile == null) {
+            return ResponseJson.body(Constants.RESP_FAIL, "请选择上传文件!");
+        }
+        if (!ToCheckFileUtils.isReport(uploadFile.getOriginalFilename())) {
+            return ResponseJson.body(Constants.RESP_FAIL, "只支持rar、zip压缩文件!");
+        }
+        String userDir = DateUtil.getDate(task.getCreatedTime(), "yyyyMMddHH");
+        String filePath = commonsProperties.report_path + userDir + File.separator + task.getSystemId() + File.separator;
+        ToCheckFileUtils.saveReportFile(uploadFile, filePath, String.valueOf(id));
+        task.setTarget(userId);
+        toCheckTaskService.uploadCnkiReport(task);  //修改为检测完成状态
+        return ResponseJson.body(Constants.RESP_SUCCESS);
+    }
+}

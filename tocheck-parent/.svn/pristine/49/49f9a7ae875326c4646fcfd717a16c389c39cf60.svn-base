@@ -1,0 +1,28 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.springframework.stereotype.Repository;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author pangliang
+ * @create 2017-05-23 11:18
+ **/
+@Repository
+public interface IToCheckTaskDao extends IBaseDao<ToCheckTaskVo> {
+
+    void downloadPaper(long id);
+
+    List<ToCheckTaskVo> orderSettlement(Map<String,Object> map);
+
+    void updateSettlementStatus();
+
+    List<ToCheckTaskVo> getTargetCanWithdrawTask(long agentId);
+
+    List<ToCheckTaskVo> getFlowCanWithdrawTask(long agentId);
+
+    List<ToCheckTaskVo> agentCheckTask(Map<String,Object> map);
+}

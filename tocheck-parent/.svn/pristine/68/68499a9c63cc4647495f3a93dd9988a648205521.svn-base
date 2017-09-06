@@ -1,0 +1,92 @@
+package com.tocheck.parent.web.ctrl;
+
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.common.util.DateUtil;
+import com.tocheck.parent.common.util.ToCheckFileUtils;
+import com.tocheck.parent.core.entity.ToCheckTask;
+import com.tocheck.parent.core.interfaces.Auth;
+import com.tocheck.parent.core.properties.CommonsProperties;
+import com.tocheck.parent.core.service.ToCheckTaskService;
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.io.*;
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-13 9:29
+ **/
+@Controller
+@RequestMapping(value = "/viewReport")
+public class ViewReportCtrl extends BaseCtrl {
+
+    @Autowired
+    private ToCheckTaskService toCheckTaskService;
+    @Autowired
+    private CommonsProperties commonsProperties;
+
+    private Logger logger = LoggerFactory.getLogger(ViewReportCtrl.class);
+
+    @Auth
+    @RequestMapping(value = "/index", method = RequestMethod.GET)
+    public String viewReport(Integer p, Model model) {
+        try {
+            p = p == null ? 1 : p;
+            PageInfo<ToCheckTaskVo> page = toCheckTaskService.viewReport(p, getSessionUserInfo().getId());
+            model.addAttribute("page", page);
+            return "viewReport/index";
+        } catch (Exception e) {
+            logger.error("进入查看报告页面出错!", e);
+        }
+        return "redirect:index.html";
+    }
+
+    @Auth
+    @RequestMapping(value = "/downReport/{id:[0-9]+}", method = RequestMethod.GET)
+    public void downReport(@PathVariable Long id) {
+        try {
+            ToCheckTaskVo vo = toCheckTaskService.getById(id);
+            if (vo == null) {
+                logger.warn("下载论文失败,论文不存在!");
+            }
+            String userDir = DateUtil.getDate(vo.getCreatedTime(), "yyyyMMddHH");
+            String filePath = commonsProperties.report_path + userDir + File.separator + vo.getSystemId() + File.separator;
+            String suffix = ".zip";
+            File reportFile = new File(filePath + vo.getId() + suffix);
+            if (reportFile == null || !reportFile.exists()) {
+                suffix = ".rar";
+                reportFile = new File(filePath + vo.getId() + suffix);
+                if (reportFile == null || !reportFile.exists()) {
+                    logger.warn("下载论文失败,论文不存在!");
+                    return;
+                }
+            }
+            InputStream fis = new FileInputStream(reportFile);
+            BufferedInputStream bis = new BufferedInputStream(fis);
+            OutputStream fos = response.getOutputStream();
+            BufferedOutputStream bos = new BufferedOutputStream(fos);
+            String zipFilename = vo.getTitle() + "_" + vo.getAuthor() + suffix;
+            ToCheckFileUtils.setFileDownloadHeader(request, response, zipFilename);
+            int len;
+            while ((len = fis.read()) != -1) {
+                bos.write(len);
+            }
+            bos.flush();
+            fis.close();
+            bis.close();
+            fos.close();
+            bos.close();
+            toCheckTaskService.updateTaskStatus(id, 4);
+        } catch (Exception e) {
+            logger.warn("下载检测报告出现异常,docCheckId={}", id, e);
+        }
+    }
+}

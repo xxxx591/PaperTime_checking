@@ -1,0 +1,15 @@
+package com.tocheck.parent.core.interfaces;
+
+import java.lang.annotation.*;
+
+/**
+ * 代理商登录验证注解
+ * Created by kchen on 2016/10/13.
+ */
+@Documented
+@Inherited
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface AgentAuth {
+
+}

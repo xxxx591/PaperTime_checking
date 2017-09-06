@@ -1,0 +1,19 @@
+package com.tocheck.parent.core.service;
+
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.core.entity.SystemTopic;
+
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-06 10:24
+ **/
+public interface SystemTopicService {
+
+    PageInfo<SystemTopic> listPage(Integer p);
+
+    List<SystemTopic> topRecommended();
+
+    SystemTopic getById(long id);
+}

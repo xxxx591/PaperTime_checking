@@ -1,0 +1,12 @@
+/**
+ * Created by Administrator on 2017/6/8.
+ */
+var paperFileExtReg = /.doc|.docx|.txt/;
+;!function () {
+    //加载所有的layer.use()
+    layer = layui.layer
+    //…
+}();
+function trim(val) {
+    return $.trim(val)
+}

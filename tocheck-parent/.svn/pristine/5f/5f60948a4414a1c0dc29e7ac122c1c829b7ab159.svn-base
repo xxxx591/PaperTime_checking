@@ -1,0 +1,17 @@
+package com.papertime.parent.tocheck.interfaces;
+
+import java.lang.annotation.*;
+
+/**
+ * 登录验证注解
+ * Created by kchen on 2016/10/13.
+ */
+@Documented
+@Inherited
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Auth {
+
+    //页面请求类型
+    ResponseType responseType() default ResponseType.page;
+}

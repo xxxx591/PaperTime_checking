@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tocheck.parent.core.dao.IWithdrawRecordDao">
+    <resultMap id="BaseResultMap" type="com.tocheck.parent.core.entity.WithdrawRecord">
+        <id column="id" property="id" jdbcType="BIGINT" javaType="long"/>
+        <result column="agentId" property="agentId" jdbcType="BIGINT" javaType="long"/>
+        <result column="amount" property="amount" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+        <result column="createTime" property="createTime" />
+        <result column="updateTime" property="updateTime" />
+        <result column="status" property="status" jdbcType="INTEGER" javaType="int"/>
+        <result column="deleteStatus" property="deleteStatus" jdbcType="INTEGER" javaType="int"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t1.id,t1.agentId,t1.amount,t1.createTime,t1.updateTime,t1.status,t1.deleteStatus
+    </sql>
+
+    <select id="getById" parameterType="long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from withdrawRecord t1 where t1.deleteStatus != 0 and t1.id=#{id}
+    </select>
+
+    <select id="getByMap" parameterType="Map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from withdrawRecord t1 where t1.deleteStatus != 0
+        <if test="agentId!=null">
+            and t1.agentId=#{agentId}
+        </if>
+        <if test="status!=null">
+            and t1.status=#{status}
+        </if>
+        ORDER BY t1.id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.tocheck.parent.core.entity.WithdrawRecord" useGeneratedKeys="true" keyProperty="id">
+        insert into withdrawRecord(agentId,amount,status) values
+        (#{agentId},#{amount},#{status})
+    </insert>
+
+    <update id="updateByMap" parameterType="Map">
+        update withdrawRecord
+        <set>
+            <if test="updateTime!=null">
+                updateTime=#{updateTime},
+            </if>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="logicDelete" parameterType="Long">
+        update withdrawRecord set deleteStatus = 0 where id=#{id}
+    </update>
+
+</mapper>

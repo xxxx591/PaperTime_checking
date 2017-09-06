@@ -1,0 +1,12 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>检测新闻</title>
+</head>
+<body>
+<c:forEach items="${page.getList()}" var="topic">
+<a href="/newDetail/${topic.id}.html" target="_blank"><p>${topic.title}</p></a>
+</c:forEach>
+</body>
+</html>

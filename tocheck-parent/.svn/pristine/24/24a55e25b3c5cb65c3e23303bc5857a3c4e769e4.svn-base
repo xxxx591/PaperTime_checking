@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tocheck.parent.core.dao.IToCheckTaskDao">
+    <resultMap id="BaseResultMap" type="com.tocheck.parent.core.vo.ToCheckTaskVo">
+        <id column="id" property="id" jdbcType="BIGINT" javaType="long"/>
+        <result column="checkId" property="checkId" jdbcType="BIGINT" javaType="long"/>
+        <result column="systemId" property="systemId" jdbcType="BIGINT" javaType="long"/>
+        <result column="userId" property="userId" jdbcType="BIGINT" javaType="long"/>
+        <result column="agentId" property="agentId" jdbcType="BIGINT" javaType="long"/>
+        <result column="title" property="title" jdbcType="VARCHAR" javaType="String" />
+        <result column="author" property="author" jdbcType="VARCHAR" javaType="String"/>
+        <result column="wordNum" property="wordNum" jdbcType="INTEGER" javaType="int"/>
+        <result column="target" property="target" jdbcType="BIGINT" javaType="long"/>
+        <result column="coupon" property="coupon" jdbcType="BIGINT" javaType="long"/>
+        <result column="money" property="money" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+        <result column="flowFee" property="flowFee" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+        <result column="targetFee" property="targetFee" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+        <result column="isRush" property="isRush" jdbcType="INTEGER" javaType="int"/>
+        <result column="status" property="status" jdbcType="INTEGER" javaType="int"/>
+        <result column="settlementStatus" property="settlementStatus" jdbcType="INTEGER" javaType="int"/>
+        <result column="createdTime" property="createdTime"/>
+        <result column="updateTime" property="updateTime"/>
+        <result column="readUrl" property="readUrl" jdbcType="VARCHAR" javaType="String"/>
+        <result column="downUrl" property="downUrl" jdbcType="VARCHAR" javaType="String"/>
+        <result column="errorMsg" property="errorMsg" jdbcType="VARCHAR" javaType="String"/>
+        <result column="deleteStatus" property="deleteStatus" jdbcType="INTEGER" javaType="int"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t1.id,t1.checkId,t1.systemId,t1.userId,t1.agentId,t1.title,t1.author,t1.wordNum,t1.target,t1.coupon,t1.money,
+        t1.flowFee,t1.targetFee,t1.isRush,t1.status,t1.settlementStatus,t1.createdTime,t1.updateTime,t1.readUrl,
+        t1.downUrl,t1.errorMsg,t1.deleteStatus
+    </sql>
+
+    <select id="getById" parameterType="long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from toCheckTask t1 where t1.deleteStatus != 0 and t1.id=#{id}
+    </select>
+
+    <select id="getByMap" parameterType="Map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>,t2.systemName
+        from toCheckTask t1 LEFT JOIN toCheckSystem t2 ON t1.systemId = t2.id where t1.deleteStatus != 0
+        <if test="userId!=null">
+            AND t1.userId=#{userId}
+        </if>
+        <if test="status!=null">
+            AND t1.status=#{status}
+        </if>
+        <if test="systemId!=null">
+            AND t1.systemId=#{systemId}
+        </if>
+        ORDER BY t1.id DESC
+    </select>
+
+    <select id="agentCheckTask" parameterType="Map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>,t2.systemName
+        from toCheckTask t1 LEFT JOIN toCheckSystem t2 ON t1.systemId = t2.id where t1.deleteStatus != 0
+        AND t1.systemId &lt; 4
+        <if test="userId!=null">
+            AND t1.userId=#{userId}
+        </if>
+        <if test="status!=null">
+            AND t1.status=#{status}
+        </if>
+        <if test="systemId!=null">
+            AND t1.systemId=#{systemId}
+        </if>
+        <if test="target !=null and target == 1">
+            AND status !=1
+            AND (t1.target=#{target} OR(TIMESTAMPDIFF(MINUTE,t1.createdTime,now()) &gt; 60 AND
+            t1.status =0 AND t1.isRush!=1))
+        </if>
+        <if test="target !=null and target != 1">
+            AND t1.target=#{target} AND(t1.status > 1 OR (TIMESTAMPDIFF(MINUTE,t1.createdTime,now()) &lt; 60 AND
+            t1.status =0) OR t1.isRush=1)
+        </if>
+        ORDER BY t1.id DESC
+    </select>
+
+    <select id="orderSettlement" parameterType="long" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/>,t2.systemName
+        from toCheckTask t1 LEFT JOIN tocheckSystem t2 ON t1.systemId = t2.id where t1.deleteStatus != 0
+        AND t1.systemId &lt; 4
+        <if test="agentId !=null">
+            AND t1.agentId = #{agentId}
+        </if>
+        <if test="target !=null">
+            AND t1.target = #{target}
+        </if>
+        AND t1.settlementStatus != 0  ORDER BY t1.settlementStatus ASC
+    </select>
+
+    <select id="getTargetCanWithdrawTask" parameterType="long" resultMap="BaseResultMap">
+        SELECT t1.id,t1.targetFee,t1.settlementStatus FROM toCheckTask t1 WHERE  t1.deleteStatus != 0 AND t1.systemId &lt; 4
+        AND t1.target = #{agentId} AND t1.settlementStatus =1 OR t1.settlementStatus =5
+    </select>
+
+    <select id="getFlowCanWithdrawTask" parameterType="long" resultMap="BaseResultMap">
+        SELECT t1.id,t1.flowFee,t1.settlementStatus FROM toCheckTask t1 WHERE  t1.deleteStatus != 0 AND t1.systemId &lt; 4
+        AND t1.agentId = #{agentId} AND t1.settlementStatus =1 OR t1.settlementStatus =3
+    </select>
+
+    <insert id="insert" parameterType="com.tocheck.parent.core.vo.ToCheckTaskVo" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into toCheckTask(checkId,systemId,userId,agentId,target,title,author,wordNum,coupon,money,status,readUrl) values
+        (#{checkId},#{systemId},#{userId},#{agentId},#{target},#{title},#{author},#{wordNum},#{coupon},#{money},#{status},#{readUrl})
+    </insert>
+
+    <update id="updateByMap" parameterType="Map">
+        update toCheckTask
+        <set>
+            <if test="status!=null">
+                status=#{status},
+            </if>
+            <if test="downUrl!=null">
+                downUrl=#{downUrl},
+            </if>
+            <if test="checkId!=null">
+                checkId=#{checkId},
+            </if>
+            <if test="target!=null">
+                target=#{target},
+            </if>
+            <if test="flowFee!=null">
+                flowFee=#{flowFee},
+            </if>
+            <if test="targetFee!=null">
+                targetFee=#{targetFee},
+            </if>
+            <if test="isRush!=null">
+                isRush=#{isRush},
+            </if>
+            <if test="errorMsg!=null">
+                errorMsg=#{errorMsg},
+            </if>
+            <if test="updateTime!=null">
+                updateTime=#{updateTime},
+            </if>
+            <if test="settlementStatus!=null">
+                settlementStatus=#{settlementStatus},
+            </if>
+            <if test="deleteStatus!=null">
+                deleteStatus=#{deleteStatus},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="logicDelete" parameterType="Long">
+        update toCheckTask set deleteStatus = 0 where id=#{id}
+    </update>
+
+    <update id="downloadPaper" parameterType="Long">
+        update toCheckTask set status = 2 where status=0 AND id=#{id}
+    </update>
+
+    <update id="updateSettlementStatus" parameterType="Long">
+        <![CDATA[
+        update toCheckTask t1 set settlementStatus = 1 where t1.systemId < 4 AND t1.settlementStatus=0 and
+        t1.status >=3 AND  TIMESTAMPDIFF(MINUTE,t1.updateTime,now()) >2880
+        ]]>
+    </update>
+
+</mapper>

@@ -1,0 +1,51 @@
+package com.paperpass.parent.common.util;
+
+//用二进制位来表示状态， option的二进制表示下，从右边数起，依次是第0位，第1位，第2位。
+//第0位 表示用户是否首次检测。
+//第1位 表示是否片段检测。
+//第2位 表示是否从word文档上传。
+//第3位 表示是否包含自建库。
+//第4位 表示是否优先检测。
+public class BaseOptionUtils {
+
+
+    public static int addFirstCheck(int option) {
+        return option | 0x1;
+    }
+
+    public static int addPartCheck(int option) {
+        return option | 0x2;
+    }
+
+    public static boolean isFirstCheck(int option) {
+        return (option & 0x1) > 0;
+    }
+
+    public static boolean isPartCheck(int option) {
+        return (option & 0x2) > 0;
+    }
+
+    public static int addFromWord(int option) {
+        return option | 0x4;
+    }
+
+    public static boolean isFromWord(int option) {
+        return (option & 0x4) > 0;
+    }
+
+    public static int addSelfBase(int option) {
+        return option | 0x8;
+    }
+
+    public static boolean isSelfBase(int option) {
+        return (option & 0x8) > 0;
+    }
+
+    public static int addPriority(int option) {
+        return option | 0x10;
+    }
+
+    public static boolean isPriority(int option) {
+        return (option & 0x10) > 0;
+    }
+}

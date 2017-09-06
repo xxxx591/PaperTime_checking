@@ -1,0 +1,150 @@
+package com.tocheck.parent.core.utils;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.util.*;
+import com.tocheck.parent.core.service.ToCheckTaskService;
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import java.security.MessageDigest;
+import java.util.*;
+
+/**
+ * @author pangliang
+ * @create 2017-05-26 10:22
+ **/
+@Component
+public class PaperFreeUtil {
+
+    @Autowired
+    private ToCheckTaskService toCheckTaskService;
+
+    @Autowired
+    private SSDBUtils ssdbUtils;
+
+    private static final String STATUS = "status";
+
+    private static final String ERROR = "error";
+
+    private static final String SUCCESS = "0";
+
+    private static final Logger logger = LogManager.getLogger(PaperPassUtil.class);
+
+    private static final String SYSTEM_IP = "127.0.0.1";
+
+    private static final String PARTNER_KEY = "84125408";
+
+    private static final String PARTNER_SECRET = "3a68698747fdebed4871a8553295c3f2";
+
+    private static final String SUBMIT_CHECK_TASK = "http://tb.paperfree.cn/grad/checkTask/checkTaskSubmit";
+
+    private static final String QUERY_CHECK_TASK = "http://tb.paperfree.cn/grad/checkTask/queryCheckTask";
+
+    private static final String REPORT_DOWN_URL = "http://www.paperfree.cn/paper/downloadReport.html?docCheckId={0}";
+
+
+    public void submitCheckTask() {
+        try {
+            PageInfo<ToCheckTaskVo> pageInfo = toCheckTaskService.canCheckTask(Constants.CHECK_SYSTEM_PAPERFREE, Constants.CHECK_STATUS_WAIT);
+            for (ToCheckTaskVo vo : pageInfo.getList()) {
+                String time = DateUtil.getDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+                String nonce_str = CommonUtil.buildRandomNum(6);
+                List<String> signParam = new ArrayList<>();
+                signParam.add(PARTNER_KEY);
+                signParam.add(SYSTEM_IP);
+                signParam.add(nonce_str);
+                signParam.add(time);
+
+                Map<String, Object> queryMap = new HashMap<>();
+                queryMap.put("title",vo.getTitle());
+                queryMap.put("author",vo.getAuthor());
+                queryMap.put("content",ssdbUtils.getValue("tocheck-content-" + vo.getId()));
+                queryMap.put("partnerKey", PARTNER_KEY);
+                queryMap.put("nonceStr", nonce_str);
+                queryMap.put("ip", SYSTEM_IP);
+                queryMap.put("timestamp", time);
+                queryMap.put("signature", sign(signParam, PARTNER_SECRET));
+                String result = RestTemplateUtils.post(SUBMIT_CHECK_TASK, JSON.toJSONString(queryMap),String.class);
+                JSONObject object = JSON.parseObject(result);
+                logger.info("当前任务ID={},请求结果object={}", vo.getId(), object);
+                if (object != null && StringUtils.equals(SUCCESS, object.getString(ERROR))) {
+                    Long checkId = object.getLong("docCheckId");
+                    if (checkId != null) {
+                        toCheckTaskService.updateTaskStatus(vo.getId(), Constants.CHECK_STATUS_CHECKING, checkId);
+                        ssdbUtils.del("tocheck-content-" + vo.getId());
+                    }
+                } else if (object != null && !StringUtils.equals(SUCCESS, object.getString(ERROR))) {
+                    toCheckTaskService.updateErrorMsg(vo.getId(), object.getString("msg"));
+                }
+            }
+        } catch (Exception e) {
+            logger.error("提交定稿终检论文失败e={}", e);
+        }
+    }
+
+    public void updateCheckTaskStatus() {
+        PageInfo<ToCheckTaskVo> pageInfo = toCheckTaskService.canCheckTask(Constants.CHECK_SYSTEM_PAPERFREE, Constants.CHECK_STATUS_CHECKING);
+        for (ToCheckTaskVo vo : pageInfo.getList()) {
+            String time = DateUtil.getDate(new Date(), "yyyy-MM-dd HH:mm:ss");
+            String nonce_str = CommonUtil.buildRandomNum(6);
+            List<String> signParam = new ArrayList<>();
+            signParam.add(PARTNER_KEY);
+            signParam.add(SYSTEM_IP);
+            signParam.add(nonce_str);
+            signParam.add(time);
+            signParam.add(String.valueOf(vo.getCheckId()));
+
+            Map<String, Object> queryMap = new HashMap<>();
+            queryMap.put("docCheckId", vo.getCheckId());
+            queryMap.put("partnerKey", PARTNER_KEY);
+            queryMap.put("nonceStr", nonce_str);
+            queryMap.put("ip", SYSTEM_IP);
+            queryMap.put("timestamp", time);
+            queryMap.put("signature", sign(signParam, PARTNER_SECRET));
+            String resultStr = HttpClientUtil.doHttpClientPost(QUERY_CHECK_TASK, JSON.toJSONString(queryMap));
+            JSONObject object = JSON.parseObject(resultStr);
+            logger.info("当前任务ID={},请求结果object={}", vo.getId(), object);
+            if (object != null && StringUtils.equals(SUCCESS, object.getString(ERROR))) {
+                JSONObject result = object.getJSONObject("result");
+                if (result !=null) {
+                    if (result.getIntValue(STATUS) == Constants.CHECK_STATUS_REPORT_ERROR) {
+                        toCheckTaskService.updateErrorMsg(vo.getId(), "生成报告出错，请联系卖家，");
+                    }
+                    if (result.getIntValue(STATUS) == Constants.CHECK_STATUS_CHECK_ERROR) {
+                        toCheckTaskService.updateErrorMsg(vo.getId(), "检测出错，请联系卖家");
+                    }
+                    if (result.getIntValue(STATUS) ==  Constants.CHECK_STATUS_FINISH) {
+                        toCheckTaskService.finishCheck(vo.getId(), Constants.CHECK_STATUS_FINISH, REPORT_DOWN_URL.replace("{0}", String.valueOf(vo.getCheckId())));
+                    }
+                }
+            } else if (object != null && !StringUtils.equals(SUCCESS, object.getString(ERROR))) {
+                toCheckTaskService.updateErrorMsg(vo.getId(), object.getString("msg"));
+            }
+        }
+    }
+
+    private static String sign(List<String> params, String appSecret) {
+        Collections.sort(params);
+        StringBuilder string1 = new StringBuilder(16);
+        for (String string : params) {
+            string1.append(string);
+        }
+        string1.append(appSecret);
+        try {
+            MessageDigest crypt = MessageDigest.getInstance("SHA-1");
+            crypt.reset();
+            crypt.update(String.valueOf(string1).getBytes("UTF-8"));
+            return PaperPassUtil.byteToHex(crypt.digest());
+        } catch (Exception e) {
+            logger.error("服务器签名失败params={}", params, e);
+        }
+        return null;
+    }
+}

@@ -1,0 +1,47 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.tocheck.parent.core.dao.IUserCouponDao;
+import com.tocheck.parent.core.entity.UserCoupon;
+import com.tocheck.parent.core.service.UserCouponService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 17:57
+ **/
+@Service
+public class UserCouponServiceImpl implements UserCouponService {
+
+    @Autowired
+    private IUserCouponDao userCouponDao;
+
+    @Override
+    public List<UserCoupon> getCoupon(long systemId, long userId) {
+        Map<String,Object> param = new HashMap<>();
+        param.put("systemId",systemId);
+        param.put("userId",userId);
+        param.put("status",1);
+        return userCouponDao.getByMap(param);
+    }
+
+    @Override
+    public void updateStatus(long id, int status) {
+        Map<String,Object> param = new HashMap<>();
+        param.put("id",id);
+        param.put("status",status);
+        userCouponDao.updateByMap(param);
+    }
+
+    @Override
+    public List<UserCoupon> getUserCoupon(long userId) {
+        Map<String,Object> param = new HashMap<>();
+        param.put("userId",userId);
+        return userCouponDao.getByMap(param);
+    }
+
+}

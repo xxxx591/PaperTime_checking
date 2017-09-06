@@ -1,0 +1,20 @@
+package com.tocheck.parent.core.vo;
+
+import com.tocheck.parent.core.entity.ToCheckTask;
+
+/**
+ * @author pangliang
+ * @create 2017-05-23 11:17
+ **/
+public class ToCheckTaskVo extends ToCheckTask{
+
+    private String content;
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+}

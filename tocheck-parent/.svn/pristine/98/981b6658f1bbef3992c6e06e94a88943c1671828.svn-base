@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tocheck.parent.core.dao.IAgentUserDao">
+    <resultMap id="BaseResultMap" type="com.tocheck.parent.core.entity.AgentUser">
+        <id column="id" property="id" jdbcType="BIGINT" javaType="long"/>
+        <result column="userName" property="userName" jdbcType="VARCHAR" javaType="String"/>
+        <result column="password" property="password" jdbcType="VARCHAR" javaType="String"/>
+        <result column="note" property="note" jdbcType="VARCHAR" javaType="String"/>
+        <result column="alipayAccount" property="alipayAccount" jdbcType="VARCHAR" javaType="String"/>
+        <result column="url" property="url" jdbcType="VARCHAR" javaType="String"/>
+        <result column="systemIds" property="systemIds" jdbcType="VARCHAR" javaType="String"/>
+        <result column="systemNames" property="systemNames" jdbcType="VARCHAR" javaType="String"/>
+        <result column="majorIds" property="majorIds" jdbcType="VARCHAR" javaType="String"/>
+        <result column="majorNames" property="majorNames" jdbcType="VARCHAR" javaType="String"/>
+        <result column="createTime" property="createTime"/>
+        <result column="deleteStatus" property="deleteStatus" jdbcType="INTEGER" javaType="int"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t1.id,t1.userName,t1.password,t1.note,t1.alipayAccount,t1.url,t1.systemIds,t1.systemNames,t1.majorIds,t1.majorNames,t1.createTime,t1.deleteStatus
+    </sql>
+
+    <select id="getById" parameterType="long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from agentUser t1 where t1.deleteStatus != 0 and t1.id=#{id}
+    </select>
+
+    <select id="getByMap" parameterType="Map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from agentUser t1 where t1.deleteStatus != 0
+        <if test="userName!=null">
+            and t1.userName=#{userName}
+        </if>
+        <if test="password!=null">
+            and t1.password=#{password}
+        </if>
+        ORDER BY t1.id DESC
+    </select>
+
+    <insert id="insert" parameterType="com.tocheck.parent.core.entity.AgentUser" useGeneratedKeys="true" keyProperty="id">
+        insert into agentUser(userName,password,note,alipayAccount,systemIds,systemNames,majorIds,majorNames) values
+        (#{userName},#{password},#{note},#{alipayAccount},#{systemIds},#{systemNames},#{majorIds},#{majorNames})
+    </insert>
+
+    <update id="updateByMap" parameterType="Map">
+        update agentUser
+        <set>
+            <if test="password!=null">
+                password=#{password},
+            </if>
+            <if test="url!=null">
+                url=#{url},
+            </if>
+            <if test="note!=null">
+                note=#{note},
+            </if>
+            <if test="alipayAccount!=null">
+                alipayAccount=#{alipayAccount},
+            </if>
+            <if test="systemIds!=null">
+                systemIds=#{systemIds},
+            </if>
+            <if test="systemNames!=null">
+                systemNames=#{systemNames},
+            </if>
+            <if test="majorIds!=null">
+                majorIds=#{majorIds},
+            </if>
+            <if test="majorNames!=null">
+                majorNames=#{majorNames},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="logicDelete" parameterType="Long">
+        update agentUser set deleteStatus = 0 where id=#{id}
+    </update>
+
+</mapper>

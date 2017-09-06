@@ -1,0 +1,12 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.WithdrawRecord;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 15:47
+ **/
+@Repository
+public interface IWithdrawRecordDao extends IBaseDao<WithdrawRecord> {
+}

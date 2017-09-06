@@ -1,0 +1,67 @@
+package com.tocheck.parent.core.entity;
+
+import com.tocheck.parent.common.entity.BaseEntity;
+
+import java.util.Date;
+
+/**
+ * @author pangliang
+ * @create 2017-07-05 8:44
+ **/
+public class UserActivity extends BaseEntity{
+
+    private long userId;              //用户ID
+    private long actId;              //活动ID
+    private Date submitTime;         //提交时间
+    private String actResult;        //参与结果（图片）
+    private int status;              //-1未通过，0-审核中，1-已参与
+    private Date approveTime;        //审核时间
+
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
+
+    public long getActId() {
+        return actId;
+    }
+
+    public void setActId(long actId) {
+        this.actId = actId;
+    }
+
+    public Date getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Date submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    public String getActResult() {
+        return actResult;
+    }
+
+    public void setActResult(String actResult) {
+        this.actResult = actResult;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Date getApproveTime() {
+        return approveTime;
+    }
+
+    public void setApproveTime(Date approveTime) {
+        this.approveTime = approveTime;
+    }
+}

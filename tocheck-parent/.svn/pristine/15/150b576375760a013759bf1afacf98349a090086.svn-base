@@ -1,0 +1,10 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.AgentUser;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 11:26
+ **/
+public interface IAgentUserDao extends IBaseDao<AgentUser> {
+}

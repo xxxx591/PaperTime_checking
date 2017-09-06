@@ -1,0 +1,202 @@
+/**
+ * Created by Administrator on 2017/6/8.
+ */
+var index;
+function uploadPaperFile(object) {
+    var pos = -1;
+    var filePath = object.value;
+    if (filePath.indexOf("/") > -1) {
+        pos = filePath.lastIndexOf("/") * 1;
+    } else if (filePath.indexOf("\\") > -1) {
+        pos = filePath.lastIndexOf("\\") * 1;
+    }
+    var fileName = filePath.substring(pos + 1);
+    var fileExtension = fileName.toLowerCase().substr(fileName.lastIndexOf('.'));
+    if (!paperFileExtReg.test(fileExtension)) {
+        layer.msg("只支持doc、docx或txt格式的文档!");
+        return;
+    } else {
+        index = loading();
+        $.ajaxFileUpload({
+            url: '/submitTask/uploadFile.html',
+            type: 'POST',
+            secureuri: false,
+            fileElementId: 'file',
+            data: {systemId: $("#systemId").val()},
+            dataType: 'json',
+            success: function (json) {
+                if (json.state) {
+                    $("#content").val(json.param.content);
+                    if ($.trim($("#title").val()) == '') {
+                        $("#title").val(json.param.title);
+                    }
+                    $("#fileName").val(fileName);
+                } else {
+                    layer.msg(json.message);
+                }
+                layer.close(index);
+            },
+            error: function () {
+                layer.close(index);
+                layer.msg('提交文件失败，请重试!');
+            }
+        });
+    }
+}
+$("#step1").click(function () {
+    var title = $.trim(($("#title").val()));
+    var author = $.trim(($("#author").val()));
+    var content = $.trim(($("#content").val()));
+    var systemId = $("#systemId").val();
+    if (title != '' && title.length > 100) {
+        layer.msg("论文标题请少于100字符!");
+        return;
+    }
+    if (author != '' && author.length > 20) {
+        layer.msg("论文作者请少于20字符!");
+        return;
+    }
+    if (content == '') {
+        layer.msg("请粘贴或上传论文内容!");
+        return;
+    }
+    index = loading();
+    $.ajax({
+        url: "/submitTask/calculatePaperNumber.html",
+        method: "post",
+        data: {title: title, author: author, systemId: systemId, content: content},
+        success: function (json) {
+            if (json.state) {
+                $("#step2-title").val(title);
+                $("#wordCount").val(json.param.wordCount);        //论文字数
+                $(".price").text(json.param.cost);                //计费
+                $("#systemPrice").val(json.param.cost);           //计费
+                $(".report-one").hide();
+                $(".report-two").show();
+                //控制STEP
+                $(".layui-input-inline-right > i").eq(0).addClass("ico-one").removeClass("ico-two");
+                $(".layui-input-inline-right > i").eq(1).removeClass("ico-one").addClass("ico-two");
+            } else {
+                layer.msg("计算价格失败,请刷新后重试!");
+            }
+            layer.close(index);
+        },
+        error: function () {
+            layer.msg("计算价格失败,请刷新后重试!");
+            layer.close(index);
+        }
+    })
+})
+
+$("#coupon").change(function () {
+    var id = $(this).val();
+    var money = parseInt($(this).find("option:selected").attr("cash"));
+    var systemPrice = parseInt($("#systemPrice").val());
+    if (id == 0) {
+        $(".yhq-str").text('');
+        $("#need-pay").text(systemPrice);
+        $(".pay-type").show();
+    } else {
+        $(".yhq-str").text('- ¥ ' + money);
+        if(systemPrice - money<0){
+            $("#need-pay").text(0);
+            $(".pay-type").hide();
+        }else{
+            $("#need-pay").text(systemPrice - money);
+            $(".pay-type").show();
+        }
+    }
+})
+
+var timer;
+$(".layui-btn-qr").click(function () {
+    var payType = $("input[name='payType']:checked").val();
+    var data = {
+        title: $("#title").val(),
+        author: $("#author").val(),
+        content: $("#content").val(),
+        systemId: $("#systemId").val(),
+        coupon: $("#coupon").find("option:selected").val(),
+        payType: payType,
+    }
+    var index = loading();
+    $.ajax({
+        url: "/submitTask/saveOtherTask.html",
+        method: "post",
+        data: data,
+        success: function (json) {
+            layer.close(index);
+            if (json.state) {
+                if(json.message == 1){
+                    alipay(json.param.url, json.param.amount, payType)
+                    timer = setInterval('validateOrderStatus("' + json.param.orderNum + '")', 1000);
+                }else if(json.message ==2){
+                    $("#step3-title").text($("#title").val());
+                    $("#cost").text('¥' + $(".price").eq(0).text());
+                    $(".report-two").hide();
+                    $(".report-three").show();
+                    //控制STEP
+                    $(".layui-input-inline-right > i").eq(1).addClass("ico-one").removeClass("ico-two");
+                    $(".layui-input-inline-right > i").eq(2).removeClass("ico-one").addClass("ico-two");
+                }else{
+                    layer.msg("系统错误,请刷新后重试!");
+                }
+            } else {
+                layer.msg(json.message);
+            }
+        }, error: function () {
+            layer.close(index);
+        }
+    })
+})
+
+function alipay(url, amount, payType) {
+    var title = "支付宝扫一扫支付";
+    if ("wxPay" == payType) {
+        title = "微信扫一扫支付";
+    }
+    layer.open({
+        title: '支付' + amount + '元',
+        type: 1,
+        area: ['475px', '445px'],
+        content: '<div class="box-layer box-layer-ewm">' +
+        '<div class="box-ewm">' +
+        '<strong>' + title + '</strong>' +
+        '<div class="ewm-img"><img src="' + url + '"></div>' +
+        '<span>请在二小时内完成支付！</span>' +
+        '<hr/><a href="javascript:chooseOther();">使用其他方式支付></a> </div> ' +
+        '</div>',
+        success: function (layero, index) {
+            $('.btn-x,.btn-no').click(function () {
+                layer.close(index)
+            })
+        }, cancel: function () {
+            clearInterval(timer);
+        }
+    })
+}
+
+$(".prev-step").click(function () {
+    $(".report-two").hide();
+    $(".report-one").show();
+    //控制STEP
+    $(".layui-input-inline-right > i").eq(1).addClass("ico-one").removeClass("ico-two");
+    $(".layui-input-inline-right > i").eq(0).removeClass("ico-one").addClass("ico-two");
+})
+
+function validateOrderStatus(orderNum) {
+    $.getJSON("/submitTask/validateOrderStatus.html", {orderNum: orderNum}, function (json) {
+        if (json.state) {
+            clearInterval(timer);
+            layer.closeAll();
+
+            $("#step3-title").text($("#title").val());
+            $("#cost").text('¥' + $(".price").eq(0).text());
+            $(".report-two").hide();
+            $(".report-three").show();
+            //控制STEP
+            $(".layui-input-inline-right > i").eq(1).addClass("ico-one").removeClass("ico-two");
+            $(".layui-input-inline-right > i").eq(2).removeClass("ico-one").addClass("ico-two");
+        }
+    })
+}

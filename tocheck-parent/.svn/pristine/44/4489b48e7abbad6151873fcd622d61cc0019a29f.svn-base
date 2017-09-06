@@ -1,0 +1,16 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.ToCheckMajor;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-15 14:27
+ **/
+@Repository
+public interface IToCheckMajorDao {
+
+    List<ToCheckMajor> getAll();
+}

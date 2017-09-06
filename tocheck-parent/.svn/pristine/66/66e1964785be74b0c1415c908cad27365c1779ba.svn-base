@@ -1,0 +1,66 @@
+package com.tocheck.parent.core.service;
+
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.common.util.ResponseJson;
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Map;
+
+/**
+ * @author pangliang
+ * @create 2017-05-23 11:40
+ **/
+public interface ToCheckTaskService {
+
+    ToCheckTaskVo getById(long id);
+
+    void insert(ToCheckTaskVo toCheckTaskVo);
+
+    Map<String, Object> insertCnki(ToCheckTaskVo toCheckTaskVo, MultipartHttpServletRequest request) throws IOException;
+
+    ResponseJson saveCnkiTask(ToCheckTaskVo toCheckTaskVo, HttpServletRequest request) throws Exception;
+
+    ResponseJson saveOtherTask(ToCheckTaskVo checkTaskVo, HttpServletRequest request) throws Exception;
+
+    PageInfo<ToCheckTaskVo> canCheckTask(long systemId, int status);
+
+    void updateTaskStatus(long id, int status);
+
+    void updateTaskStatus(long id, int status, long checkId);
+
+    void finishCheck(long id, int status, String downUrl);
+
+    void updateErrorMsg(long id, String msg);
+
+    ResponseJson sameTbPay(ToCheckTaskVo checkTaskVo, Long tid, Long bTid, HttpServletRequest request);
+
+    ResponseJson orderDetail(Long tid, Long bTid, Long systemId);
+
+    PageInfo<ToCheckTaskVo> viewReport(Integer p, long userId);
+
+    PageInfo<ToCheckTaskVo> agentCheckTask(Integer p, long agentId);
+
+    PageInfo<ToCheckTaskVo> rushOrder(Integer p);
+
+    void uploadCnkiReport(ToCheckTaskVo vo);
+
+    void downloadPaper(long id);
+
+    void putRushOrder(long id);
+
+    ResponseJson rushOrder(long id, long agentId);
+
+    void downCnkiReport(long id);
+
+    PageInfo<ToCheckTaskVo> flowFee(Integer p, long agentId);
+
+    PageInfo<ToCheckTaskVo> targetFee(Integer p, long targetId);
+
+    void deleteReport(String ids);
+
+    ResponseJson targetWithdraw(long agentId);
+
+    ResponseJson flowWithdraw(long agentId);
+}

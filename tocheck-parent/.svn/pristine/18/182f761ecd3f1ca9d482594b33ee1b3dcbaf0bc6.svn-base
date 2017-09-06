@@ -1,0 +1,280 @@
+package com.paperpass.parent.core.utils;
+
+import com.alibaba.fastjson.JSON;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.internal.util.AlipaySignature;
+import com.alipay.api.request.AlipayTradePrecreateRequest;
+import com.alipay.api.response.AlipayTradePrecreateResponse;
+import com.paperpass.parent.common.util.AlipayCore;
+import com.paperpass.parent.common.util.DateUtil;
+import com.paperpass.parent.common.util.QrCodeUtil;
+import com.paperpass.parent.core.common.PayProperties;
+import com.paperpass.parent.core.dto.ChargeForm;
+import com.paperpass.parent.core.entity.common.RechargeRecord;
+import com.paperpass.parent.core.entity.tb.TaobaoAlipayConfig;
+import com.paperpass.parent.core.entity.tb.TaobaoPayRecord;
+import com.paperpass.parent.core.vo.common.RechargeRecordVo;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by kchen on 2016/10/26.
+ */
+@Component
+public class AliPayUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(AliPayUtil.class);
+
+    @Autowired
+    private PayProperties payProperties;
+
+    @Autowired
+    private RechargeUtil rechargeUtil;
+
+    @Autowired
+    private TaobaoPayRecordUtil taobaoPayRecordUtil;
+
+    /**
+     * 创建支付宝支付
+     *
+     * @param chargeForm
+     */
+    public Map<String, Object> createAliPayOrder(ChargeForm chargeForm,Boolean isFastChek) throws Exception {
+        Map<String, Object> result = new HashMap<>();
+        RechargeRecord log = rechargeUtil.getByOrderNum(chargeForm.getOrderNum());
+        if (null == log) {
+            rechargeUtil.create(chargeForm);
+        }
+        String url = getQRImgUrl(chargeForm,isFastChek);
+        if (StringUtils.isNoneBlank(url)) {
+            result.put("state", true);
+            result.put("url", url);
+            result.put("orderNum", chargeForm.getOrderNum());
+            result.put("amount", chargeForm.getAmount());
+        }else {
+            result.put("state", false);
+            result.put("message", "生成支付二维码失败,请刷新后重试或联系客服!");
+        }
+        return result;
+    }
+
+    public String createTbAgentAliPayOrder(ChargeForm chargeForm, TaobaoAlipayConfig config) throws Exception {
+        TaobaoPayRecord record = taobaoPayRecordUtil.getByOrderNum(chargeForm.getOrderNum());
+        if (null == record) taobaoPayRecordUtil.create(chargeForm);
+
+        AlipayClient alipayClient = getClient(config.getAppId(),config.getPrivateKey(),config.getPublicKey());
+        AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
+        StringBuilder bizContent = new StringBuilder(512);
+        bizContent.append("{\"out_trade_no\":\"");
+        bizContent.append(chargeForm.getOrderNum());
+        bizContent.append("\",\"total_amount\":\"");
+        bizContent.append(chargeForm.getAmount());
+//        bizContent.append("0.01");
+        bizContent.append("\",\"subject\":\"");
+        bizContent.append(chargeForm.getSubject());
+        bizContent.append("\"}");
+        request.setBizContent(bizContent.toString());
+        request.setNotifyUrl(payProperties.alipayServiceTbAgentNotifyUrl);
+        logger.info("request={}", JSON.toJSONString(request));
+        AlipayTradePrecreateResponse response = alipayClient.execute(request);
+        if (response != null && response.isSuccess() && StringUtils.equals("10000", response.getCode())) {
+            String timePath = DateUtil.getDate(new Date(), "yyyy/MM/dd/HH/mm");
+            String qrImgName = QrCodeUtil.createQrCode(response.getQrCode(), payProperties.alipayQrCodePath + timePath, chargeForm.getOrderNum());
+            return payProperties.alipayQrCodeUrl + timePath + qrImgName;
+        }
+        return null;
+    }
+
+    /**
+     * 支付成功后的回调，所有支付业务通用
+     *
+     * @param outTradeNo
+     * @param tradeNum
+     * @param totalFee
+     * @return
+     */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public boolean updateRechargeStatus(String outTradeNo, String tradeNum, String totalFee) throws IOException {
+        return rechargeUtil.updateRechargeStatus(outTradeNo, tradeNum, totalFee);
+    }
+
+    private String getQRImgUrl(ChargeForm chargeForm,Boolean isFastChek) throws Exception {
+        AlipayClient alipayClient = getClient();
+        AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
+        StringBuilder bizContent = new StringBuilder(512);
+        bizContent.append("{\"out_trade_no\":\"");
+        bizContent.append(chargeForm.getOrderNum());
+        bizContent.append("\",\"total_amount\":\"");
+        bizContent.append(chargeForm.getAmount());
+//        bizContent.append("0.01");
+        bizContent.append("\",\"subject\":\"");
+        bizContent.append(chargeForm.getSubject());
+        bizContent.append("\"}");
+        request.setBizContent(bizContent.toString());
+        request.setNotifyUrl(payProperties.alipayServiceWindowNotifyUrl);
+        if(isFastChek){
+            request.setNotifyUrl(payProperties.alipayServiceFaskCheckNotifyUrl);
+        }
+        logger.info("request={}", JSON.toJSONString(request));
+        AlipayTradePrecreateResponse response = alipayClient.execute(request);
+        if (response != null && response.isSuccess() && StringUtils.equals("10000", response.getCode())) {
+            String timePath = DateUtil.getDate(new Date(), "yyyy/MM/dd/HH/mm");
+            String qrImgName = QrCodeUtil.createQrCode(response.getQrCode(), payProperties.alipayQrCodePath + timePath, chargeForm.getOrderNum());
+            return payProperties.alipayQrCodeUrl + timePath + qrImgName;
+        }
+        return null;
+    }
+
+    private AlipayClient getClient() {
+        String url = payProperties.aliPayServiceWindowGateway;
+        String appId = payProperties.aliPayServiceWindowAppid;
+        String privateKey = payProperties.aliPayServiceWindowPrivateKey;
+        String publicKey = payProperties.aliPayServiceWindowPublicKey;
+        String format = "json";
+        String charset = payProperties.aliPayServiceWindowSignCharset;
+        String signType = payProperties.aliPayServiceWindowSignType;
+        return new DefaultAlipayClient(url, appId, privateKey, format, charset, publicKey, signType);
+    }
+
+    private AlipayClient getClient(String appId,String privateKey,String publicKey) {
+        String url = payProperties.aliPayServiceWindowGateway;
+        String format = "json";
+        String charset = payProperties.aliPayServiceWindowSignCharset;
+        String signType = payProperties.aliPayServiceWindowSignType;
+        return new DefaultAlipayClient(url, appId, privateKey, format, charset, publicKey, signType);
+    }
+
+
+    public boolean getSignVeryFy(Map<String, String> params) {
+        //判断responsetTxt是否为true，isSign是否为true
+        //responsetTxt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
+        //isSign不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
+        String responseTxt = "true";
+        if (params.get("notify_id") != null) {
+            String notify_id = params.get("notify_id");
+            responseTxt = verifyResponse(notify_id);
+        }
+        String sign = "";
+        if (params.get("sign") != null) {
+            sign = params.get("sign");
+        }
+        boolean isSign = getRSASignVerify(params, sign);
+
+        //写日志记录（若要调试，请取消下面两行注释）
+        //String sWord = "responseTxt=" + responseTxt + "\n isSign=" + isSign + "\n 返回回来的参数：" + AlipayCore.createLinkString(params);
+        //AlipayCore.logResult(sWord);
+
+        if (isSign && ("true").equals(responseTxt)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean getSignVeryFy(Map<String, String> params,String publicKey,String partner) {
+        //判断responsetTxt是否为true，isSign是否为true
+        //responsetTxt的结果不是true，与服务器设置问题、合作身份者ID、notify_id一分钟失效有关
+        //isSign不是true，与安全校验码、请求时的参数格式（如：带自定义参数等）、编码格式有关
+        String responseTxt = "true";
+        if (params.get("notify_id") != null) {
+            String notify_id = params.get("notify_id");
+            responseTxt = verifyResponse(notify_id,partner);
+        }
+        String sign = "";
+        if (params.get("sign") != null) {
+            sign = params.get("sign");
+        }
+        boolean isSign = getRSASignVerify(params, sign,publicKey);
+
+        //写日志记录（若要调试，请取消下面两行注释）
+        //String sWord = "responseTxt=" + responseTxt + "\n isSign=" + isSign + "\n 返回回来的参数：" + AlipayCore.createLinkString(params);
+        //AlipayCore.logResult(sWord);
+
+        if (isSign && ("true").equals(responseTxt)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean getRSASignVerify(Map<String, String> Params, String sign) {
+        //过滤空值、sign与sign_type参数
+        Map<String, String> sParaNew = AlipayCore.paraFilter(Params);
+        //获取待签名字符串
+        String preSignStr = AlipayCore.createLinkString(sParaNew);
+        //获得签名验证结果
+        boolean isSign = false;
+        try {
+            isSign = AlipaySignature.rsa256CheckContent(
+                    preSignStr, sign, payProperties.aliPayServiceWindowPublicKey,
+                    payProperties.aliPayServiceWindowCharset);
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+
+        return isSign;
+    }
+
+    private boolean getRSASignVerify(Map<String, String> Params, String sign, String publicKey) {
+        //过滤空值、sign与sign_type参数
+        Map<String, String> sParaNew = AlipayCore.paraFilter(Params);
+        //获取待签名字符串
+        String preSignStr = AlipayCore.createLinkString(sParaNew);
+        //获得签名验证结果
+        boolean isSign = false;
+        try {
+            isSign = AlipaySignature.rsa256CheckContent(
+                    preSignStr, sign, publicKey,
+                    payProperties.aliPayServiceWindowCharset);
+        } catch (AlipayApiException e) {
+            e.printStackTrace();
+        }
+        return isSign;
+    }
+
+    private String verifyResponse(String notify_id) {
+        //获取远程服务器ATN结果，验证是否是支付宝服务器发来的请求
+
+        String partner = payProperties.alipayServiceWindowPartner;
+        String veryfy_url = "https://mapi.alipay.com/gateway.do?service=notify_verify&" + "partner=" + partner + "&notify_id=" + notify_id;
+
+        return checkUrl(veryfy_url);
+    }
+
+    private String verifyResponse(String notify_id,String partner) {
+        //获取远程服务器ATN结果，验证是否是支付宝服务器发来的请求
+        String veryfy_url = "https://mapi.alipay.com/gateway.do?service=notify_verify&" + "partner=" + partner + "&notify_id=" + notify_id;
+        return checkUrl(veryfy_url);
+    }
+
+    private String checkUrl(String urlvalue) {
+        String inputLine = "";
+
+        try {
+            URL url = new URL(urlvalue);
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection
+                    .getInputStream()));
+            inputLine = in.readLine();
+        } catch (Exception e) {
+            e.printStackTrace();
+            inputLine = "";
+        }
+        return inputLine;
+    }
+
+}

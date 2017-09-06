@@ -1,0 +1,91 @@
+<%@ page import="java.util.Enumeration" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!doctype html>
+<html>
+<head>
+    <title>检测资讯</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="/resources/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/resources/js/js.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/resources/layui/css/layui.css">
+    <link rel="stylesheet" href="/resources/css/style.css">
+</head>
+<body style="background: #fff;">
+<!----header----->
+<jsp:include page="header.jsp">
+    <jsp:param name="menuName" value="news"/>
+</jsp:include>
+<!-----主体内容----->
+<div class="main">
+    <div class="main-nr">
+        <!--检测资讯-left-->
+        <div class="news-left">
+            <c:forEach items="${page.getList()}" var="topic">
+                <a href="/newDetail/${topic.id}.html">
+                <div class="layui-form-item">
+                        <%--<div class="hot">新</div>--%>
+                    <div class="layui-form-label">
+                        <img src="/resources/images/img03.jpg" alt="" title="">
+                    </div>
+                    <div class="layui-input-block">
+                        <h3>${topic.title}</h3>
+                        <p>${topic.brief}</p>
+                        <span>来源：tocheck <em>发布时间：<fmt:formatDate value="${topic.createTime}" pattern="yyyy/MM/dd"/></em></span>
+                    </div>
+                </div>
+                </a>
+            </c:forEach>
+            <div id="demo2"></div>
+        </div>
+        <!--检测资讯-right-->
+        <div class="news-right">
+            <div class="news-right-top">
+                热点资讯
+            </div>
+            <div class="news-right-list">
+             <c:forEach items="${page.getList()}" var="topic"  varStatus="status" end="9">
+                <span class="news-right-a"><i>${status.index+1}</i><a href="/newDetail/${topic.id}.html" class="news-right-a">${topic.title}</a> </span>
+             </c:forEach>
+            </div>
+        </div>
+    </div>
+</div>
+<!-----footer---->
+<jsp:include page="footer.jsp"/>
+<script src="/resources/layui/lay/dest/layui.all.js"></script>
+<%
+    Enumeration eNames = request.getParameterNames();
+    String pageUrl = "?";
+    while (eNames.hasMoreElements()) {
+        String name = (String) eNames.nextElement();
+        if (!name.equals("p")) {
+            String value = request.getParameter(name);
+            pageUrl = pageUrl + name + "=" + value + "&";
+        }
+    }
+%>
+<script>
+    ;!function () {
+        //加载所有的layer.use()
+        layui.laypage({
+            cont: 'demo2',
+            curr:${page.pageNum},
+            pages:${page.pages},//总页数
+            groups: 5,//连续显示分页数
+            skin: '#3b5d98',
+            jump: function (obj, first) {
+                //得到了当前页，用于向服务端请求对应数据
+                var curr = obj.curr;
+                if (!first) {
+                    location.href = '<%=pageUrl%>p=' + curr;
+                }
+            }
+        });
+    }();
+</script>
+</body>
+</html>

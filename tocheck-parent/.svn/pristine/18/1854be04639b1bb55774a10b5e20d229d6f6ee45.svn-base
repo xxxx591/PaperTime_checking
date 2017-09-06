@@ -1,0 +1,12 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.ToCheckThirdPartyOrder;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author pangliang
+ * @create 2017-06-12 9:35
+ **/
+@Repository
+public interface IToCheckThirdPartyOrderDao extends IBaseDao<ToCheckThirdPartyOrder> {
+}

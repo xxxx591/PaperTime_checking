@@ -1,0 +1,12 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.tocheck.parent.core.service.ToCheckTaoBaoOrderService;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author pangliang
+ * @create 2017-05-24 8:50
+ **/
+@Service
+public class ToCheckTaoBaoOrderServiceImpl implements ToCheckTaoBaoOrderService {
+}

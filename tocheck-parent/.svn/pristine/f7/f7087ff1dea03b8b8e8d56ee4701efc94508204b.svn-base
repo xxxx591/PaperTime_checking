@@ -1,0 +1,140 @@
+//package com.tocheck.parent.web.util;
+//
+//import com.alibaba.fastjson.JSON;
+//import com.alibaba.fastjson.JSONObject;
+//import org.apache.commons.collections.map.HashedMap;
+//import org.apache.commons.httpclient.HttpClient;
+//import org.apache.commons.httpclient.NameValuePair;
+//import org.apache.commons.httpclient.methods.PostMethod;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
+//import org.springframework.core.io.FileSystemResource;
+//import org.springframework.http.HttpEntity;
+//import org.springframework.http.HttpMethod;
+//import org.springframework.http.ResponseEntity;
+//import org.springframework.util.FileCopyUtils;
+//import org.springframework.util.LinkedMultiValueMap;
+//import org.springframework.util.MultiValueMap;
+//import org.springframework.web.client.RestTemplate;
+//import java.io.BufferedOutputStream;
+//import java.io.ByteArrayInputStream;
+//import java.io.File;
+//import java.util.Date;
+//import java.util.Map;
+//import java.util.concurrent.Callable;
+//
+///**
+// * @author pangliang
+// * @create 2017-01-05 13:37
+// **/
+//public class RunnableWp implements Callable<Map<String, Object>> {
+//
+//    private static final String CREATE_API = "http://118.178.194.155/api/create";
+//
+//    private static final String SHOW_API = "http://118.178.194.155/api/show";
+//
+//    private static final String DOWNLOAD_API = "http://118.178.194.155/api/download";
+//
+//    private static final int SLEEP_TIME = 5 * 60 * 1000;  //5分钟
+//
+//    private static final Logger logger = LoggerFactory.getLogger(RunnableWp.class);
+//
+//    private CheckRecord checkRecord;
+//
+//    private String filePath;
+//
+//    private String apiToken;
+//
+//
+//    public RunnableWp(CheckRecord checkRecord, String filePath, String apiToken) {
+//        this.checkRecord = checkRecord;
+//        this.filePath = filePath;
+//        this.apiToken = apiToken;
+//    }
+//
+//    @Override
+//    public Map<String, Object> call(){
+//        Map<String, Object> resultMap = new HashedMap();
+//        //上传论文
+//        File file = new File(filePath);
+//        FileSystemResource resource = new FileSystemResource(file);
+//        RestTemplate rest = new RestTemplate();
+//        MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
+//        param.add("api_token", apiToken);
+//        param.add("file", resource);
+//        param.add("title", checkRecord.getTitle());
+//        param.add("author", checkRecord.getAuthor());
+//        HttpEntity<MultiValueMap<String, Object>> httpEntity = new HttpEntity<>(param);
+//        ResponseEntity<String> responseEntity = rest.exchange(CREATE_API, HttpMethod.POST, httpEntity, String.class);
+//        String result = responseEntity.getBody();
+//
+//        JSONObject data = JSON.parseObject(result);
+//        if (data.getIntValue("code") == 0) {   //论文提交成功....
+//            data = data.getJSONObject("data");
+//            String id = data.getString("id");
+//            while (true) {
+//                try {
+//                    result = HttpClientUtil.sendPost(SHOW_API, "api_token=" + apiToken + "&id=" + id);
+//                    data = JSON.parseObject(result);
+//                    if (data.getIntValue("code") == 0) {
+//                        data = data.getJSONObject("data");
+//                        if (data.getIntValue("status") == 9) {
+//                            HttpClient httpclient = new HttpClient();
+//                            PostMethod postMethod = new PostMethod(DOWNLOAD_API);
+//                            // 填入各个表单域的值
+//                            NameValuePair[] param1 = {
+//                                    new NameValuePair("api_token", apiToken),
+//                                    new NameValuePair("id", id),
+//                            };
+//                            // 将表单的值放入postMethod中
+//                            postMethod.setRequestBody(param1);
+//                            // 执行postMethod
+//                            int statusCode = 0;
+//                            byte[] b = null;
+//                            statusCode = httpclient.executeMethod(postMethod);
+//                            if (statusCode == 200) {
+//                                b = postMethod.getResponseBody();
+//                                BufferedOutputStream bw = null;
+//                                String datePath = DateUtil.getDate(new Date(), "yyyyMMdd");
+//                                String p = "/report/" + datePath + "/" + checkRecord.getMemberId();
+//                                String writeFilePath = CommonProperties.instance.file_upload + p;
+//                                File uploadfile = new File(writeFilePath);
+//                                if (!uploadfile.exists() && !uploadfile.isDirectory()) {
+//                                    uploadfile.mkdirs();
+//                                }
+//                                String newFileName = System.currentTimeMillis() + CommonUtil.buildRandomNum(10) + ".zip";
+//                                File uploadFile = new File(writeFilePath + File.separator + newFileName);
+//                                org.apache.commons.io.FileUtils.copyInputStreamToFile(new ByteArrayInputStream(b), uploadFile);
+//
+//                                //保存文件信息
+//                                FileUpload fileUpload = new FileUpload();
+//                                fileUpload.setFilename(newFileName);
+//                                fileUpload.setFileOriName(newFileName);
+//                                fileUpload.setFilePath(writeFilePath + "/" + newFileName);
+//                                fileUpload.setFileUrl(CommonProperties.instance.file_request + p + "/" + newFileName);
+//                                fileUpload.setDeleteStatus(1);
+//
+//                                resultMap.put("fileUpload", fileUpload);
+//                                resultMap.put("checkRecord", checkRecord);
+//                                resultMap.put("state", true);
+//                            } else {
+//                                logger.error("下载论文报告失败..statusCode={}", statusCode);
+//                            }
+//                            break;
+//                        } else {
+//                              Thread.sleep(SLEEP_TIME);   //休息5分钟再去请求..
+//                        }
+//                    } else {
+//                        logger.error("查询论文检测进度失败..code={},message={}", data.getIntValue("code"), data.getString("message"));
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    logger.error("下载论文检测报告失败..",e);
+//                }
+//            }
+//        } else {
+//            logger.error("提交论文失败..code={},message={}", data.getIntValue("code"), data.getString("message"));
+//        }
+//        return resultMap;
+//    }
+//}

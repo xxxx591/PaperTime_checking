@@ -1,0 +1,12 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>hello word</title>
+</head>
+<body>
+    <c:forEach items="${systemList}" var="system">
+        <a href="/submitTask/${system.id}.html" target="_blank">${system.systemName}</a><br/>
+    </c:forEach>
+</body>
+</html>

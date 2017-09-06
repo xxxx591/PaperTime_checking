@@ -1,0 +1,67 @@
+package com.tocheck.parent.core.entity;
+
+import com.tocheck.parent.common.entity.BaseEntity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 17:40
+ **/
+public class UserActivity extends BaseEntity {
+    private Long userId;
+    private Long actId;
+    private Long systemId;
+    private BigDecimal cash;
+    private Date submitTime;
+    private int status;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getActId() {
+        return actId;
+    }
+
+    public void setActId(Long actId) {
+        this.actId = actId;
+    }
+
+    public Long getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
+    }
+
+    public BigDecimal getCash() {
+        return cash;
+    }
+
+    public void setCash(BigDecimal cash) {
+        this.cash = cash;
+    }
+
+    public Date getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Date submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+}

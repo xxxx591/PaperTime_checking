@@ -1,0 +1,29 @@
+package com.tocheck.parent.core.entity;
+
+import java.io.Serializable;
+
+/**
+ * @author pangliang
+ * @create 2017-06-15 14:25
+ **/
+public class ToCheckMajor implements Serializable {
+
+    private long id;
+    private String name;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

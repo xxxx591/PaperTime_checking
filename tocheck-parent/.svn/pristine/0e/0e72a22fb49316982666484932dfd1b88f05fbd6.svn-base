@@ -1,0 +1,76 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>关于我们</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css">
+    <link rel="stylesheet" href="/resources/css/style.css">
+</head>
+<body style="background: #fafafa;">
+<!----header----->
+<jsp:include page="header.jsp">
+    <jsp:param name="menuName" value="aboutUs" />
+</jsp:include>
+
+<!-----主体内容----->
+<div class="main">
+    <div class="main-nr">
+        <!--关于我们-->
+        <div class="about">
+            <div class="layui-form-item layui-form-gsjs">
+                <div class="layui-form-label">
+                    <img src="/resources/images/img02.jpg" alt="" title="">
+                </div>
+                <div class="layui-input-block">
+                    <h3>公司介绍</h3>
+                    <p>湖南写邦科技有限公司为广大学子提供专业的论文检测服务。<br/>
+                        湖南写邦科技有限公司主营论文查重检测服务。拥有的专业投资分析团队成员均具备5年以上行业经验、销售人员、服务团队均具备3年以上行业经验。本着"诚信务实、客户至上、专业、合作共赢"的经营理念。坚持以市场为导向，以为创造客户价值为己任，不断创新，不断进取，以品牌经营为核心，坚持以专业化管理，防范风险、诚实守信的经营原则。<br/>
+                        以科学管理、合理分工、以人为本、量才而用，不拘一格，注重人才的品行道德价值观，为每一位员工提供宽广的发展平台，帮助每一位团队成员量身定做个人职业发展规划，旨在让每一位成员都能发挥自身优势，实现自我的人生价值。让我们携起手来，竭诚合作、互信共赢、满怀激情地迎接投资业的春天。 </p>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-qywh">
+                <h3>企业文化</h3>
+                <p>公司以“拼搏求发展，诚信赢天下”为经营理念，营造一个互信、互惠、和谐、包容的合作氛围，致力于建立一个和谐、透明、公正的产品服务供应链。公司奉行“产品是生命、服务是灵魂”的企业文化，以一流的产品和优质的服务，满足市场的需求，不断地将高科技产品和技术服务提供给广大的用户。</p>
+                <ul class="qywh-ul">
+                    <li>
+                        <span class="qywh-s qywh-s1"></span>
+                        <em>诚信立足</em>
+                    </li>
+                    <li>
+                        <span class="qywh-s qywh-s2"></span>
+                        <em>创新致远</em>
+                    </li>
+                    <li>
+                        <span class="qywh-s qywh-s3"></span>
+                        <em>拼搏发展</em>
+                    </li>
+                    <li>
+                        <span class="qywh-s qywh-s4"></span>
+                        <em>拼搏发展</em>
+                    </li>
+
+                </ul>
+            </div>
+            <div class="layui-form-item layui-form-map">
+                <h3>联系我们</h3>
+                <div class="layui-form-label">
+                    <img src="/resources/images/map.jpg" alt="" title="">
+                </div>
+                <div class="layui-input-block">
+                    <p>商务电话：13973130599</p>
+                    <p>商务邮箱：papertime@qq.com</p>
+                    <p>商务QQ：2468001441</p>
+                    <p>公司地址：湖南省长沙市岳麓区谷苑路186号湖南大学科技园东栋5楼</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-----footer---->
+<jsp:include page="footer.jsp"/>
+<script src="/resources/layui/lay/dest/layui.all.js"></script>
+</body>
+</html>

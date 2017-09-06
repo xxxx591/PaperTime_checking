@@ -1,0 +1,49 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.core.dao.ISystemTopicDao;
+import com.tocheck.parent.core.entity.SystemTopic;
+import com.tocheck.parent.core.service.SystemTopicService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-06 10:28
+ **/
+@Service
+public class SystemTopicServiceImpl implements SystemTopicService {
+
+    @Autowired
+    private ISystemTopicDao systemTopicDao;
+
+    @Override
+    public PageInfo<SystemTopic> listPage(Integer p) {
+        PageHelper.startPage(p, Constants.PAGE_LIMIT);
+        List<SystemTopic> list = systemTopicDao.getByMap(null);
+        return new PageInfo<>(list);
+    }
+
+    @Override
+    public List<SystemTopic> topRecommended() {
+        return systemTopicDao.topRecommended();
+    }
+
+    @Override
+    public SystemTopic getById(long id) {
+        return systemTopicDao.getById(id);
+    }
+
+    @Override
+    public SystemTopic prevArticle(long id) {
+        return systemTopicDao.prevArticle(id);
+    }
+
+    @Override
+    public SystemTopic nextArticle(long id) {
+        return systemTopicDao.nextArticle(id);
+    }
+}

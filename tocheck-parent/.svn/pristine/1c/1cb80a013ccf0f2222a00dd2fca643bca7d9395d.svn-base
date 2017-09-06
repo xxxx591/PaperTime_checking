@@ -1,0 +1,143 @@
+<%@ page import="java.util.Enumeration" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>查看报告</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css">
+    <link rel="stylesheet" href="/resources/css/style.css">
+</head>
+<body>
+<!----header----->
+<div class="header-sub">
+    <a class="logo-sub" href="/"><img src="/resources/images/logo.png" alt="" title=""></a>
+    <div class="head-nav">
+        <a href="/submitTask/1.html" class="head-a ">提交论文</a>
+        <a href="/viewReport/index.html" class="head-a head-as">查看报告</a>
+    </div>
+</div>
+<!-----主体内容----->
+<div class="content content-cgkb">
+    <!--查看报告-->
+    <div class="ckbg-bd ">
+
+        <div class="ckgb-tb">
+            <p class="ckgb-tb-p"><span>选择：</span><a href="javascript:selectAll()">全选</a>-<a
+                    href="javascript:cancelAll()">反选</a>-<a href="javascript:deletes()">删除</a></p>
+            <table class="layui-table" lay-skin="nob" lay-odd>
+                <colgroup>
+                    <col width="">
+                    <col width="">
+                    <col width="">
+                    <col width="">
+                    <col width="160">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>论文标题</th>
+                    <th>平台</th>
+                    <th>检测时间</th>
+                    <th>检测状态</th>
+                    <th>
+                        <span>立即下载</span>
+                        <em>|</em>
+                        <span>删除报告</span>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${page.getList()}" var="r">
+                    <tr>
+                        <td>
+                            <c:if test="${r.status ==3 || r.status ==4}">
+                                <input type="checkbox" lay-skin="primary" title=" " value="${r.id}">
+                            </c:if>
+                                ${r.title}
+                        </td>
+                        <td>${r.systemName}</td>
+                        <td><fmt:formatDate value="${r.createdTime}" pattern="yyyy/MM/dd HH:mm:ss"/></td>
+                        <td>
+                            <c:choose>
+                                <c:when test="${r.status ==0 || r.status ==1}">正在排队...</c:when>
+                                <c:when test="${r.status ==2}">正在检测</c:when>
+                                <c:when test="${r.status ==3}">检测完成</c:when>
+                                <c:when test="${r.status ==4}">已下载报告</c:when>
+                                <c:when test="${r.status ==5}">已删除</c:when>
+                            </c:choose>
+                        </td>
+                        <td>
+                            <div class="ckbg-bts">
+                                <c:if test="${r.status ==3 || r.status ==4}">
+                                    <c:if test="${r.systemId <=4}">
+                                        <a href="downReport/${r.id}.html" class="ckgb-a ckgb-xz ckgb-xzs"></a>
+                                    </c:if>
+                                    <c:if test="${r.systemId >4}">
+                                        <a href="${r.downUrl}" class="ckgb-a ckgb-xz ckgb-xzs"></a>
+                                    </c:if>
+                                    <a href="javascript:del(${r.id});" class="ckgb-a ckgb-sc ckgb-scs"></a>
+                                </c:if>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
+        <div class="page-d">
+            <div id="demo2"></div>
+        </div>
+        <div class="ckgb-tx">
+            <span>重要提醒</span>
+            <p>1.检测报告只保留7天，请及时下载！</p>
+            <p>2.请保存订单号，并收藏本页面。方便回来下载检测报告。</p>
+            <p>3.各工具检测时间不同，到时间之后刷新本页面即看到检测报告。</p>
+            <p>3.各工具检测时间不同，到时间之后刷新本页面即看到检测报告。</p>
+            <p>（1）PaperTime、PaperFree、维普、PaperPass、万方检测系统支持24小时提交论文，万方检测系统2分钟左右就能出报告，其他检测系统10分钟左右出检测报告！</p>
+            <p>（2）知网论文查重系统支持上午9点至晚上10点提交论文检测，知网查重系统20-120分钟出检测报告，其中知网本科论文查重系统20-180分钟出报告，如遇检测高峰期可能延长;其他时间检测需要第二天上午9点出报告。如遇紧急情况，请与客服联系。
+            </p>
+        </div>
+    </div>
+</div>
+<!-----footer---->
+<jsp:include page="../submitTask/footer.jsp"/>
+<script src="${pageContext.request.contextPath}/resources/js/jquery.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/layui/lay/dest/layui.all.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/common.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/viewReport.js"></script>
+<%
+    Enumeration eNames = request.getParameterNames();
+    String pageUrl = "?";
+    while (eNames.hasMoreElements()) {
+        String name = (String) eNames.nextElement();
+        if (!name.equals("p")) {
+            String value = request.getParameter(name);
+            pageUrl = pageUrl + name + "=" + value + "&";
+        }
+    }
+%>
+<script type="text/javascript">
+layui.use(['layer', 'laypage', 'laydate'], function () {
+    layui.laypage({
+        cont: 'demo2',
+        curr:${page.pageNum},
+        pages:${page.pages},//总页数
+        groups: 5,//连续显示分页数
+        skin: '#3b5d98',
+        jump: function (obj, first) {
+            //得到了当前页，用于向服务端请求对应数据
+            var curr = obj.curr;
+            if (!first) {
+                location.href = '<%=pageUrl%>p=' + curr;
+            }
+        }
+    })
+});
+</script>
+</body>
+</html>

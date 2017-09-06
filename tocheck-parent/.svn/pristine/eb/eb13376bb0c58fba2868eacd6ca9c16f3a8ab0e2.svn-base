@@ -1,0 +1,76 @@
+package com.tocheck.parent.core.entity;
+
+import com.tocheck.parent.common.entity.BaseEntity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 17:40
+ **/
+public class UserCoupon extends BaseEntity {
+    private Long userId;           //会员ID
+    private Long actId;            //活动ID
+    private String title;          //活动标题
+    private Long systemId;         //系统ID
+    private BigDecimal cash;       //金额
+    private Date submitTime;       //领取时间
+    private int status;            //0-已使用，1-未使用
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getActId() {
+        return actId;
+    }
+
+    public void setActId(Long actId) {
+        this.actId = actId;
+    }
+
+    public Long getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
+    }
+
+    public BigDecimal getCash() {
+        return cash;
+    }
+
+    public void setCash(BigDecimal cash) {
+        this.cash = cash;
+    }
+
+    public Date getSubmitTime() {
+        return submitTime;
+    }
+
+    public void setSubmitTime(Date submitTime) {
+        this.submitTime = submitTime;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+}

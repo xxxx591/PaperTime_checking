@@ -1,0 +1,4 @@
+#sys.ssdbHost=127.0.0.1
+sys.ssdbHost=60.205.138.0
+#³Ö¾ÃÊý¾Ý
+sys.ssdbPort=8888

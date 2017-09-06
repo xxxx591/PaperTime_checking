@@ -1,0 +1,65 @@
+<!doctype html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>防真伪查询</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css">
+    <link rel="stylesheet" href="/resources/css/style.css">
+</head>
+<body style="background: #fafafa;">
+<!----header----->
+<jsp:include page="header.jsp">
+    <jsp:param name="menuName" value="check" />
+</jsp:include>
+
+<!-----主体内容----->
+<div class="main">
+    <div class="main-nr">
+        <!--真伪查询-->
+        <div class="query">
+            <h3>输入检测报告编号即可验证真伪</h3>
+            <p>直达官网，即使您是在其它平台下载的检测报告，只要是以下检测系统，也可以在这里验证真伪的哦。</p>
+            <ul class="query-ul">
+                <li class="query-li">
+                    <a href="http://check7.cnki.net/codeverify/" target="_blank"class="query-a"><img src="/resources/images/logo-cnki.png" alt="" title=""></a>
+                </li>
+                <li class="query-li">
+                    <a href="http://www.papertime.cc/check.html" target="_blank" class="query-a"><img src="/resources/images/logo-pt.png" alt="" title=""></a>
+                </li>
+                <li class="query-li">
+                    <a href="http://www.paperfree.cn/check.html" target="_blank" class="query-a"><img src="/resources/images/logo-pf.png" alt="" title=""></a>
+                </li>
+                <li class="query-li">
+                    <a href="http://vpcs.cqvip.com/personal/paper/chaxun.aspx" target="_blank" class="query-a"><img src="/resources/images/logo-vp.png" alt="" title=""></a>
+                </li>
+                <li class="query-li">
+                    <a href="" class="query-a"><img src="/resources/images/logo-tt.png" alt="" title=""></a>
+                </li>
+                <li class="">
+                    <div class="query-img">
+                        <img src="/resources/images/zwts-tt.png" alt="" title="">
+                    </div>
+                </li>
+                <li class="query-li">
+                    <a href="http://www.paperpass.cx/check.html" target="_blank" class="query-a"><img src="/resources/images/logo-pp.png" alt="" title=""></a>
+                </li>
+                <li class="query-li">
+                    <a href="" class="query-a"><img src="/resources/images/logo-wf.png" alt="" title=""></a>
+                </li>
+                <li class="">
+                    <div class="query-img">
+                        <img src="/resources/images/zwts-tt.png" alt="" title="">
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<!-----footer---->
+<jsp:include page="footer.jsp"/>
+</body>
+</html>

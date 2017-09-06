@@ -1,0 +1,71 @@
+package com.tocheck.parent.web.ctrl;
+
+import com.tocheck.parent.core.entity.ToCheckSystem;
+import com.tocheck.parent.core.entity.WebUser;
+import com.tocheck.parent.core.service.ToCheckSystemService;
+import com.tocheck.parent.core.service.WebUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-05-15 17:40
+ **/
+@Controller
+public class IndexCtrl extends BaseCtrl {
+
+    @Autowired
+    private ToCheckSystemService checkSystemService;
+
+    @Autowired
+    private WebUserService webUserService;
+
+    @RequestMapping(value = "/index", method = RequestMethod.GET)
+    public String index(Model model) {
+        WebUser user = webUserService.getById(1);
+        saveSessionUserInfo(user);
+        List<ToCheckSystem> systemList = this.checkSystemService.getAll();
+        model.addAttribute("systemList", systemList);
+        return "index";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/validateLogin", method = RequestMethod.POST)
+    public boolean validateLogin() {
+        if (this.getSessionUserInfo() == null) {
+            return true;
+        }
+        return false;
+    }
+
+    @RequestMapping(value = "/404", method = RequestMethod.GET)
+    public String error404() {
+        return "error/404";
+    }
+
+    @RequestMapping(value = "/500", method = RequestMethod.GET)
+    public String error500() {
+        return "error/500";
+    }
+
+    @RequestMapping(value = "/check", method = RequestMethod.GET)
+    public String check() {
+        return "check";
+    }
+
+    @RequestMapping(value = "/faq", method = RequestMethod.GET)
+    public String faq() {
+        return "faq";
+    }
+
+    @RequestMapping(value = "/aboutUs", method = RequestMethod.GET)
+    public String aboutUs() {
+        return "aboutUs";
+    }
+}

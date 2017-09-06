@@ -1,0 +1,12 @@
+package com.tocheck.parent.core.dao;
+
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 14:43
+ **/
+@Repository
+public interface IDynamicConfigDao {
+     String getByKey(String name);
+}

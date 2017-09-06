@@ -1,0 +1,12 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.tocheck.parent.core.service.FreeActivityService;
+import org.springframework.stereotype.Service;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 17:34
+ **/
+@Service
+public class FreeActivityServiceImpl implements FreeActivityService {
+}

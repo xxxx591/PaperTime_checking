@@ -1,0 +1,52 @@
+/**
+ * Created by Administrator on 2017/6/7.
+ */
+function uploadPaperFile(object) {
+    var pos = -1;
+    var filePath = object.value;
+    if (filePath.indexOf("/") > -1) {
+        pos = filePath.lastIndexOf("/") * 1;
+    } else if (filePath.indexOf("\\") > -1) {
+        pos = filePath.lastIndexOf("\\") * 1;
+    }
+    var fileName = filePath.substring(pos + 1);
+    var fileExtension = fileName.toLowerCase().substr(fileName.lastIndexOf('.'));
+    if (!paperFileExtReg.test(fileExtension)) {
+        layer.msg("只支持doc、docx或txt格式的文档");
+        return;
+    } else {
+        $("#fileName").val(fileName);
+    }
+}
+$("#step1").click(function () {
+    var title = $("#title").val();
+    var author = $("#author").val();
+    var file = $("#file").val();
+    if(!title){
+        layer.msg("请输入论文标题!");
+        return;
+    }
+    if(title.length>100){
+        layer.msg("论文标题请少于100字符!");
+        return;
+    }
+    if(!author){
+        layer.msg("请输入论文作者!");
+        return;
+    }
+    if(author.length>20){
+        layer.msg("论文作者请少于20字符!");
+        return;
+    }
+    if(!file){
+        layer.msg("请选择要提交的论文!");
+        return;
+    }
+
+    $("#step2-title").val(title);
+    $(".report-one").hide();
+    $(".report-two").show();
+    //控制STEP
+    $(".layui-input-inline-right > i").eq(0).addClass("ico-one").removeClass("ico-two");
+    $(".layui-input-inline-right > i").eq(1).removeClass("ico-one").addClass("ico-two");
+})

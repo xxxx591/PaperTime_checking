@@ -1,0 +1,258 @@
+/**
+ * Created by Administrator on 2017/6/8.
+ */
+var index;
+function uploadPaperFile(object) {
+    var pos = -1;
+    var filePath = object.value;
+    if (filePath.indexOf("/") > -1) {
+        pos = filePath.lastIndexOf("/") * 1;
+    } else if (filePath.indexOf("\\") > -1) {
+        pos = filePath.lastIndexOf("\\") * 1;
+    }
+    var fileName = filePath.substring(pos + 1);
+    var fileExtension = fileName.toLowerCase().substr(fileName.lastIndexOf('.'));
+    if (!paperFileExtReg.test(fileExtension)) {
+        layer.msg("只支持doc、docx或txt格式的文档!");
+        return;
+    } else {
+        index = loading();
+        $.ajaxFileUpload({
+            url: '/submitTask/uploadFile.html',
+            type: 'POST',
+            secureuri: false,
+            fileElementId: 'file',
+            data: {systemId: $("#systemId").val()},
+            dataType: 'json',
+            success: function (json) {
+                if (json.state) {
+                    $("#content").val(json.param.content);
+                    if(trim($("#title").val())==''){
+                        $("#title").val(json.param.title);
+                    }
+                    $("#fileName").val(fileName);
+                } else {
+                    layer.msg(json.message);
+                }
+                layer.close(index);
+            },
+            error: function () {
+                layer.close(index);
+                layer.msg('提交文件失败，请重试!');
+            }
+        });
+    }
+}
+$("#step1").click(function () {
+    var title = trim($("#title").val());
+    var author = trim($("#author").val());
+    var content = trim($("#content").val());
+    var systemId = $("#systemId").val();
+    if (title != '' && title.length > 100) {
+        layer.msg("论文标题请少于100字符!");
+        return;
+    }
+    if (author != '' && author.length > 20) {
+        layer.msg("论文作者请少于20字符!");
+        return;
+    }
+    if (content == '') {
+        layer.msg("请粘贴或上传论文内容!");
+        return;
+    }
+    $.ajax({
+        url: "/submitTask/calculatePaperNumber.html",
+        method: "post",
+        data: {title: title, author: author, systemId: systemId, content: content},
+        success: function (json) {
+            if (json.state) {
+                $("#step2-title").val(title);
+                $("#step3-title").text(title);
+                $("#wordCount").val(json.param.wordCount);  //论文字数
+                $(".need-cost").text(json.param.cost);           //计费
+                $("#piece").text(json.param.piece);         //淘宝购买件数
+                $(".report-one").hide();
+                $(".report-two").show();
+                //控制STEP
+                $(".layui-input-inline-right > i").eq(0).addClass("ico-one").removeClass("ico-two");
+                $(".layui-input-inline-right > i").eq(1).removeClass("ico-one").addClass("ico-two");
+            } else {
+                layer.msg("计算价格失败,请刷新后重试!");
+            }
+        },
+        error: function () {
+            layer.msg("计算价格失败,请刷新后重试!");
+        }
+    })
+})
+
+// 检测淘宝订单号是否可用
+$("#tid").focus(function () {
+    $(".tips").text("");
+}).bind('input propertychange', function () {
+    getTaobaoOrderInfo($(this), $("#bTid"));
+});
+
+// 检测备用淘宝订单号是否可用
+$("#bTid").focus(function () {
+    $(".tips").text("");
+}).bind('input propertychange', function () {
+    getTaobaoOrderInfo($("#tid"), $(this));
+});
+
+function getTaobaoOrderInfo(tidObj, backupTidObj) {
+    if (!checkTids(tidObj, backupTidObj)) {
+        return;
+    }
+    $.ajax({
+        url: '/submitTask/orderDetail.html',
+        type: 'POST',
+        data: {
+            tid: tidObj.val(),
+            bTid: backupTidObj.val(),
+            systemId: $("#systemId").val()
+        },
+        beforeSend: function () {
+            index = loading();
+        },
+        complete: function () {
+            layer.close(index);
+        },
+        success: function (json) {
+            if (json.state) {
+                $(".tips").text("");
+            } else {
+                if (json.param == 1) {
+                    tidObj.next().text(json.message);
+                } else if (json.param == 2) {
+                    backupTidObj.next().text(json.message);
+                } else {
+                    layer.msg(json.message);
+                }
+            }
+        }, error: function () {
+            layer.close(index);
+        }
+    });
+}
+
+$("#tbPay").click(function () {
+    var tid = $("#tid");
+    var bTid = $("#bTid");
+    if (!checkTids(tid, bTid)) {
+        return false;
+    }
+    var data = {
+        title: $("#title").val(),
+        author: $("#author").val(),
+        systemId: $("#systemId").val(),
+        content: $("#content").val(),
+        tid: tid.val(),
+        bTid: bTid.val()
+    }
+    index = loading();
+    $.ajax({
+        url: "/submitTask/sameTbPay.html",
+        method: "post",
+        data: data,
+        success: function (json) {
+            if (json.state) {
+                $(".report-two").hide();
+                $(".report-three").show();
+                //控制STEP
+                $(".layui-input-inline-right > i").eq(1).addClass("ico-one").removeClass("ico-two");
+                $(".layui-input-inline-right > i").eq(2).removeClass("ico-one").addClass("ico-two");
+            } else {
+                if (json.param == 1) {
+                    tid.next().text(json.message);
+                } else if (json.param == 2) {
+                    bTid.next().text(json.message);
+                } else {
+                    $("#tbPay").next().html(json.message);
+                }
+            }
+            layer.close(index);
+        }, error: function () {
+            layer.close(index);
+        }
+    })
+})
+var wxTimer;
+var aliTimer;
+$("#wxPay").click(function () {
+    var mobile = $("#wxMobile").val();
+    if (!isMobile(mobile)) {
+        layer.msg("请输入正确的手机号,作为提供报告的凭证!");
+        return;
+    }
+    index = loading();
+    var data = {
+        title: $("#title").val(),
+        author: $("#author").val(),
+        systemId: $("#systemId").val(),
+        content: $("#content").val(),
+        mobile: mobile,
+    }
+    $.ajax({
+        url: "/submitTask/sameWxPay.html",
+        method: "post",
+        data: data,
+        success: function (json) {
+            $("#wxQrCode").show();
+            $("#wxQrCode").find("img").attr("src",json.param.url);
+            wxTimer = setInterval('validateOrderStatus("' + json.param.orderNum + '")', 1000);
+            $("#step3-certificate").text(mobile);
+            layer.close(index);
+        }, error: function () {
+            layer.close(index);
+        }
+    })
+})
+
+$(".prev-step").click(function () {
+    $(".report-two").hide();
+    $(".report-one").show();
+    //控制STEP
+    $(".layui-input-inline-right > i").eq(1).addClass("ico-one").removeClass("ico-two");
+    $(".layui-input-inline-right > i").eq(0).removeClass("ico-one").addClass("ico-two");
+})
+
+function validateOrderStatus(orderNum,type) {
+    $.getJSON("/submitTask/validateOrderStatus.html", {orderNum: orderNum}, function (json) {
+        if (json.state) {
+            clearInterval(wxTimer);
+            clearInterval(aliTimer);
+
+            $(".report-three-d").next("")
+            $(".report-two").hide();
+            $(".report-three").show();
+            //控制STEP
+            $(".layui-input-inline-right > i").eq(1).addClass("ico-one").removeClass("ico-two");
+            $(".layui-input-inline-right > i").eq(2).removeClass("ico-one").addClass("ico-two");
+        }
+    })
+}
+
+function checkTids(tidObj, backupTidObj) {
+    if (trim(tidObj.val()) == '' || !isTaobaoOrder(tidObj.val())) {
+        tidObj.next().html('请输入正确且可用的淘宝订单号!');
+        return false;
+    }
+    if (backupTidObj.val() != '' && !isTaobaoOrder(backupTidObj.val())) {
+        backupTidObj.next().html('请输入正确且可用的淘宝订单号!').show();
+        return false;
+    }
+    if (tidObj.val() == backupTidObj.val()) {
+        backupTidObj.next().html('请不要输入两个相同的淘宝订单号!').show();
+        return false;
+    }
+    return true;
+}
+
+function isTaobaoOrder(orderNum) {
+    return /^([1-9]{1}[0-9]{15,18})$/.test(orderNum);
+}
+
+function isMobile(mobile) {
+    return /^([1]{1}[0-9]{10})$/.test(mobile);
+}

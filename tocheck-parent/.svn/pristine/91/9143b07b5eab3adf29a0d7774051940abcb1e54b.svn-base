@@ -1,0 +1,86 @@
+package com.tocheck.parent.core.entity;
+
+import com.tocheck.parent.common.entity.BaseEntity;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 9:52
+ **/
+public class WebUser extends BaseEntity {
+
+    private String userName;              //用户名
+    private String password;              //密码
+    private Long branchId;                //代理商ID
+    private BigDecimal recharge;          //总共消费金额
+    private int loginType;                //登录类型:0-qq,1-微信
+    private String openId;
+    private int status;                   //状态（可存放32种不同状态）
+    private Date createTime;              //注册时间
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
+    }
+
+    public BigDecimal getRecharge() {
+        return recharge;
+    }
+
+    public void setRecharge(BigDecimal recharge) {
+        this.recharge = recharge;
+    }
+
+    public int getLoginType() {
+        return loginType;
+    }
+
+    public void setLoginType(int loginType) {
+        this.loginType = loginType;
+    }
+
+    public String getOpenId() {
+        return openId;
+    }
+
+    public void setOpenId(String openId) {
+        this.openId = openId;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+}

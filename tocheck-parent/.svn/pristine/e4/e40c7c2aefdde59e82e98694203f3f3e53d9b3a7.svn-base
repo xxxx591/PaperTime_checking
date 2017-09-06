@@ -1,0 +1,53 @@
+package com.tocheck.parent.web.interceptor;
+
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.util.QQUtil;
+import com.tocheck.parent.common.util.SSDBUtils;
+import com.tocheck.parent.common.util.WechatUtil;
+import com.tocheck.parent.core.properties.CommonsProperties;
+import com.tocheck.parent.core.service.AgentUserService;
+import com.tocheck.parent.core.utils.TocheckUtil;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * @author pangliang
+ * @create 2017-07-10 14:02
+ **/
+public class ParamInterceptor extends HandlerInterceptorAdapter {
+
+
+    @Autowired
+    private AgentUserService agentUserService;
+    @Autowired
+    private CommonsProperties commonsProperties;
+    @Autowired
+    private WechatUtil wechatUtil;
+    @Autowired
+    private SSDBUtils ssdbUtils;
+    @Autowired
+    private TocheckUtil tocheckUtil;
+
+    private Logger logger = LoggerFactory.getLogger(ParamInterceptor.class);
+
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String sessionId = tocheckUtil.putPaperFreeSessionId(request, response);
+        String agentIdStr = ssdbUtils.getValue(sessionId + Constants.AGENT_RECOMMEND);
+        long agentId = Constants.ROOT_AGENT_ID;
+        if (StringUtils.isNoneBlank(agentIdStr)) {
+            agentId = Long.parseLong(agentIdStr);
+        }
+        String qqConnectUrl = QQUtil.qqOauthUrl(commonsProperties.qqAppId, commonsProperties.qqRedirectUrl, "get_user_info", agentId);
+        String weiXinConnectUrl = wechatUtil.getOauth2Url(commonsProperties.weChatAppId, commonsProperties.weChatRedirectUrl, agentId);
+        request.setAttribute("qqConnectUrl", qqConnectUrl);
+        request.setAttribute("weiXinConnectUrl", weiXinConnectUrl);
+        return true;
+    }
+}

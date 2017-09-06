@@ -1,0 +1,94 @@
+package com.tocheck.parent.core.entity;
+
+import com.tocheck.parent.common.entity.BaseEntity;
+
+import java.util.Date;
+
+/**
+ * @author pangliang
+ * @create 2017-05-23 10:58
+ **/
+public class ToCheckTask extends BaseEntity {
+
+    private Long checkId;            //检测ID
+    private Long systemId;           //系统ID
+    private String title;            //标题
+    private String author;           //作者
+    private int wordNum;             //字数
+    private int status;              //检测状态  0-正在排队，1-检测中，2-检测成功，-1检测失败
+    private Date createdTime;
+    private String downUrl;          //报告下载地址（paperfree,papertime,paperpass）
+    private String errorMsg;         //提交失败原因
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public Long getCheckId() {
+        return checkId;
+    }
+
+    public void setCheckId(Long checkId) {
+        this.checkId = checkId;
+    }
+
+    public Long getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Long systemId) {
+        this.systemId = systemId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public int getWordNum() {
+        return wordNum;
+    }
+
+    public void setWordNum(int wordNum) {
+        this.wordNum = wordNum;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(Date createdTime) {
+        this.createdTime = createdTime;
+    }
+
+    public String getDownUrl() {
+        return downUrl;
+    }
+
+    public void setDownUrl(String downUrl) {
+        this.downUrl = downUrl;
+    }
+}

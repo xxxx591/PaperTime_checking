@@ -1,0 +1,40 @@
+package com.tocheck.parent.core.service;
+
+import com.github.pagehelper.PageInfo;
+import com.tocheck.parent.common.util.ResponseJson;
+import com.tocheck.parent.core.entity.ToCheckTask;
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * @author pangliang
+ * @create 2017-05-23 11:40
+ **/
+public interface ToCheckTaskService {
+
+    void insert(ToCheckTaskVo toCheckTaskVo);
+
+    Map<String, Object> insertCnki(ToCheckTaskVo toCheckTaskVo, MultipartHttpServletRequest request) throws IOException;
+
+    PageInfo<ToCheckTaskVo> canCheckTask(long systemId, int status);
+
+    void updateTaskStatus(long id, int status);
+
+    void updateTaskStatus(long id, int status, long checkId);
+
+    void finishCheck(long id, int status, String downUrl);
+
+    void updateErrorMsg(long id, String msg);
+
+    ResponseJson sameTbPay(ToCheckTaskVo checkTaskVo, Long tid, Long bTid, HttpServletRequest request);
+
+    ResponseJson orderDetail(Long tid, Long bTid, Long systemId);
+
+    ResponseJson sameWxPay(ToCheckTaskVo checkTaskVo,String mobile, HttpServletRequest request) throws Exception;
+
+}

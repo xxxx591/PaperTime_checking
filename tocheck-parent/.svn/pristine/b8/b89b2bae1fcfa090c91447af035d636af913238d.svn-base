@@ -1,0 +1,103 @@
+package com.tocheck.parent.core.entity;
+
+import com.tocheck.parent.common.entity.BaseEntity;
+
+import java.math.BigDecimal;
+
+/**
+ * @author pangliang
+ * @create 2017-05-22 14:18
+ **/
+public class ToCheckSystem extends BaseEntity{
+
+    private String systemName;
+    private BigDecimal systemPrice;
+    private int systemUnit;
+    private String unitValue;
+    private String checkTime;
+    private String checkLanguage;
+    private String about;
+    private String remind;
+    private String numIids;
+    private int sort;
+
+    public String getSystemName() {
+        return systemName;
+    }
+
+    public void setSystemName(String systemName) {
+        this.systemName = systemName;
+    }
+
+    public BigDecimal getSystemPrice() {
+        return systemPrice;
+    }
+
+    public void setSystemPrice(BigDecimal systemPrice) {
+        this.systemPrice = systemPrice;
+    }
+
+    public int getSystemUnit() {
+        return systemUnit;
+    }
+
+    public void setSystemUnit(int systemUnit) {
+        this.systemUnit = systemUnit;
+    }
+
+    public String getUnitValue() {
+        return unitValue;
+    }
+
+    public void setUnitValue(String unitValue) {
+        this.unitValue = unitValue;
+    }
+
+    public String getCheckTime() {
+        return checkTime;
+    }
+
+    public void setCheckTime(String checkTime) {
+        this.checkTime = checkTime;
+    }
+
+    public String getCheckLanguage() {
+        return checkLanguage;
+    }
+
+    public void setCheckLanguage(String checkLanguage) {
+        this.checkLanguage = checkLanguage;
+    }
+
+    public String getAbout() {
+        return about;
+    }
+
+    public void setAbout(String about) {
+        this.about = about;
+    }
+
+    public String getRemind() {
+        return remind;
+    }
+
+    public void setRemind(String remind) {
+        this.remind = remind;
+    }
+
+    public String getNumIids() {
+        return numIids;
+    }
+
+    public void setNumIids(String numIids) {
+        this.numIids = numIids;
+    }
+
+    public int getSort() {
+        return sort;
+    }
+
+    public void setSort(int sort) {
+        this.sort = sort;
+    }
+}

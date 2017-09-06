@@ -1,0 +1,37 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.tocheck.parent.core.dao.IWebUserDao;
+import com.tocheck.parent.core.entity.WebUser;
+import com.tocheck.parent.core.service.WebUserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * @author pangliang
+ * @create 2017-06-14 10:02
+ **/
+@Service
+public class WebUserServiceImpl implements WebUserService {
+
+    @Autowired
+    private IWebUserDao webUserDao;
+
+    @Override
+    public WebUser getById(long id) {
+        return webUserDao.getById(id);
+    }
+
+    @Override
+    public void updateRechargeCount(long id, String totalFee) {
+        WebUser user = webUserDao.getById(id);
+        if (user == null) return;
+        Map<String, Object> param = new HashMap<>();
+        param.put("id", id);
+        param.put("recharge", user.getRecharge().add(new BigDecimal(totalFee)));
+        webUserDao.updateByMap(param);
+    }
+}

@@ -1,0 +1,103 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>常见问题</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css">
+    <link rel="stylesheet" href="/resources/css/style.css">
+</head>
+<body style="background: #fafafa;">
+<!----header----->
+<jsp:include page="header.jsp">
+    <jsp:param name="menuName" value="faq" />
+</jsp:include>
+
+<!-----主体内容----->
+<div class="main">
+    <div class="main-nr">
+        <!--常见问题内容-->
+        <div class="check-left">
+            <div class="cjwt-nr">
+                <h3>常见问题</h3>
+                <hr/>
+                <div class="cjwt-d">
+                    <strong>1.在检测联盟平台检测的结果和直接去官网检测结果有什么不同？</strong>
+                    <p>检测结果完全一致的！<br/>
+                        检测联盟平台是各官网的免注册入口，论文直接提交到相应的官网检测的，您在这里检测后得到的检测报告是由官网直接给出，每份检测报告都可以在官网验证真伪的哦</p>
+                </div>
+                <div class="cjwt-d">
+                    <strong>2.我的论文，适合在哪种检测系统上检测呢？</strong>
+                    <p>这个要结合你的论文所修改的阶段和学校的要求而定，尽量选择与你们学校一样的检测系统进行检测，因为每个系统的数据比对库不一样，检测结果也是天差地别的，请同学们要认真对待，不要因为选择错了系统影响了毕业，给大学留下了遗憾哦！天天提供如下的检测系统，同学可根据需求选择哦：<br/>
+                        万方数据；<br/>
+                        知网硕博；<br/>
+                        知网本科；<br/>
+                        知网期刊；<br/>
+                        turnitin；<br/>
+                        turnitinUK；<br/>
+                        PaperPass;<br/>
+                        PaperTime；<br/>
+                        PaperFree；<br/>
+                        万方；<br/>
+                        维普；<br/>
+                        温馨提示：请同学们不要使用免费或低价、山寨的检测系统，此种系统的安全性是很没保证的，有很多不法分子是通过这种方式免费或者低价获取你辛辛苦苦创作的毕业论文，用于出售或者传播来进行谋利，请谨慎使用。</p>
+                </div>
+                <div class="cjwt-d">
+                    <strong>3.检测系统准不准？</strong>
+                    <p>只要和选择和学校一样的检测系统,同时没有自建库的情况下，同一篇论文不做任何修改,检测报告是一样的！（论文修改或者调整格式以后检测结果就会发生少量变动，建议大家在经济允许的情况下修改以后尽量再检测一遍。如果达到学校要求就直接的提交上去，包括提交的文档格式doc或者pdf也提交一样的。这样检测结果就是一模一样的！因为全国高校都是用的同一个知网系统，检测原理都是一模一样的！</p>
+                </div>
+                <div class="cjwt-d">
+                    <strong>4.关于引用检测说明</strong>
+                    <p>由于存在引注格式不统一、参考文献格式不规范、虚假引用等问题，为了给用户提供严格、负责的检测结果，将不再区分“相似”和“引用”。检测系统是在论文修改环节为用户提供修改依据的工具，系统所显示的相似部分(红字)是否属于正常引用将保留给用户自行审定。</p>
+                </div>
+                <div class="cjwt-d">
+                    <strong>5.初检段落A未发现抄袭，复检的时候怎么又发现抄袭了？</strong>
+                    <p>这是因为高校系统算法的问题，每次检测都要自动分段，导致复制比的分子分母不同，也可能是系统升级的原因。但是只要您把第一次标红内容都修改了，第二次检测不管会不会出现新抄袭段落复制比都会降低的。</p>
+                </div>
+                <div class="cjwt-d">
+                    <strong>6.有些我参考的内容没测出来？</strong>
+                    <p>软件开发者给检测系统的灵敏度设置了一个阀值，据说该阀值3%，以段落计，低5%的抄袭或引用是检测不出来的，这种情况常见于大段落中（这个段落就是上面的分段）的小句或者小概念。举个例子：假如某检测段落有10000字，那么引用单篇文献500字以下，是不会被检测出来的。抄书也测不出来，目前世界上没有任何一个检测系统，能把您抄的东西全部查出来！</p>
+                </div>
+                <div class="cjwt-d">
+                    <strong>7.我检测通过了怎么还被取消了答辩资格？</strong>
+                    <p>一定要注意，学校检测论文只是论文答辩前的一个小环节，检测通过之后，专家还要审查论文，如果发现您的论文改的一塌糊涂，句子都不通顺，还有明显抄袭的迹象（尽管检测系统发现不了，专家肉眼发现），取消答辩资格是很正常的！因此，改论文时一定要注意踏踏实实改，没有任何可以投机的办法，否则后果很严重，过了检测可能也无法答辩或者答辩无法通过。</p>
+                </div>
+                <div class="cjwt-d">
+                    <strong>8.学校查重系统与平台的检测系统查重结果略有不同，是不是同一个系统啊？</strong>
+                    <p>复制比=抄袭字符数除以总检测字符数分子分母任何一个数据有变化，都影响到复制比的！多加几个空格，复制比就有差异了！</p>
+                </div>
+            </div>
+        </div>
+        <!--right-->
+        <div class="check-right">
+            <!---置顶推荐--->
+            <div class="check-right-box check-right-tj">
+                <div class="right-box-top">置顶推荐</div>
+                <c:forEach items="${list}"  var="r"  end="5">
+                <div class="layui-form-item">
+                    <a href="/newDetail/${r.id}.html">
+                        <div class="layui-form-label">
+                            <div class="layui-form-label-img">
+                                <img src="/resources/images/img01.jpg" alt="" title="">
+                            </div>
+                        </div>
+                        <div class="layui-input-block">
+                            <p>${r.title}</p>
+                            <span><fmt:formatDate value="${r.createTime}" pattern="MM-dd"/></span>
+                        </div>
+                    </a>
+                </div>
+                </c:forEach>
+            </div>
+        </div>
+    </div>
+</div>
+<!-----footer---->
+<jsp:include page="footer.jsp"/>
+<script src="/resources/layui/lay/dest/layui.all.js"></script>
+</body>
+</html>

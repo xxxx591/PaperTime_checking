@@ -1,0 +1,33 @@
+package com.tocheck.parent.core.properties;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
+public class CommonsProperties {
+	// 申明实例的引用
+	public static CommonsProperties instance;
+
+	public CommonsProperties() {
+		instance = this;
+	}
+
+	@Value("#{configProperties['paper.path']}")
+	public String paper_path;
+
+	@Value("#{configProperties['paper.path.temp']}")
+	public String paper_path_temp;
+
+	@Value("#{configProperties['report.path']}")
+	public String report_path;
+
+	@Value("#{configProperties['activity.path']}")
+	public String activity_path;
+
+	@Value("#{configProperties['plantom.path']}")
+	public String plantom_path;
+
+	@Value("#{configProperties['plantomJs.path']}")
+	public String plantomJs_path;
+
+}

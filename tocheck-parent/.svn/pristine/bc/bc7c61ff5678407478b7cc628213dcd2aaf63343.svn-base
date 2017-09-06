@@ -1,0 +1,24 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.tocheck.parent.core.dao.IToCheckMajorDao;
+import com.tocheck.parent.core.entity.ToCheckMajor;
+import com.tocheck.parent.core.service.ToCheckMajorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-15 14:37
+ **/
+@Service
+public class ToCheckMajorServiceImpl implements ToCheckMajorService {
+
+    @Autowired
+    private IToCheckMajorDao toCheckMajorDao;
+
+    @Override
+    public List<ToCheckMajor> getAll() {
+        return toCheckMajorDao.getAll();
+    }
+}

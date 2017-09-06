@@ -1,0 +1,15 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.TaoBaoSetting;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-09 14:41
+ **/
+@Repository
+public interface ITaoBaoSettingDao  {
+    List<TaoBaoSetting> getByStatus(int status);
+}

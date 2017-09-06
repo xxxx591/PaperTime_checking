@@ -1,0 +1,22 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<div class="header">
+    <div class="head">
+        <a class="logo" href="/"><img src="/resources/images/logos.png" alt="" title=""></a>
+        <div class="head-right">
+            <ul class="layui-nav" lay-filter="">
+                <li class="layui-nav-item <c:if test="${param.menuName eq 'index'}">layui-this</c:if>"><a href="/">首页</a></li>
+                <li class="layui-nav-item <c:if test="${param.menuName eq 'check'}">layui-this</c:if>" ><a href="/check.html">防伪查询</a></li>
+                <li class="layui-nav-item <c:if test="${param.menuName eq 'faq'}">layui-this</c:if>"><a href="/faq.html">常见问题</a></li>
+                <li class="layui-nav-item <c:if test="${param.menuName eq 'news'}">layui-this</c:if>"><a href="/news.html">检测资讯</a></li>
+                <li class="layui-nav-item <c:if test="${param.menuName eq 'aboutUs'}">layui-this</c:if>"><a href="/aboutUs.html">关于我们</a></li>
+            </ul>
+        </div>
+        <c:if test="${empty webUser}">
+            <a class="layui-btn layui-btn-dlzc layui-btn-dlzcs" href="javascript:login();">登录注册</a>
+        </c:if>
+        <c:if test="${!empty webUser}">
+           <a class="layui-btn layui-btn-dlzc layui-btn-dlzcs">${webUser.userName}</a>
+        </c:if>
+    </div>
+</div>

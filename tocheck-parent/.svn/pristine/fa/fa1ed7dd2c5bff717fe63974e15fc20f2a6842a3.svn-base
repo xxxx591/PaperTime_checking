@@ -1,0 +1,15 @@
+package com.tocheck.parent.core.dao;
+
+import com.tocheck.parent.core.entity.UserActivity;
+import com.tocheck.parent.core.vo.UserActivityVo;
+import org.springframework.stereotype.Repository;
+
+/**
+ * @author pangliang
+ * @create 2017-07-05 8:50
+ **/
+@Repository
+public interface IUserActivityDao extends IBaseDao<UserActivityVo> {
+
+    UserActivityVo selectByPrimaryKey(long actId,long userId);
+}

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tocheck.parent.core.dao.IToCheckSystemDao">
+    <resultMap id="BaseResultMap" type="com.tocheck.parent.core.entity.ToCheckSystem">
+        <id column="id" property="id" jdbcType="BIGINT" javaType="long"/>
+        <result column="systemName" property="systemName" jdbcType="VARCHAR" javaType="String"/>
+        <result column="systemPrice" property="systemPrice" jdbcType="DECIMAL" javaType="java.math.BigDecimal"/>
+        <result column="systemUnit" property="systemUnit" jdbcType="INTEGER" javaType="int"></result>
+        <result column="unitValue" property="unitValue" jdbcType="VARCHAR" javaType="String"/>
+        <result column="checkTime" property="checkTime" jdbcType="VARCHAR" javaType="String"/>
+        <result column="checkLanguage" property="checkLanguage" jdbcType="VARCHAR" javaType="String"/>
+        <result column="about" property="about" jdbcType="VARCHAR" javaType="String"/>
+        <result column="remind" property="remind" jdbcType="VARCHAR" javaType="String"/>
+        <result column="numIids" property="numIids" jdbcType="VARCHAR" javaType="String"/>
+        <result column="sort" property="sort" jdbcType="INTEGER" javaType="int"/>
+        <result column="deleteStatus" property="deleteStatus" jdbcType="INTEGER" javaType="int"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        t1.id,t1.systemName,t1.systemPrice,t1.systemUnit,t1.unitValue,t1.checkTime,t1.checkLanguage,t1.about,t1.remind,t1.numIids,t1.sort,t1.deleteStatus
+    </sql>
+
+    <select id="getById" parameterType="long" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from toCheckSystem t1 where t1.deleteStatus != 0 and t1.id=#{id}
+    </select>
+
+    <select id="getByMap" parameterType="Map" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from toCheckSystem t1 where t1.deleteStatus != 0
+        <if test="numIids!=null">
+            and t1.numIids=#{numIids}
+        </if>
+        ORDER BY t1.sort ASC
+    </select>
+
+    <insert id="insert" parameterType="com.tocheck.parent.core.entity.ToCheckSystem" useGeneratedKeys="true" keyProperty="id">
+        insert into toCheckSystem(systemName,systemPrice,systemUnit,unitValue,checkTime,checkLanguage,about,remind,numIids,sort) values
+        (#{systemName},#{systemPrice},#{systemUnit},#{unitValue},#{checkTime},#{checkLanguage},#{about},#{remind},#{numIids},#{sort})
+    </insert>
+
+    <update id="updateByMap" parameterType="Map">
+        update toCheckSystem
+        <set>
+            <if test="systemName!=null">
+                systemName=#{systemName},
+            </if>
+            <if test="systemPrice!=null">
+                systemPrice=#{systemPrice},
+            </if>
+            <if test="systemUnit!=null">
+                systemUnit=#{systemUnit},
+            </if>
+            <if test="unitValue!=null">
+                unitValue=#{unitValue},
+            </if>
+            <if test="checkTime!=null">
+                checkTime=#{checkTime},
+            </if>
+            <if test="checkLanguage!=null">
+                checkLanguage=#{checkLanguage},
+            </if>
+            <if test="about!=null">
+                about=#{about},
+            </if>
+            <if test="remind!=null">
+                remind=#{remind},
+            </if>
+            <if test="numIids!=null">
+                numIids=#{numIids},
+            </if>
+            <if test="sort!=null">
+                sort=#{sort},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <update id="logicDelete" parameterType="Long">
+        update toCheckSystem set deleteStatus = 0 where id=#{id}
+    </update>
+
+</mapper>

@@ -1,0 +1,75 @@
+<!doctype html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<html>
+<head>
+    <title>${topic.title}</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <script src="/resources/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/resources/js/js.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/resources/layui/css/layui.css">
+    <link rel="stylesheet" href="/resources/css/style.css">
+</head>
+<body>
+<!----header----->
+<jsp:include page="header.jsp">
+    <jsp:param name="menuName" value="news"/>
+</jsp:include>
+<!-----主体内容----->
+<div class="main">
+    <div class="main-nr news-nr">
+        <!--检测资讯-left-->
+        <div class="news-left news-left-nr">
+            <h3>${topic.title}</h3>
+            <h4>
+                <span>发布时间：<fmt:formatDate value="${topic.createTime}" pattern="yyyy-MM-dd HH:mm:ss"/></span>
+                <span>作者：tocheck</span>
+            </h4>
+            <hr/>
+            ${topic.content}
+            <div class="nr-next">
+                <c:if test="${empty prev}">
+                    <a href="javascript:void(0);" class="nr-next-a">上一篇:没有上一篇了...</a>
+                </c:if>
+                <c:if test="${!empty prev}">
+                    <a href="/newDetail/${prev.id}.html" class="nr-next-a">上一篇:${prev.title}</a>
+                </c:if>
+
+                <c:if test="${empty next}">
+                    <a href="javascript:void(0);" class="nr-next-a">下一篇:没有下一篇了...</a>
+                </c:if>
+                <c:if test="${!empty next}">
+                    <a href="/newDetail/${next.id}.html" class="nr-next-a">下一篇:${next.title}</a>
+                </c:if>
+            </div>
+
+        </div>
+        <!--检测资讯-right-->
+        <%--<div class="news-right">--%>
+            <%--<div class="news-right-top">--%>
+                <%--热点资讯--%>
+            <%--</div>--%>
+            <%--<div class="news-right-list">--%>
+                <%--<span class="news-right-a"><i>1</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>2</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>3</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>4</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>5</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>6</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>7</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>8</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>9</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+                <%--<span class="news-right-a"><i>10</i><a href="" class="news-right-a">这里是最热资讯标题</a> </span>--%>
+            <%--</div>--%>
+        <%--</div>--%>
+    </div>
+
+
+</div>
+<!-----footer---->
+<jsp:include page="footer.jsp"/>
+</body>
+</html>

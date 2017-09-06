@@ -1,0 +1,19 @@
+package com.tocheck.parent.core.service;
+
+import com.tocheck.parent.core.entity.ToCheckSystem;
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-05-22 14:38
+ **/
+public interface ToCheckSystemService {
+
+    void insert(ToCheckSystem checkSystem);
+
+    void logicDelete(long id);
+
+    ToCheckSystem getById(long id);
+
+    List<ToCheckSystem> getAll();
+}

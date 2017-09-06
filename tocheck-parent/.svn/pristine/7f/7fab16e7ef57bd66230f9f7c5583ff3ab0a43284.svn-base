@@ -1,0 +1,145 @@
+package com.tocheck.parent.web.ctrl;
+
+import com.alibaba.fastjson.JSONObject;
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.dto.QQLoginDto;
+import com.tocheck.parent.common.dto.WechatAccessTokenDto;
+import com.tocheck.parent.common.dto.WechatUserInfoDto;
+import com.tocheck.parent.common.util.*;
+import com.tocheck.parent.core.entity.WebUser;
+import com.tocheck.parent.core.properties.CommonsProperties;
+import com.tocheck.parent.core.service.WebUserService;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.math.BigDecimal;
+
+/**
+ * @author pangliang
+ * @create 2016-12-07 18:26
+ **/
+@Controller
+public class ThirdPartyLoginCtrl extends BaseCtrl {
+
+    private static final Logger logger = LoggerFactory.getLogger(ThirdPartyLoginCtrl.class);
+
+    @Autowired
+    private WebUserService webUserService;
+
+    @Autowired
+    private CommonsProperties webProperties;
+
+    @Autowired
+    protected WechatUtil wechatUtil;
+
+    @RequestMapping("/user/qqLogin")
+    public String qqlogin(QQLoginDto loginDto) {
+        try {
+            if (StringUtils.isBlank(loginDto.getState()) || StringUtils.isBlank(loginDto.getCode())) {
+                String qqLoginUrl = QQUtil.qqOauthUrl(webProperties.qqAppId, webProperties.qqRedirectUrl, "get_user_info", "0");
+                return "redirect:" + qqLoginUrl;
+            }
+            String token = QQUtil.getAccessToken(webProperties.qqAppId, webProperties.qqAppKey, loginDto.getCode(), webProperties.qqRedirectUrl, "qq_access_token");
+            loginDto.setAccess_token(token);
+            if (StringUtils.isNoneBlank(loginDto.getAccess_token())) {
+                JSONObject jsonObject = QQUtil.getOpenId(loginDto.getAccess_token());
+                String openId = jsonObject.getString("openid");
+                if (StringUtils.isNoneBlank(openId)) {
+                    WebUser webUser = webUserService.getByLoginType(openId, Constants.LOGIN_TYPE_QQ);
+                    if (null == webUser) {
+                        JSONObject userJson = QQUtil.getUserInfo(loginDto.getAccess_token(), webProperties.qqAppId, openId);
+                        webUser = new WebUser();
+                        webUser.setUserName(getQuickLoginUsername(userJson.getString("nickname")));
+                        webUser.setPassword(MD5Utils.getMD5String(Constants.COMMON_PWD));
+                        webUser.setBranchId(getAgentId());
+                        webUser.setRecharge(BigDecimal.ZERO);
+                        webUser.setLoginType(Constants.LOGIN_TYPE_QQ);
+                        webUser.setOpenId(openId);
+                        webUser.setStatus(0);
+                        webUser.setCreateTime(DateUtil.current());
+                        this.webUserService.createWebUser(webUser);
+                    }
+                    this.saveSessionUserInfo(webUser);
+                    String url = ssdbUtils.getValue("referer-" + requestCookieId());
+                    if (StringUtils.isBlank(url)) {
+                        url = "/";
+                    }
+                    return "redirect:" + url;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/user/weChatLogin", method = RequestMethod.GET)
+    public String weChatLogin(String code, String state) {
+        logger.info("微信登录回调,code={},state={}", code, state);
+        if (StringUtils.isEmpty(code) || StringUtils.isEmpty(state)) {
+            String weiXinConnectUrl = wechatUtil.getOauth2Url(webProperties.weChatAppId, webProperties.weChatRedirectUrl, getAgentId());
+            return "redirect:" + weiXinConnectUrl;
+        }
+        try {
+            String accessTokenStr = wechatUtil.getAccessToken(webProperties.weChatAppId, webProperties.weChatSecret, code);
+            logger.info("loginWechat.getAccessToken:{}", accessTokenStr);
+            WechatAccessTokenDto dto = JSONObject.parseObject(accessTokenStr, WechatAccessTokenDto.class);
+            String openid = dto.getOpenid();
+            String access_token = dto.getAccess_token();
+            if (StringUtils.isNotEmpty(openid) && StringUtils.isNotEmpty(access_token)) {
+                String userJson = wechatUtil.getUserInfo(access_token, openid);
+                WechatUserInfoDto userInfoDto = JSONObject.parseObject(userJson, WechatUserInfoDto.class);
+                if (userInfoDto.getOpenid() != null) {
+                    WebUser webUser = webUserService.getByLoginType(userInfoDto.getOpenid(), Constants.LOGIN_TYPE_WX);
+                    if (null == webUser) {
+                        webUser = new WebUser();
+                        webUser.setUserName(getQuickLoginUsername(userInfoDto.getNickname()));
+                        webUser.setPassword(MD5Utils.getMD5String(Constants.COMMON_PWD));
+                        webUser.setBranchId(Long.parseLong(state));
+                        webUser.setRecharge(BigDecimal.ZERO);
+                        webUser.setLoginType(Constants.LOGIN_TYPE_WX);
+                        webUser.setOpenId(userInfoDto.getOpenid());
+                        webUser.setStatus(0);
+                        webUser.setCreateTime(DateUtil.current());
+                        this.webUserService.createWebUser(webUser);
+                    }
+                    this.saveSessionUserInfo(webUser);
+                    return "redirect:/";
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("微信登录保存用户失败...{}", e);
+        }
+        return "redirect:/index.html";
+    }
+
+    /**
+     * 生成第三方快登账号用户名，取原始昵称中的汉字、数字和英文字母，追加3到6个随机数字组成新用户名，原始昵称全部是特殊字符的，以pt+6个随机数字组成新用户名
+     *
+     * @param nickname 第三方快登账号原始昵称
+     * @return papertime新昵称
+     */
+    private String getQuickLoginUsername(String nickname) {
+        nickname = nickname.replaceAll(CommonUtil.REG_FILTER_NICKNAME, "");
+        int length = nickname.length();
+        int count = 3;
+        if (length < 3) {
+            count = 6 - length;
+            if (length == 0) {
+                nickname = "toCheck";
+            }
+        }
+        String userName = nickname + RandomStringUtils.randomNumeric(count);
+        while (webUserService.getByUserName(userName) != null) {
+            userName = nickname + RandomStringUtils.randomNumeric(count);
+        }
+        return userName;
+    }
+}

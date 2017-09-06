@@ -1,0 +1,42 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<html>
+<head>
+    <title>${system.systemName}</title>
+</head>
+<body>
+<form>
+    标题:<input type="text" id="title"><br>
+    作者:<input type="text" id="author"><br>
+    上传文件:<input type="file" name="file" id="file"/><br>
+    <input type="text" id="systemId" value="${system.id}">
+    <input type="button" value="提交" id="submit">
+</form>
+<script src="${pageContext.request.contextPath}/resources/js/jquery-1.9.1.min.js"></script>
+<script src="${pageContext.request.contextPath}/resources/js/ajaxfileupload.js"></script>
+<script>
+    $("#submit").click(function () {
+        var title = $("#title").val();
+        var author = $("#author").val();
+        var systemId = $("#systemId").val();
+        $.ajaxFileUpload({
+            url: '/submitTask/cnki.html',
+            type: 'POST',
+            secureuri: false,
+            fileElementId: 'file',
+            dataType: 'json',
+            data: {title: title, author: author, systemId: systemId},
+            success: function (result) {
+                if (result.state) {
+                    alert("成功!");
+                } else {
+                    alert(result.message);
+                }
+            },
+            error: function (data, status, e) {
+                layer.msg('提交文件失败，请重试');
+            }
+        });
+    })
+</script>
+</body>
+</html>

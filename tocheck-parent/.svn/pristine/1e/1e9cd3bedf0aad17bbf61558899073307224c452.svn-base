@@ -1,0 +1,24 @@
+package com.tocheck.parent.core.service.impl;
+
+import com.tocheck.parent.core.dao.IFriendLinkDao;
+import com.tocheck.parent.core.entity.FriendLink;
+import com.tocheck.parent.core.service.FriendLinkService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+
+/**
+ * @author pangliang
+ * @create 2017-06-30 10:50
+ **/
+@Service
+public class FriendLinkServiceImpl implements FriendLinkService {
+
+    @Autowired
+    private IFriendLinkDao friendLinkDao;
+
+    @Override
+    public List<FriendLink> getAll() {
+        return friendLinkDao.getByMap(null);
+    }
+}

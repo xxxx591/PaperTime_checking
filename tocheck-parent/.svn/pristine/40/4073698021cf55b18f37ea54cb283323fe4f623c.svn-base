@@ -1,0 +1,18 @@
+package com.tocheck.parent.core.service;
+
+import com.tocheck.parent.core.entity.ToCheckThirdPartyOrder;
+
+import java.util.Map;
+
+/**
+ * @author pangliang
+ * @create 2017-06-12 9:36
+ **/
+public interface ToCheckThirdPartyOrderService {
+
+    ToCheckThirdPartyOrder getByOrderNum(String orderNum);
+
+    void insert(ToCheckThirdPartyOrder order);
+
+    void updateByMap(Map<String,Object> map);
+}

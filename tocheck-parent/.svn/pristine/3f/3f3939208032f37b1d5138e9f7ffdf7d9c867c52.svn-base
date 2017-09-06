@@ -1,0 +1,232 @@
+package com.tocheck.parent.web.util;
+
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.meterware.httpunit.*;
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.util.DateUtil;
+import com.tocheck.parent.common.util.FileToZipUtil;
+import com.tocheck.parent.common.util.SSDBUtils;
+import com.tocheck.parent.core.properties.CommonsProperties;
+import com.tocheck.parent.core.service.ToCheckTaskService;
+import com.tocheck.parent.core.vo.ToCheckTaskVo;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.FileCopyUtils;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.math.BigDecimal;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+
+/**
+ * @author pangliang
+ * @create 2017-01-03 15:15
+ **/
+
+public class WanFangUtil implements Runnable {
+
+    private SSDBUtils ssdbUtils;
+
+    private ToCheckTaskService toCheckTaskService;
+
+    private ToCheckTaskVo vo;
+
+    private Logger logger = LoggerFactory.getLogger(WanFangUtil.class);
+
+    private static final String LOGIN_API = "http://login.wanfangdata.com.cn/login.aspx";
+
+    private static final String UPLOADPAPER_API = "http://check.wanfangdata.com.cn/UploadPaper.aspx";
+
+    private static final String PAY_API = "http://tran.wanfangdata.com.cn/Tran.aspx";
+
+    private static final String ACCOUNT = "papertime";
+
+        private static final String PASSWORD = "123qwe";
+
+    private static final int TOTAL_WAIT_TIME = 5 * 60 * 1000;
+
+    public WanFangUtil(ToCheckTaskVo vo, ToCheckTaskService toCheckTaskService, SSDBUtils ssdbUtils) {
+        this.vo = vo;
+        this.toCheckTaskService = toCheckTaskService;
+        this.ssdbUtils = ssdbUtils;
+    }
+
+    @Override
+    public void run() {
+        toCheckTaskService.updateTaskStatus(vo.getId(), Constants.CHECK_STATUS_CHECKING);
+        JSONObject result = null;
+        WebResponse resp = null;
+        // 建立一个WebConversation实例
+        HttpUnitOptions.setScriptingEnabled(false);
+        WebConversation wc = new WebConversation();
+        // 向指定的URL发出请求(登录)
+        WebRequest req = new GetMethodWebRequest(LOGIN_API);
+        try {
+            // 给请求加上参数
+            req.setParameter("userid", ACCOUNT);
+            req.setParameter("password", PASSWORD);
+            req.setParameter("rememberPassword", "true");
+
+            // 获取响应对象
+            wc.getResponse(req);
+            //提交论文
+            req = new PostMethodWebRequest(UPLOADPAPER_API);
+
+            String paper = ssdbUtils.getValue("tocheck-content-" + vo.getId());
+            if (StringUtils.isBlank(paper)) {
+                toCheckTaskService.updateErrorMsg(vo.getId(), "paper is empty");
+                return;
+            }
+            byte[] b = paper.getBytes("utf-8");//编码
+            req.setParameter("paper", new String(b, "ISO-8859-1"));
+            resp = wc.getResponse(req);
+
+            String query = resp.getURL().getQuery().replace("webTransactionRequest=", "");
+            query = URLDecoder.decode(query, "UTF-8");
+
+
+            //将参数转为JSON
+            JSONObject webTransactionRequest = JSON.parseObject(query);
+
+            //提取有用参数
+            JSONObject request = JSONObject.parseObject(webTransactionRequest.getString("Request"));
+
+            /************************************** 组装支付参数 start ***********************************************/
+            String ProductDetail = request.getString("ProductDetail");
+            BigDecimal Turnover = request.getBigDecimal("Turnover");
+            List<Map<String, Object>> ExtraData = (List<Map<String, Object>>) request.getObject("ExtraData", List.class);
+            Map<String, Object> TransferIn = request.getObject("TransferIn", Map.class);
+
+            Map<String, Object> map = new HashMap();
+            List<Map<String, Object>> datas = new ArrayList<>();
+            map.put("ExtraData", ExtraData);
+            map.put("ProductDetail", ProductDetail);
+            map.put("TransferIn", TransferIn);
+
+            Map<String, Object> TransferOut = new HashMap();
+            TransferOut.put("AccountType", "Person");
+            TransferOut.put("Key", ACCOUNT);
+            datas.add(TransferOut);
+            map.put("TransferOut", datas);
+            map.put("Turnover", Turnover);
+            /************************************** 组装支付参数 end ***********************************************/
+
+            //调用支付请求
+            req = new GetMethodWebRequest(PAY_API);
+            req.setParameter("transactionRequest", JSON.toJSONString(map));
+            resp = wc.getResponse(req);
+
+            result = JSON.parseObject(resp.getText());
+            logger.info("支付返回结果result={}", result);
+
+            //分析支付状态
+            String TransferOutAccountsStatus = result.getString("TransferOutAccountsStatus");
+            if (!"".equals(TransferOutAccountsStatus) && !"[]".equals(TransferOutAccountsStatus)) {
+                JSONArray array = JSON.parseArray(TransferOutAccountsStatus);
+                if (!array.isEmpty()) {
+                    String status = array.getJSONObject(0).getString("Status");
+                    if ("MoneyNotEnough".equals(status)) {
+                        toCheckTaskService.updateErrorMsg(vo.getId(), "insufficient account balance");
+                        return;
+                    }
+                }
+            }
+
+            String Transaction = result.getString("Transaction");
+            logger.info("支付成功参数Transaction={}", Transaction);
+
+            if (Transaction != null) {
+                String DetectReportUrl = "";
+                String down_report_href = "";
+
+                JSONObject object = JSON.parseObject(Transaction);
+
+                String ProductId = object.getString("ProductDetail");
+                String Id = object.getString("Id");
+                logger.info("产品ProductDetail={},订单Id={}", ProductId, Id);
+                if (StringUtils.isNotBlank(ProductId) && StringUtils.isNotBlank(Id)) {
+                    while (true) {
+                        DetectReportUrl = "http://check.wanfangdata.com.cn/DetectReport.aspx?id=" + ProductId;
+
+                        Runtime rt = Runtime.getRuntime();
+                        rt.exec(CommonsProperties.instance.plantom_path + " " + CommonsProperties.instance.plantomJs_path + " " + DetectReportUrl + " " + ACCOUNT + " " + PASSWORD);
+                        Thread.sleep(TOTAL_WAIT_TIME);  //让程序休息5分钟,再去读取检测报告
+
+                        down_report_href = "http://check.wanfangdata.com.cn/ExportDetectReport.ashx?id=" + ProductId + "&reportid=" + Id;
+                        logger.info("报告下载地址down_report_href={}", down_report_href);
+
+                        req = new GetMethodWebRequest(down_report_href);
+                        resp = wc.getResponse(req);
+                        logger.info("当前请求链接={}", wc.getCurrentPage().getURL());
+
+                        //请求下载链接失败,保存关键信息
+                        if (wc.getCurrentPage().getURL().toString().indexOf("http://check.wanfangdata.com.cn/ExportDetectReport.ashx") == -1) {  //如果返回的不是下载报告的链接..
+                            continue;
+                        } else {
+                            //PDF报告
+                            String userDir = DateUtil.getDate(vo.getCreatedTime(), "yyyyMMddHH");
+//                            StringBuilder reportPath = new StringBuilder(64);
+//                            reportPath.append(CommonsProperties.instance.report_path);
+//                            reportPath.append(DateUtil.getDate(vo.getCreatedTime(), "yyyyMMddHH"));
+//                            reportPath.append("/");
+//                            reportPath.append(vo.getId());
+                            String filePath = CommonsProperties.instance.report_path + userDir + File.separator + vo.getSystemId() + File.separator;
+
+                            File uploadfile = new File(String.valueOf(filePath));
+                            if (!uploadfile.exists() && !uploadfile.isDirectory()) {
+                                uploadfile.mkdirs();
+                            }
+                            String newFileName = "论文相似性检测报告（详细版）.PDF";
+                            File pdfFile = new File(filePath + newFileName);
+                            FileCopyUtils.copy(resp.getBytes(), pdfFile);
+                            //HTML报告
+                            File htmlFile = null;
+                            req = new GetMethodWebRequest(DetectReportUrl);
+                            resp = wc.getResponse(req);
+                            HTMLElement[] htmlElements = resp.getElementsWithClassName("view_report");
+                            if (htmlElements.length > 0) {
+                                req = new GetMethodWebRequest("http://check.wanfangdata.com.cn" + htmlElements[0].getAttribute("href"));
+                                logger.info("HTML下载报告链接={}", htmlElements[0].getAttribute("href") + resp.getCharacterSet());
+                                resp = wc.getResponse(req);
+                                String text = resp.getText().replace("css/Images", "http://check.wanfangdata.com.cn/css/Images")
+                                        .replace("../Images/udbg.gif", "http://check.wanfangdata.com.cn/Images/udbg.gif")
+                                        .replace("../Images/scroalbg.gif", "http://check.wanfangdata.com.cn/Images/scroalbg.gif")
+                                        .replace("../Images/fullimg.gif", "http://check.wanfangdata.com.cn/Images/fullimg.gif")
+                                        .replace("../Images/scroalbg1.gif", "http://check.wanfangdata.com.cn/Images/scroalbg1.gif");
+                                newFileName = "论文相似性检测报告(全文版).html";
+                                htmlFile = new File(filePath  + newFileName);
+                                FileUtils.copyInputStreamToFile(new ByteArrayInputStream(text.getBytes("utf-8")), htmlFile);
+                            }
+
+                            List<File> files = new ArrayList<>();
+                            files.add(pdfFile);
+                            if (htmlFile != null) {
+                                files.add(htmlFile);
+                            }
+                            //打包报告
+                            FileToZipUtil.multiFileToZip(files, filePath  + vo.getId()+".zip");
+                            toCheckTaskService.updateTaskStatus(vo.getId(), Constants.CHECK_STATUS_FINISH);
+                            pdfFile.delete();
+                            if (htmlFile != null) {
+                                htmlFile.delete();
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            toCheckTaskService.updateErrorMsg(vo.getId(), e.toString());
+            logger.info("支付前检测异常status={},异常检测记录ID={}", e, vo.getId());
+        }
+    }
+}

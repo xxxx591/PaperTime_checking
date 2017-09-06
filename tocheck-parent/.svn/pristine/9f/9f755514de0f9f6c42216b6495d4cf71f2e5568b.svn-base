@@ -1,0 +1,87 @@
+package com.tocheck.parent.web.ctrl;
+
+import com.tocheck.parent.common.constans.Constants;
+import com.tocheck.parent.common.util.ResponseJson;
+import com.tocheck.parent.core.entity.FreeActivity;
+import com.tocheck.parent.core.entity.UserActivity;
+import com.tocheck.parent.core.entity.UserCoupon;
+import com.tocheck.parent.core.interfaces.Auth;
+import com.tocheck.parent.core.service.FreeActivityService;
+import com.tocheck.parent.core.service.UserActivityService;
+import com.tocheck.parent.core.service.UserCouponService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import java.util.List;
+
+/**
+ * Created by pangliang on 2017/7/4.
+ */
+@Controller
+@RequestMapping("/coupon")
+public class CouponCtrl extends BaseCtrl {
+
+    @Autowired
+    private FreeActivityService freeActivityService;
+    @Autowired
+    private UserCouponService userCouponService;
+    @Autowired
+    private UserActivityService userActivityService;
+    private Logger logger = LoggerFactory.getLogger(CouponCtrl.class);
+
+    @Auth
+    @RequestMapping(value = "/get", method = RequestMethod.GET)
+    public String get(Model model) {
+        try {
+            List<FreeActivity> list = freeActivityService.getAll();
+            model.addAttribute("list", list);
+            return "coupon/get";
+        } catch (Exception e) {
+            logger.error("进入获取优惠券页面失败!", e);
+        }
+        return "redirect:/500.html";
+    }
+    @Auth
+    @RequestMapping(value = "/activityDetails", method = RequestMethod.GET)
+    public String activityDetails(long id, Model model) {
+        try {
+            FreeActivity activity = freeActivityService.getById(id);
+            model.addAttribute("activity", activity);
+            UserActivity userActivity = userActivityService.getActivityDetail(id,getSessionUserInfo().getId());
+            model.addAttribute("userActivity",userActivity);
+            return "coupon/activityDetail";
+        } catch (Exception e) {
+            logger.error("进入获取优惠券提交页面失败!", e);
+        }
+        return "redirect:/500.html";
+    }
+    @Auth
+    @ResponseBody
+    @RequestMapping(value = "/submitQQShareImg", method = RequestMethod.POST)
+    public ResponseJson submitQQShareImg(MultipartHttpServletRequest request, long actId) {
+        try {
+            return userActivityService.submitQQShareImg(request, actId, getSessionUserInfo().getId());
+        } catch (Exception e) {
+            logger.error("提交活动失败", e);
+            return ResponseJson.body(Constants.RESP_FAIL, "提交失败,请刷新后重试!");
+        }
+    }
+    @Auth
+    @RequestMapping(value = "/my", method = RequestMethod.GET)
+    public String my(Model model) {
+        try {
+            List<UserCoupon> list = userCouponService.getUserCoupon(getSessionUserInfo().getId());
+            model.addAttribute("list", list);
+            return "coupon/my";
+        }catch (Exception e){
+            logger.error("进入我的优惠券页面失败!",e);
+        }
+        return "redirect:/500.html";
+    }
+}
