@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.min.js"></script>
+</head>
+<style>
+
+</style>
+
+<body>
+    <div id="app">
+        <h1>Vue.钩子函数（生命周期）</h1>
+        <hr> {{num}}
+        <p><button @click="numUp">加分</button></p>
+    </div>
+    <p><button onclick="app.$destroy()">销毁</button></p>
+</body>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            num: 1,
+        },
+        methods: {
+            numUp: function () {
+                this.num++;
+            },
+        },
+        beforeCreate: function () {
+            console.log('1-beforCreate 初始化之后')
+        },
+        created: function () {
+            console.log('2-created 创建完成')
+        },
+        beforeMount: function () {
+            console.log('3-beforeMount 挂载之前')
+        },
+        mounted: function () {
+            console.log('4-mounted 被创建')
+        },
+        beforeUpdate: function () {
+            console.log('5-beforeUpdate 数据更新之前')
+        },
+        updated: function () {
+            console.log('6-update 数据更新后')
+        },
+        activated: function () {
+            console.log('7-activated')
+        },
+        deactivated: function () {
+            console.log('8-deactivaed')
+        },
+        beforeDestroy: function () {
+            console.log('9-beforeDestory 数据被销毁之前')
+        },
+        destroyed: function () {
+            console.log('10-destroyed 数据销毁之后')
+        }
+    })
+</script>
+
+</html>

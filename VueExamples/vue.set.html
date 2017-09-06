@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.min.js"></script>
+</head>
+<style>
+
+</style>
+
+<body>
+    <div id="app">
+        <h1>Vue.set 扩展实例构造器</h1>
+        <hr>
+        {{count}}
+        <ul>
+            <li v-for="item in arr">{{item}}</li>
+        </ul>
+    </div>
+    <button onclick="add()">add</button>
+</body>
+<script>
+    function add() {
+        // Vue.set(outData,'count',2)
+        // app.count++
+        // outData.count++;
+        // app.arr[1] = 'ddd'
+        Vue.set(outData,arr,1,'ddd')
+    }
+    var outData = {
+        count:1,
+        // goods:'car'
+        arr: ['aaa', 'bbb', 'ccc']
+    }
+    var app = new Vue({
+        el: '#app',
+        data: outData
+    })
+</script>
+
+</html>
