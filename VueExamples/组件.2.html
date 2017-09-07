@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.min.js"></script>
+
+</head>
+<style>
+
+</style>
+
+<body>
+    <div id="box">
+        <my-aaa></my-aaa>
+    </div>
+
+    <!-- 第一种方式  -->
+    <!-- <script type="x-template" id="aaa">
+            <h2 @click="change">{{msg}}</h2>
+    </script> -->
+
+    <!-- 第二种方式 -->
+    <template id="aaa">
+        <h1>
+            <ul>
+                <li v-for="val in arr">
+                    {{val}}
+                </li>
+            </ul>
+        </h1>
+<!-- 现在一个模板只能有一个父元素 -->
+    </template>
+</body>
+<script>
+    new Vue({
+        el: '#box',
+        components: { //局部组件
+            'my-aaa': {
+                data() {
+                    return {
+                        msg: 'welcome ',
+                        arr: ['apple', 'banana', 'orange', 'pen', 'wenle', 'xieyuanhang']
+                    }
+                },
+                methods: {
+                    change() {
+                        this.msg = 'changes'
+                    }
+                },
+                template: '#aaa'
+            } //名字要加引号
+        }
+    })
+</script>
+
+</html>
