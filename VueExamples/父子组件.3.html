@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Document</title>
+    <script src="./node_modules/vue/dist/vue.min.js"></script>
+
+</head>
+<style>
+
+</style>
+
+<body>
+    <div id="box">
+        <aaa>
+            <ul slot="ul-slot">
+                <li>111</li>
+                <li>222</li>
+                <li>333</li>
+            </ul>
+            <ol slot="ol-slot">
+                <li>111</li>
+                <li>222</li>
+                <li>333</li>
+            </ol>
+        </aaa>
+    </div>
+    <template id="aaa">
+        <h1> xxx 
+            <slot name="ul-slot"></slot>
+            <slot name="ol-slot"></slot>
+            <p>welcome Vue</p>
+        </h1>
+    </template>
+
+</body>
+<script>
+    new Vue({
+        el: '#box',
+        data: {
+            a: 'aaa'
+        },
+        components: {
+            'aaa': {
+                template: "#aaa",
+               
+            },
+
+        }
+    })
+</script>
+
+</html>
