@@ -18,11 +18,17 @@ $(function () {
         $('.tab-right-active').removeClass('tab-right-active');
         $('.tab-right-content').eq($('.tab-box ul li').index(self)).addClass('tab-right-active')
         if ($('.tab-box ul li').index(self) == 4) {
+            $('.tab-right-content').addClass('leave-message-box');
+            $('#lwcc-left').addClass('leave-message')
+            $('.right-ab').addClass('leave-message-right')
             $('.swiper-container,.lwcc-right ').css('display','none');
-            $('.ly-right').css('display','block');
+            $('.ly-right').css('display','block').addClass('leave-message-right');
         }else{
+            $('.tab-right-content').removeClass('leave-message-box');
+            $('#lwcc-left').removeClass('leave-message')
+            $('.right-ab').removeClass('leave-message-right')
             $('.swiper-container,.lwcc-right ').css('display','block');
-            $('.ly-right').css('display','none');
+            $('.ly-right').css('display','none').removeClass('leave-message-right');``
         }
     })
 })

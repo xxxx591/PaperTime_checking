@@ -7,12 +7,12 @@
     <title>提交论文</title>
     <link rel="stylesheet" href="./bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/swiper-3.4.2.min.css">
-    <link rel="stylesheet" type="text/css" href="css/new-style.css"/>
+    <link rel="stylesheet" type="text/css" href="css/new-style.css" />
     <link rel="stylesheet" href="./css/style-login.css">
     <script typr="text/javascript" src="./js/swiper-3.4.2.min.js"></script>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <script src="./bootstrap/dist/js/bootstrap.min.js"></script>
-    
+
 </head>
 
 <body style="background: #f5f5f5;">
@@ -109,242 +109,83 @@
                                             <div class="checkboxFour dx-zfx">
                                                 <input type="checkbox" value="1" id="checkboxFourInput" name="" />
                                                 <label for="checkboxFourInput"></label>
-                                            </div>
-                                            <span class="copy-s">自建库<i style="color:#FF0000">（选中后对比范围包括自建库）</i></span>
-                                        </label>
                                     </div>
-                                    <!--论文标题 -->
-                                    <div class="copy-la-d copy-la-ds">
-                                        <i class="copy-t">论文标题</i>
-                                        <label class="copy-la">
+                                    <span class="copy-s">自建库<i style="color:#FF0000">（选中后对比范围包括自建库）</i></span>
+                                    </label>
+                                </div>
+                                <!--论文标题 -->
+                                <div class="copy-la-d copy-la-ds">
+                                    <i class="copy-t">论文标题</i>
+                                    <label class="copy-la">
                                             <input class="copy-ipt" type="text" placeholder="限100字内..." value="">
                                         </label>
-                                        <span>论文标题不能为空</span>
-                                    </div>
+                                    <span>论文标题不能为空</span>
+                                </div>
 
-                                    <!--论文作者 -->
-                                    <div class="copy-la-d ">
-                                        <i class="copy-t">论文作者</i>
-                                        <label class="copy-la">
+                                <!--论文作者 -->
+                                <div class="copy-la-d ">
+                                    <i class="copy-t">论文作者</i>
+                                    <label class="copy-la">
                                             <input class="copy-ipt" type="text" placeholder="限50字内..." value="">
                                         </label>
-                                        <span>论文作者不能为空</span>
-                                    </div>
-                                    <div class="copy-la-w">
-                                        <p>论文长度(内容的长度不超过30万字,系统按照Word字数统计里面的字符数(不计空格)计算)</p>
-                                        <i style="display:none;">（输入框内还未添加内容）</i>
-                                    </div>
+                                    <span>论文作者不能为空</span>
+                                </div>
+                                <div class="copy-la-w">
+                                    <p>论文长度(内容的长度不超过30万字,系统按照Word字数统计里面的字符数(不计空格)计算)</p>
+                                    <i style="display:none;">（输入框内还未添加内容）</i>
+                                </div>
 
-                                    <div class="anment-left" style="float:left;">
-                                        <textarea class="copy-tex" role="" rows="" placeholder=""></textarea>
-                                        <p class="copy-t"><strong>您当前已经输入 <i>0</i> 字， 需要消耗余额 <i>0</i> 积分， 需要额外支付 <i>0</i> 积分，约 <i>0</i> 元</strong></p>
-                                        <div class="copy-bt">
-                                            <div class="copy-bt-bd">
-                                                <button id="submit_check_task" class="bt ztwb-bt" type="submit">提交检测</button>
-                                                <button class="bt ztwb-bt" type="submit" onclick="javascript:gbtk();">领取免费字数</button>
-                                            </div>
-                                            <div class="loading-xz"><em class="loading"></em><i>正在提交...</i></div>
-                                        </div>
-                                        <div class="lwcc-left-bt" style="display: block;width: 100%;">
-                                            <p class="lwcc-left-bt-t"><span>温馨提示</span></p>
-                                            <p>
-                                                系统支持所有语种的论文检测，如中（简/繁）、英、日、法、德文等！<br/> 系统在检测时会分析论文的前后文关系，所以请您提交论文的全部内容，如果是非全文的检测将不能保证检测的准确性。
-                                                <br/> 被系统自动识别出来的非正文部分（如目录，标题，公式，图表，参考文献等）不参与检测，检测字数一般略小于论文字数。
-                                                <br/>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 上传文本提交页面 -->
-                            <div class="tab-right-content">
-                                <div class="scwb-d">
-                                    <p class="scwb-d-p"><span>提醒：系统仅支持txt、doc、docx格式文档</span></p>
-                                    <div class="scwb-d-wd scwb-d-txt">
-                                        <div class="scwb-d-wd-left">
-                                        </div>
-                                        <div class="scwb-d-wd-right">
-                                            <p class="scwb-p1"><i></i><i class="scwb-sc">删除</i></p>
-                                            <p class="scwb-p2"><i></i><span>上传完成</span></p>
-                                        </div>
-                                    </div>
-                                    <div id="uploadFileQueue"></div>
-                                    <p class="scwb-d-ipt">
-                                        <a class="drbt"><input type="file" id="uploadPaper" name="uploadPaper" onchange="uploadPaperFile(this);">选择文件</a>
-                                    </p>
-                                    <p class="copy-bt">
-                                        <button class="bt scwb-bt" type="submit">确定上传</button>
-                                    </p>
-                                </div>
-                                <div>
-                                    <input type="hidden" id="fileId" name="" value="">
-                                    <input type="hidden" id="taskType" name="" value="">
-                                    <input type="hidden" id="isChecked" value="0">
-                                    <input type="hidden" id="pageName" value="upload_file" />
-                                </div>
-                            </div>
-                            <!-- 查看报告页面 -->
-                            <div class="tab-right-content">
-                                <div class="ckbg-main">
-                                    <div class="new-report">
-                                        <div class="new-report-left">
-                                            <span>选择：</span>
-                                            <a href="">全选</a>
-                                            <em>-</em>
-                                            <a href="">反选</a>
-                                            <em>-</em>
-                                            <a href="">删除</a>
-                                        </div>
-                                    </div>
-                                    <table class="table ckbg-table" width="100%" id="result_2">
-                                        <thead>
-                                            <tr>
-                                                <td width="30%">标题</td>
-                                                <td width="">状态</td>
-                                                <td width="" align="center">检测结果</td>
-                                                <td width="" align="center">提交时间</td>
-                                                <td width="" align="center">
-                                                        <a href="" style="float:left;margin-left:55px;">操作</a>
-                                                </td>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="paragraph ">
-                                            <tr>
-                                                <td style="text-align: left">
-                                                    <div class="duox-left">
-                                                        <input class="duox-ipt" id="ckbg01" name="ckbg01" type="checkbox">
-                                                        <label class="duox-la" for="ckbg01" ></label>
-                                                    </div>
-                                                    <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
-                                                </td>
-                                                <td >
-                                                    <span class="td-s2">检测中..</span>
-                                                </td>
-                                                <td>
-                                                    <span class="td-s3">相似度：52.33%</span>
-                                                </td>
-                                                <td>
-                                                    <span class="td-s4">2016/9/28 16:00</span>
-                                                </td>
-                                                <td>
-                                                    <a class="td-s5  td-cz">查看报告|</a>
-                                                    <a class="td-s8  td-cz">在线改重|</a>
-                                                    <a class="td-s6  td-cz">下载报告|</a>
-                                                    <a class="td-s7  td-cz">删除</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align: left">
-                                                    <div class="duox-left">
-                                                        <input class="duox-ipt" id="ckbg02" name="ckbg01" type="checkbox">
-                                                        <label class="duox-la" for="ckbg02" ></label>
-                                                    </div>
-                                                    <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
-                                                </td>
-                                                <td >
-                                                    <span class="td-s2">检测中..</span>
-                                                </td>
-                                                <td>
-                                                    <span class="td-s3">相似度：52.33%</span>
-                                                </td>
-                                                <td>
-                                                    <span class="td-s4">2016/9/28 16:00</span>
-                                                </td>
-                                                <td>
-                                                    <a class="td-s5  td-cz">查看报告|</a>
-                                                    <a class="td-s8  td-cz">在线改重|</a>
-                                                    <a class="td-s6  td-cz">下载报告|</a>
-                                                    <a class="td-s7  td-cz">删除</a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td style="text-align: left">
-                                                    <div class="duox-left">
-                                                        <input class="duox-ipt" id="ckbg03" name="ckbg01" type="checkbox">
-                                                        <label class="duox-la" for="ckbg03" ></label>
-                                                    </div>
-                                                    <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
-                                                </td>
-                                                <td >
-                                                    <span class="td-s2">检测完成</span>
-                                                </td>
-                                                <td>
-                                                    <span class="td-s3">相似度：52.33%</span>
-                                                </td>
-                                                <td>
-                                                    <span class="td-s4">2016/9/28 16:00</span>
-                                                </td>
-                                                <td>
-                                                    <a class="td-s5  td-cz">查看报告|</a>
-                                                    <a class="td-s8  td-cz">在线改重|</a>
-                                                    <a class="td-s6  td-cz">下载报告|</a>
-                                                    <a class="td-s7  td-cz">删除</a>
-                                                </td>
-                                            </tr>
-                        
-                                        </tbody>
-                                    </table>
-                                    <!---报告为空的时候---->
-                                    <div class="wk-d">
-                                        <img src="images/ckbg.png">
-                                        <span>还没有任何内容哦~</span>
-                                    </div>
-                                    <p class="lwcc-left-bt-t"><span>提醒</span>系统仅保留 10 天以内的检测报告，检测完成后请尽快下载您的检测报告!</p>
-                                        <!----翻页---->
-                                    <div class="page">
-                                        <div class="page-d">
-                                            <span>当前第2页，共8页</span>
-                                            <a class="page-a" href="">首页</a>
-                                            <a class="page-a" href="">上一页</a>
-                                            <a href="">1</a>
-                                            <a href="">2</a>
-                                            <a href="">...</a>
-                                            <a href="">8</a>
-                                            <a class="page-a page-action" href="">下一页</a>
-                                            <a class="page-a" href="">尾页</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- 新建自建库页面 -->
-                            <div class="tab-right-content">
-                                <div class="qh-nr">
-                                    <!--论文标题-->
-                                    <p class="copy-t">论文标题</p>
-                                    <div class="copy-la-d copy-la-ds">
-                                        <label class="copy-la">
-                                        <input class="copy-ipt" type="text" placeholder="" value="">
-                                    </label>
-                                        <span>论文标题不能为空</span>
-                                    </div>
-        
-                                    <p class="copy-t">论文内容<label class="copy-t-la"><em>重新导入论文</em><input type="file"></label><span>paperfree产品构想.docx</span><span>上传成功</span></p>
-                                    <div class="scwb-d-wd scwb-d-txt">
-                                        <div class="scwb-d-wd-left">
-                                        </div>
-                                        <div class="scwb-d-wd-right">
-                                            <p class="scwb-p1"><i></i><i class="scwb-sc">删除</i></p>
-                                            <p class="scwb-p2"><i></i><span>上传完成</span></p>
-                                        </div>
-                                    </div>
+                                <div class="anment-left" style="float:left;">
                                     <textarea class="copy-tex" role="" rows="" placeholder=""></textarea>
+                                    <p class="copy-t"><strong>您当前已经输入 <i>0</i> 字， 需要消耗余额 <i>0</i> 积分， 需要额外支付 <i>0</i> 积分，约 <i>0</i> 元</strong></p>
                                     <div class="copy-bt">
                                         <div class="copy-bt-bd">
-                                            <button class="bt new-bt" type="submit">点击上传</button>
+                                            <button id="submit_check_task" class="bt ztwb-bt" type="submit">提交检测</button>
+                                            <button class="bt ztwb-bt" type="submit" onclick="javascript:gbtk();">领取免费字数</button>
                                         </div>
+                                        <div class="loading-xz"><em class="loading"></em><i>正在提交...</i></div>
                                     </div>
-                                </div>
-                                <!--新增成功提示-->
-                                <div class="qh-nr" style="display: block;">
-                                    <div class="lwcc-tjh" style="display: block;">
-                                        <p class="lwcc-tjh-p"><i></i><span>自建库文章上传成功~</span></p>
-                                        <p class="lwcc-tjh-bt"><a href="" class="lwcc-tjh-a">继续上传文章</a></p>
-                                        <p class="lwcc-tjh-bt"><a href="" class="lwcc-tjh-a">管理自建库</a></p>
+                                    <div class="lwcc-left-bt" style="display: block;width: 100%;">
+                                        <p class="lwcc-left-bt-t"><span>温馨提示</span></p>
+                                        <p>
+                                            系统支持所有语种的论文检测，如中（简/繁）、英、日、法、德文等！<br/> 系统在检测时会分析论文的前后文关系，所以请您提交论文的全部内容，如果是非全文的检测将不能保证检测的准确性。
+                                            <br/> 被系统自动识别出来的非正文部分（如目录，标题，公式，图表，参考文献等）不参与检测，检测字数一般略小于论文字数。
+                                            <br/>
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-                            <!-- 管理自建库页面 -->
-                            <div class="tab-right-content">
+                        </div>
+                        <!-- 上传文本提交页面 -->
+                        <div class="tab-right-content">
+                            <div class="scwb-d">
+                                <p class="scwb-d-p"><span>提醒：系统仅支持txt、doc、docx格式文档</span></p>
+                                <div class="scwb-d-wd scwb-d-txt">
+                                    <div class="scwb-d-wd-left">
+                                    </div>
+                                    <div class="scwb-d-wd-right">
+                                        <p class="scwb-p1"><i></i><i class="scwb-sc">删除</i></p>
+                                        <p class="scwb-p2"><i></i><span>上传完成</span></p>
+                                    </div>
+                                </div>
+                                <div id="uploadFileQueue"></div>
+                                <p class="scwb-d-ipt">
+                                    <a class="drbt"><input type="file" id="uploadPaper" name="uploadPaper" onchange="uploadPaperFile(this);">选择文件</a>
+                                </p>
+                                <p class="copy-bt">
+                                    <button class="bt scwb-bt" type="submit">确定上传</button>
+                                </p>
+                            </div>
+                            <div>
+                                <input type="hidden" id="fileId" name="" value="">
+                                <input type="hidden" id="taskType" name="" value="">
+                                <input type="hidden" id="isChecked" value="0">
+                                <input type="hidden" id="pageName" value="upload_file" />
+                            </div>
+                        </div>
+                        <!-- 查看报告页面 -->
+                        <div class="tab-right-content">
+                            
                                 <div class="new-report">
                                     <div class="new-report-left">
                                         <span>选择：</span>
@@ -358,15 +199,88 @@
                                 <table class="table ckbg-table" width="100%" id="result_2">
                                     <thead>
                                         <tr>
-                                            <td width="35%">标题</td>
-                                            <td width="" align="center">字数</td>
+                                            <td width="30%">标题</td>
+                                            <td width="">状态</td>
+                                            <td width="" align="center">检测结果</td>
                                             <td width="" align="center">提交时间</td>
-                                            <td width="" align="center">操作</td>
-                                            <td width="" align="center">　　　　</td>
-                                            <td width="" align="center">　　</td>
+                                            <td width="" align="center">
+                                                <a style="float:left;margin-left:55px;">操作</a>
+                                            </td>
                                         </tr>
                                     </thead>
                                     <tbody class="paragraph ">
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <div class="duox-left">
+                                                    <input class="duox-ipt" id="ckbg01" name="ckbg01" type="checkbox">
+                                                    <label class="duox-la" for="ckbg01"></label>
+                                                </div>
+                                                <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s2">检测中..</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">相似度：52.33%</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <a class="td-s5  td-cz">查看报告|</a>
+                                                <a class="td-s8  td-cz">在线改重|</a>
+                                                <a class="td-s6  td-cz">下载报告|</a>
+                                                <a class="td-s7  td-cz">删除</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <div class="duox-left">
+                                                    <input class="duox-ipt" id="ckbg02" name="ckbg01" type="checkbox">
+                                                    <label class="duox-la" for="ckbg02"></label>
+                                                </div>
+                                                <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s2">检测中..</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">相似度：52.33%</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <a class="td-s5  td-cz">查看报告|</a>
+                                                <a class="td-s8  td-cz">在线改重|</a>
+                                                <a class="td-s6  td-cz">下载报告|</a>
+                                                <a class="td-s7  td-cz">删除</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <div class="duox-left">
+                                                    <input class="duox-ipt" id="ckbg03" name="ckbg01" type="checkbox">
+                                                    <label class="duox-la" for="ckbg03"></label>
+                                                </div>
+                                                <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s2">检测完成</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">相似度：52.33%</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <a class="td-s5  td-cz">查看报告|</a>
+                                                <a class="td-s8  td-cz">在线改重|</a>
+                                                <a class="td-s6  td-cz">下载报告|</a>
+                                                <a class="td-s7  td-cz">删除</a>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td style="text-align: left">
                                                 <div class="duox-left">
@@ -376,19 +290,19 @@
                                                 <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
                                             </td>
                                             <td>
-                                                <span class="td-s3">256114字</span>
+                                                <span class="td-s2">检测完成</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">相似度：52.33%</span>
                                             </td>
                                             <td>
                                                 <span class="td-s4">2016/9/28 16:00</span>
                                             </td>
                                             <td>
-                                                <a class="td-s5 td-s5s td-cz" href="javascript:ckxq();">查看</a>
-                                            </td>
-                                            <td>
-                                                <a class="td-s6 td-s6s td-cz">预览</a>
-                                            </td>
-                                            <td>
-                                                <a class="td-s7 td-s7s td-cz" href="javascript:scts();">删除</a>
+                                                <a class="td-s5  td-cz">查看报告|</a>
+                                                <a class="td-s8  td-cz">在线改重|</a>
+                                                <a class="td-s6  td-cz">下载报告|</a>
+                                                <a class="td-s7  td-cz">删除</a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -400,79 +314,261 @@
                                                 <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
                                             </td>
                                             <td>
-                                                <span class="td-s3">256114字</span>
+                                                <span class="td-s2">检测完成</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">相似度：52.33%</span>
                                             </td>
                                             <td>
                                                 <span class="td-s4">2016/9/28 16:00</span>
                                             </td>
                                             <td>
-                                                <a class="td-s5 td-s5s td-cz" href="javascript:ckxq();">查看</a>
-                                            </td>
-                                            <td>
-                                                <a class="td-s6 td-s6s td-cz">预览</a>
-                                            </td>
-                                            <td>
-                                                <a class="td-s7 td-s7s td-cz" href="javascript:scts();">删除</a>
+                                                <a class="td-s5  td-cz">查看报告|</a>
+                                                <a class="td-s8  td-cz">在线改重|</a>
+                                                <a class="td-s6  td-cz">下载报告|</a>
+                                                <a class="td-s7  td-cz">删除</a>
                                             </td>
                                         </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <div class="duox-left">
+                                                    <input class="duox-ipt" id="ckbg06" name="ckbg01" type="checkbox">
+                                                    <label class="duox-la" for="ckbg06"></label>
+                                                </div>
+                                                <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s2">检测完成</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">相似度：52.33%</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <a class="td-s5  td-cz">查看报告|</a>
+                                                <a class="td-s8  td-cz">在线改重|</a>
+                                                <a class="td-s6  td-cz">下载报告|</a>
+                                                <a class="td-s7  td-cz">删除</a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="text-align: left">
+                                                <div class="duox-left">
+                                                    <input class="duox-ipt" id="ckbg07" name="ckbg01" type="checkbox">
+                                                    <label class="duox-la" for="ckbg07"></label>
+                                                </div>
+                                                <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s2">检测完成</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s3">相似度：52.33%</span>
+                                            </td>
+                                            <td>
+                                                <span class="td-s4">2016/9/28 16:00</span>
+                                            </td>
+                                            <td>
+                                                <a class="td-s5  td-cz">查看报告|</a>
+                                                <a class="td-s8  td-cz">在线改重|</a>
+                                                <a class="td-s6  td-cz">下载报告|</a>
+                                                <a class="td-s7  td-cz">删除</a>
+                                            </td>
+                                        </tr>
+
                                     </tbody>
                                 </table>
-                                <!-- 报告为空时 -->
-                                <div class="wk-d">
+                                <!---报告为空的时候---->
+                                <div class="wk-d" style="display: none">
                                     <img src="images/ckbg.png">
                                     <span>还没有任何内容哦~</span>
                                 </div>
-                                <p class="lwcc-left-bt-t zjk-left-bt-t"><span>提醒</span>系统仅保留 10 天以内的检测报告，检测完成后请尽快下载您的检测报告!</p>
-                                <!----  翻页  ---->
+                                <!----翻页---->
                                 <div class="page zjk-page">
-                                    <div class="page-d">
-                                        <span>当前第2页，共8页</span>
-                                        <a class="page-a" href="">首页</a>
-                                        <a class="page-a" href="">上一页</a>
-                                        <a href="">1</a>
-                                        <a href="">2</a>
-                                        <a href="">...</a>
-                                        <a href="">8</a>
-                                        <a class="page-a page-action" href="">下一页</a>
-                                        <a class="page-a" href="">尾页</a>
+                                        <p class="lwcc-left-bt-t zjk-left-bt-t"><span>提醒</span>系统仅保留 10 天以内的检测报告，检测完成后请尽快下载您的检测报告!</p>
+                                        <div class="page-d">
+                                            <span>当前第2页，共8页</span>
+                                            <a class="page-a" href="">首页</a>
+                                            <a class="page-a" href="">上一页</a>
+                                            <a href="">1</a>
+                                            <a href="">2</a>
+                                            <a href="">...</a>
+                                            <a href="">8</a>
+                                            <a class="page-a page-action" href="">下一页</a>
+                                            <a class="page-a" href="">尾页</a>
+                                        </div>
                                     </div>
+                           
+                        </div>
+                        <!-- 新建自建库页面 -->
+                        <div class="tab-right-content">
+                            <div class="qh-nr">
+                                <!--论文标题-->
+                                <p class="copy-t">论文标题</p>
+                                <div class="copy-la-d copy-la-ds">
+                                    <label class="copy-la">
+                                        <input class="copy-ipt" type="text" placeholder="" value="">
+                                    </label>
+                                    <span>论文标题不能为空</span>
+                                </div>
+
+                                <p class="copy-t">论文内容<label class="copy-t-la"><em>重新导入论文</em><input type="file"></label><span>paperfree产品构想.docx</span><span>上传成功</span></p>
+                                <div class="scwb-d-wd scwb-d-txt">
+                                    <div class="scwb-d-wd-left">
+                                    </div>
+                                    <div class="scwb-d-wd-right">
+                                        <p class="scwb-p1"><i></i><i class="scwb-sc">删除</i></p>
+                                        <p class="scwb-p2"><i></i><span>上传完成</span></p>
+                                    </div>
+                                </div>
+                                <textarea class="copy-tex" role="" rows="" placeholder=""></textarea>
+                                <div class="copy-bt">
+                                    <div class="copy-bt-bd">
+                                        <button class="bt new-bt" type="submit">点击上传</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--新增成功提示-->
+                            <div class="qh-nr" style="display: block;">
+                                <div class="lwcc-tjh" style="display: block;">
+                                    <p class="lwcc-tjh-p"><i></i><span>自建库文章上传成功~</span></p>
+                                    <p class="lwcc-tjh-bt"><a href="" class="lwcc-tjh-a">继续上传文章</a></p>
+                                    <p class="lwcc-tjh-bt"><a href="" class="lwcc-tjh-a">管理自建库</a></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 管理自建库页面 -->
+                        <div class="tab-right-content">
+                            <div class="new-report">
+                                <div class="new-report-left">
+                                    <span>选择：</span>
+                                    <a href="">全选</a>
+                                    <em>-</em>
+                                    <a href="">反选</a>
+                                    <em>-</em>
+                                    <a href="">删除</a>
+                                </div>
+                            </div>
+                            <table class="table ckbg-table" width="100%" id="result_2">
+                                <thead>
+                                    <tr>
+                                        <td width="35%">标题</td>
+                                        <td width="" align="center">字数</td>
+                                        <td width="" align="center">提交时间</td>
+                                        <td width="" align="center">操作</td>
+                                        <td width="" align="center">　　　　</td>
+                                        <td width="" align="center">　　</td>
+                                    </tr>
+                                </thead>
+                                <tbody class="paragraph ">
+                                    <tr>
+                                        <td style="text-align: left">
+                                            <div class="duox-left">
+                                                <input class="duox-ipt" id="ckbg04" name="ckbg01" type="checkbox">
+                                                <label class="duox-la" for="ckbg04"></label>
+                                            </div>
+                                            <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
+                                        </td>
+                                        <td>
+                                            <span class="td-s3">256114字</span>
+                                        </td>
+                                        <td>
+                                            <span class="td-s4">2016/9/28 16:00</span>
+                                        </td>
+                                        <td>
+                                            <a class="td-s5 td-s5s td-cz" href="javascript:ckxq();">查看</a>
+                                        </td>
+                                        <td>
+                                            <a class="td-s6 td-s6s td-cz">预览</a>
+                                        </td>
+                                        <td>
+                                            <a class="td-s7 td-s7s td-cz" href="javascript:scts();">删除</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: left">
+                                            <div class="duox-left">
+                                                <input class="duox-ipt" id="ckbg05" name="ckbg01" type="checkbox">
+                                                <label class="duox-la" for="ckbg05"></label>
+                                            </div>
+                                            <span class="td-s1">论如何使用好论文查重<em class="xsj-bt"></em></span>
+                                        </td>
+                                        <td>
+                                            <span class="td-s3">256114字</span>
+                                        </td>
+                                        <td>
+                                            <span class="td-s4">2016/9/28 16:00</span>
+                                        </td>
+                                        <td>
+                                            <a class="td-s5 td-s5s td-cz" href="javascript:ckxq();">查看</a>
+                                        </td>
+                                        <td>
+                                            <a class="td-s6 td-s6s td-cz">预览</a>
+                                        </td>
+                                        <td>
+                                            <a class="td-s7 td-s7s td-cz" href="javascript:scts();">删除</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- 报告为空时 -->
+                            <div class="wk-d">
+                                <img src="images/ckbg.png">
+                                <span>还没有任何内容哦~</span>
+                            </div>
+                            <!----  翻页  ---->
+                            <div class="page zjk-page">
+                                <p class="lwcc-left-bt-t zjk-left-bt-t"><span>提醒</span>系统仅保留 10 天以内的检测报告，检测完成后请尽快下载您的检测报告!</p>
+                                <div class="page-d">
+                                    <span>当前第2页，共8页</span>
+                                    <a class="page-a" href="">首页</a>
+                                    <a class="page-a" href="">上一页</a>
+                                    <a href="">1</a>
+                                    <a href="">2</a>
+                                    <a href="">...</a>
+                                    <a href="">8</a>
+                                    <a class="page-a page-action" href="">下一页</a>
+                                    <a class="page-a" href="">尾页</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="right-ab">
-                <!-- 暂时隐藏的右侧广告位 -->
-                <!-- 轮播图部分 -->
-                <div class="swiper-container">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide">
+    </div>
+    <div class="right-ab">
+        <!-- 暂时隐藏的右侧广告位 -->
+        <!-- 轮播图部分 -->
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide">
 
-                        </div>
-                        <div class="swiper-slide last-banner"></div>
-                    </div>
-                    <div class="swiper-pagination"></div>
                 </div>
-                <div class="lwcc-right">
+                <div class="swiper-slide last-banner"></div>
+            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+        <div class="lwcc-right">
 
-                    <div class="copy-d">
-                        <p class="copy-d-t">数据库范围</p>
-                        <p class="copy-d-bd">学术期刊，学位论文，会议论文，互联网，英文数据库（涵盖期刊，硕博，会议的英文数据）。</p>
-                    </div>
-                    <div class="copy-d">
-                        <p class="copy-d-t">检测范围</p>
-                        <p class="copy-d-bd">涵盖所有中英文类别，包括哲学、经济学、管理学、法学、社会科学、教育学、文学、艺术学、历史学、理学、工学、农学、医学、政治学、军事学等。</p>
-                    </div>
-                    <div class="copy-d">
-                        <p class="copy-d-t">郑重声明</p>
-                        <div class="copy-d-bd">
-                            <p class="copy-d-bd">Papertime论文时间检测系统遵守相关保密规定，绝不收录和泄露您送检文档的任何信息，请放心检测！</p>
-                        </div>
-                    </div>
+            <div class="copy-d">
+                <p class="copy-d-t">数据库范围</p>
+                <p class="copy-d-bd">学术期刊，学位论文，会议论文，互联网，英文数据库（涵盖期刊，硕博，会议的英文数据）。</p>
+            </div>
+            <div class="copy-d">
+                <p class="copy-d-t">检测范围</p>
+                <p class="copy-d-bd">涵盖所有中英文类别，包括哲学、经济学、管理学、法学、社会科学、教育学、文学、艺术学、历史学、理学、工学、农学、医学、政治学、军事学等。</p>
+            </div>
+            <div class="copy-d">
+                <p class="copy-d-t">郑重声明</p>
+                <div class="copy-d-bd">
+                    <p class="copy-d-bd">Papertime论文时间检测系统遵守相关保密规定，绝不收录和泄露您送检文档的任何信息，请放心检测！</p>
                 </div>
             </div>
-        </section>
+        </div>
+    </div>
+    </section>
     </div>
     <div class="footer">
         <p class="foot-btm foot-btm-cc">Copyright @ 2002-2017 湖南写邦科技有限公司 湘ICP备16012700号-1</p>
@@ -501,7 +597,7 @@
                                 </div>
                             </li>
                             <li class="login-li" style="height:19px;">
-                                <p class="login-li-ts-p" style="display:none; float:left;"><i class="login-li-ts-i" >×</i><span class="login-li-s">请填写正确的手机号</span></p>
+                                <p class="login-li-ts-p" style="display:none; float:left;"><i class="login-li-ts-i">×</i><span class="login-li-s">请填写正确的手机号</span></p>
                                 <a class="login-wjmm" href="javascript:void(0);">忘记密码？</a>
 
                             </li>
