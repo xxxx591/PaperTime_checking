@@ -28,7 +28,7 @@ $(function () {
             $('#lwcc-left').removeClass('leave-message')
             $('.right-ab').removeClass('leave-message-right')
             $('.swiper-container,.lwcc-right ').css('display','block');
-            $('.ly-right').css('display','none').removeClass('leave-message-right');``
+            $('.ly-right').css('display','none').removeClass('leave-message-right');
         }
     })
 })
