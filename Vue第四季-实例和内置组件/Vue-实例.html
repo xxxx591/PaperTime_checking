@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <h2>Vue$mount()和$destroy()</h2>
+        <hr>
+    </div>
+    <button onclick="destroy()">卸载</button>
+    <button onclick="nextTick()">更新</button>
+</body>
+
+<script src="./vue.js"></script>
+<script>
+    var LeHang = Vue.extend({
+        template: `<p>{{msg}}</p>`,
+        data: function () {
+            return {
+                msg: '乐思航'
+            }
+        }
+    });
+    var vm = new LeHang().$mount('#app')
+    function destroy(){
+        vm.$destroy();
+    }
+    function nextTick(){
+        vm.msg='我喜欢乐乐啊';
+        vm.$nextTick(function(){
+            console.log('我被更新啦。！')
+        })
+    }
+</script>
+
+</html>

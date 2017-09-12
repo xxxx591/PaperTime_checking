@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <h2>Vue内置组件solt</h2>
+        <hr>
+        <lesihang>
+            <span slot="blogUrl">{{LeHangData.bolgUrl}}</span>
+            <span slot="netName">{{LeHangData.netName}}</span>
+            <span slot="skill">{{LeHangData.skill}}</span>
+
+        </lesihang>
+
+
+    </div>
+    <template id="tep">
+        <div>
+            <p>博客地址：<slot name='blogUrl'></slot></p>
+            <p>网名：<slot name='netName'></slot></p>
+            <p>技术特长：<slot name='skill'></slot></p>
+        </div>
+    </template>
+</body>
+
+<script src="./vue.js"></script>
+<script>
+    var lesihang = {
+        template: '#tep'
+    }
+    var app = new Vue({
+        el: "#app",
+        data: {
+            LeHangData: {
+                bolgUrl: 'www.lesihang.com',
+                netName: '谢沅航',
+                skill: '全栈'
+            }
+        },
+        components: {
+            'lesihang': lesihang
+        }
+    })
+</script>
+
+</html>

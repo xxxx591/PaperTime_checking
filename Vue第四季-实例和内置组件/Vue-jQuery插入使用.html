@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <div id="app">
+        <h2>Vue和Jquery一起使用</h2><hr>
+        <p>{{msg}}</p>
+    </div>
+</body>
+
+<script src="./vue.js"></script>
+<script src="./jquery.min.js"></script>
+<script>
+    var app = new Vue({
+        el:'#app',
+        data:{
+            msg:'Hello Vue'
+        },
+        mounted:function(){
+            $('p').html('Hello jQuery')
+            //生命函数，在dom被创建之后。
+        },
+        methods:{
+            add:function(){
+                console.log('已经加载了add方法')
+            }
+        }
+    })
+    app.add();
+</script>
+</html>

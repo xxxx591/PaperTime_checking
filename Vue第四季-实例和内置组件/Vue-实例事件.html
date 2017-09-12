@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <h2>Vue实例事件</h2>
+        <hr>
+        <p>{{msg}}</p>
+        <button @click='add'>加加</button>
+    </div>
+    <button onclick='reduce()'>减减</button>
+    <button onclick='reduceonce()'>减减一次</button>
+    <button onclick='off()'>关闭</button>
+</body>
+
+<script src="./vue.js"></script>
+<script src="./jquery.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            msg: 1
+        },
+        methods: {
+            add: function () {
+                this.msg++
+            }
+        }
+    });
+    app.$on('reduce', function () {
+        this.msg--;
+    })
+    function reduce(){
+        app.$emit('reduce')
+    }
+    app.$once('reduceonce',function(){
+        this.msg--;
+    })
+    function reduceonce (){
+        app.$emit('reduceonce')
+    }
+    function off(){
+        app.$off('reduce')
+    }
+</script>
+
+</html>
